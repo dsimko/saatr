@@ -65,8 +65,8 @@ The resulting document is stored in MongoDB.
 
 Analyzing part of the tool is not implemented yet. But it is possible to use any MongoDB client for querying data. For example https://github.com/rsercano/mongoclient is in docker hub so it is very simple to use it:
 
-docker pull mongoclient/mongoclient
-docker run -d -p 3000:3000 mongoclient/mongoclient 
+```docker pull mongoclient/mongoclient```    
+```docker run -d -p 3000:3000 mongoclient/mongoclient``` 
 
 Modules
 -------
