@@ -10,6 +10,9 @@
 		<logger name="org.apache.wicket" level="INFO" additivity="false">
 			<AppenderRef ref="CONSOLE" />
 		</logger>
+		<logger name="org.jboss.qa.tool.saatr" level="DEBUG" additivity="false">
+			<AppenderRef ref="CONSOLE" />
+		</logger>
 		<Root level="INFO">
 			<AppenderRef ref="CONSOLE" />
 		</Root>

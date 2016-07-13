@@ -31,4 +31,19 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
+	<servlet>
+		<servlet-name>UploadServlet</servlet-name>
+		<servlet-class>org.jboss.qa.tool.saatr.web.upload.UploadServlet</servlet-class>
+		<multipart-config>
+			<max-file-size>10485760</max-file-size>
+			<max-request-size>20971520</max-request-size>
+			<file-size-threshold>5242880</file-size-threshold>
+		</multipart-config>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>UploadServlet</servlet-name>
+		<url-pattern>/UploadServlet</url-pattern>
+	</servlet-mapping>
+
 </web-app>
