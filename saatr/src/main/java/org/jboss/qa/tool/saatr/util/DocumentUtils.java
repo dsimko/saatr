@@ -1,16 +1,29 @@
 package org.jboss.qa.tool.saatr.util;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStream;
+import java.io.StringReader;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import org.jboss.qa.tool.saatr.domain.Document;
-import org.jboss.qa.tool.saatr.domain.Field;
+import org.jboss.qa.tool.saatr.entity.Build;
+import org.jboss.qa.tool.saatr.entity.Document;
+import org.jboss.qa.tool.saatr.entity.Field;
+import org.jboss.qa.tool.saatr.entity.TestsuiteData;
+import org.jboss.qa.tool.saatr.entity.jaxb.surefire.Testsuite;
+import org.jboss.qa.tool.saatr.entity.jaxb.surefire.Testsuite.Properties;
+import org.jboss.qa.tool.saatr.entity.jaxb.surefire.Testsuite.Properties.Property;
 import org.jboss.qa.tool.saatr.jenkins.IJenkinsMiner;
 import org.jboss.qa.tool.saatr.web.WicketApplication;
 import org.slf4j.Logger;
@@ -75,11 +88,34 @@ public class DocumentUtils {
      */
     public static String persist(Document document) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        WicketApplication.get().getMongoCollection().insertOne(org.bson.Document.parse(mapper.writeValueAsString(document)));
+        // WicketApplication.get().getMongoCollection().insertOne(org.bson.Document.parse(mapper.writeValueAsString(document)));
+        WicketApplication.get().getDatastore().save(document);
         String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(document);
         LOG.info("Document successfully stored in MongoDB.");
-        LOG.info(json);
+        LOG.trace(json);
         return json;
+    }
+
+    public static List<Testsuite> unzipAndUnmarshalTestsuite(InputStream inputStream) throws Exception {
+        ZipInputStream zipInputStream = new ZipInputStream(inputStream);
+        List<Testsuite> testsuites = new ArrayList<>();
+        JAXBContext jaxbContext = JAXBContext.newInstance(Testsuite.class);
+        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+        ZipEntry entry;
+        while ((entry = zipInputStream.getNextEntry()) != null) {
+            LOG.debug("Unzipping: " + entry.getName());
+            byte[] buffer = new byte[4096];
+            try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+                BufferedOutputStream bos = new BufferedOutputStream(outputStream, buffer.length);
+                int size;
+                while ((size = zipInputStream.read(buffer, 0, buffer.length)) != -1) {
+                    bos.write(buffer, 0, size);
+                }
+                bos.flush();
+                testsuites.add((Testsuite) jaxbUnmarshaller.unmarshal(new StringReader(new String(outputStream.toByteArray()))));
+            }
+        }
+        return testsuites;
     }
 
     @SuppressWarnings("unchecked")
@@ -88,6 +124,39 @@ public class DocumentUtils {
             return (T) Class.forName(className).newInstance();
         } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public static String toJson(Build jobRun) {
+        ObjectMapper mapper = new ObjectMapper();
+        String json;
+        try {
+            json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jobRun);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        return json;
+    }
+
+    public static void fillBuildByTestsuites(List<Testsuite> input, Build build) {
+        for (Testsuite testsuite : input) {
+            TestsuiteData testsuiteData = TestsuiteData.create(testsuite);
+            // only first testsuite properties are added to the build
+            if (build.getTestsuites().isEmpty()) {
+                fillBuildByProperties(testsuite.getProperties(), build);
+            }
+            build.getTestsuites().add(testsuiteData);
+        }
+    }
+
+    private static void fillBuildByProperties(List<Properties> input, Build build) {
+        for (Properties properties : input) {
+            for (Property property : properties.getProperty()) {
+                org.jboss.qa.tool.saatr.entity.Property prop = new org.jboss.qa.tool.saatr.entity.Property();
+                prop.setName(property.getName());
+                prop.setValue(property.getValue());
+                build.getProps().add(prop);
+            }
         }
     }
 

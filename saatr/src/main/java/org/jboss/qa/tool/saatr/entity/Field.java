@@ -1,4 +1,4 @@
-package org.jboss.qa.tool.saatr.domain;
+package org.jboss.qa.tool.saatr.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;

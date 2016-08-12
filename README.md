@@ -1,10 +1,10 @@
 SAATR
 =====
 
-SAATR is a prototype of simple tool for Storing And Analyzing Tests Results. In this context Tests are meant automatic tests running on Jenkins CI. If you have tens or hundreds of Jenkins jobs on many platforms with many configuration options then you could consider this tool useful. Our motivation was:
+SAATR is a prototype of a simple tool for Storing And Analyzing Tests Results. In this context Tests mean automatic tests running on Jenkins CI. If you have tens or hundreds of Jenkins jobs on many platforms with many configuration options then you could consider this tool useful. Our motivation was:
 
  - to have better overview about the most failing test case, test method, database, environment, etc
- - easily recognize common failure cause
+ - to easily recognize common failure cause
  - to track history of tests runs
 
 
@@ -57,13 +57,13 @@ The Combined mode uses a configuration file, e.g.:
 	</fields>
 </document> 
 ```
-which defines what kind of data will be stored. Also contains name of 'jenkinsMinerClass' which is responsible for getting as much data as possible from Jenkins. Besides this it is also planned to store another artifacts as log files, config files, etc.
+which defines what kind of data will be stored. It also contains name of 'jenkinsMinerClass' which is responsible for getting as much data as possible from Jenkins. Besides this it is also planned to store another artifacts as log files, config files, etc.
 
-Based on this config file and custom implementation of IJenkinsMiner (which can add another fields) is generated web page which allows to fill empty values or correct values filled by a Miner.
+Based on this config file and custom implementation of IJenkinsMiner (which can add another fields) a web page which allows to fill empty values or correct values filled by a Miner is generated.
 
 The resulting document is stored in MongoDB.
 
-Analyzing part of the tool is not implemented yet. But it is possible to use any MongoDB client for querying data. For example https://github.com/rsercano/mongoclient is in docker hub so it is very simple to use it:
+Analyzing part of the tool has not been implemented yet but it is possible to use any MongoDB client for querying data. For example https://github.com/rsercano/mongoclient is in docker hub so it is very simple to use it:
 
 ```docker pull mongoclient/mongoclient```    
 ```docker run -d -p 3000:3000 mongoclient/mongoclient``` 

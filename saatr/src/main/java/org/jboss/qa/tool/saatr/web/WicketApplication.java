@@ -7,16 +7,17 @@ import org.apache.wicket.ConverterLocator;
 import org.apache.wicket.IConverterLocator;
 import org.apache.wicket.Page;
 import org.apache.wicket.protocol.http.WebApplication;
-import org.bson.Document;
+import org.jboss.qa.tool.saatr.entity.Build;
 import org.jboss.qa.tool.saatr.util.PropertiesUtils;
 import org.jboss.qa.tool.saatr.web.component.URLConverter;
 import org.jboss.qa.tool.saatr.web.page.ConfigPage;
 import org.jboss.qa.tool.saatr.web.page.DocumentPage;
 import org.jboss.qa.tool.saatr.web.page.InfoPage;
+import org.jboss.qa.tool.saatr.web.page.ListPage;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Morphia;
 
 import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 
 /**
  * Application object for the web application. If you want to run this
@@ -29,11 +30,11 @@ public class WicketApplication extends WebApplication {
 
     private String configFolderPath;
     private MongoClient mongoClient;
-    private MongoCollection<Document> mongoCollection;
+    private Datastore datastore;
 
     @Override
     public Class<? extends Page> getHomePage() {
-        return ConfigPage.class;
+        return ListPage.class;
     }
 
     @Override
@@ -43,8 +44,10 @@ public class WicketApplication extends WebApplication {
         Properties properties = PropertiesUtils.loadFromClassPath("application.properties");
         configFolderPath = properties.getProperty("config.folder.path");
         mongoClient = new MongoClient(properties.getProperty("mongo.host"), Integer.parseInt(properties.getProperty("mongo.port")));
-        MongoDatabase database = mongoClient.getDatabase(properties.getProperty("mongo.database.name"));
-        mongoCollection = database.getCollection(properties.getProperty("mongo.collection.name"));
+        final Morphia morphia = new Morphia();
+        morphia.mapPackage(Build.class.getPackage().getName());
+        datastore = morphia.createDatastore(mongoClient, properties.getProperty("mongo.database.name"));
+        datastore.ensureIndexes();
 
         mountPage("config", ConfigPage.class);
         mountPage("doc", DocumentPage.class);
@@ -75,7 +78,7 @@ public class WicketApplication extends WebApplication {
         this.configFolderPath = configFolderPath;
     }
 
-    public MongoCollection<Document> getMongoCollection() {
-        return mongoCollection;
+    public Datastore getDatastore() {
+        return datastore;
     }
 }

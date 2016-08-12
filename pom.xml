@@ -26,6 +26,8 @@
 
 		<version.wicket>7.3.0</version.wicket>
 		<version.mongo>3.2.2</version.mongo>
+		<version.mongodb.morphia>1.2.1</version.mongodb.morphia>
+		<version.lombok>1.16.10</version.lombok>
 		<version.jackson>2.7.5</version.jackson>
 		<version.danielpacak.jenkins.ci>1.0.0-rc4</version.danielpacak.jenkins.ci>
 		<version.commons-io>2.5</version.commons-io>
@@ -68,6 +70,16 @@
 				<groupId>org.mongodb</groupId>
 				<artifactId>mongo-java-driver</artifactId>
 				<version>${version.mongo}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mongodb.morphia</groupId>
+				<artifactId>morphia</artifactId>
+				<version>${version.mongodb.morphia}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>${version.lombok}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>

@@ -19,10 +19,10 @@ import org.apache.wicket.util.file.File;
 import org.apache.wicket.util.file.Folder;
 import org.apache.wicket.util.file.Folder.FileFilter;
 import org.apache.wicket.util.string.Strings;
-import org.jboss.qa.tool.saatr.domain.Document;
+import org.jboss.qa.tool.saatr.entity.Document;
 import org.jboss.qa.tool.saatr.util.DocumentUtils;
 import org.jboss.qa.tool.saatr.web.WicketApplication;
-import org.jboss.qa.tool.saatr.web.component.BootstrapFeedbackPanel;
+import org.jboss.qa.tool.saatr.web.component.bootstrap.BootstrapFeedbackPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -6,11 +6,11 @@ import org.apache.wicket.markup.html.form.StatelessForm;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.jboss.qa.tool.saatr.domain.Document;
-import org.jboss.qa.tool.saatr.domain.Field;
+import org.jboss.qa.tool.saatr.entity.Document;
+import org.jboss.qa.tool.saatr.entity.Field;
 import org.jboss.qa.tool.saatr.util.DocumentUtils;
-import org.jboss.qa.tool.saatr.web.component.BootstrapFeedbackPanel;
 import org.jboss.qa.tool.saatr.web.component.FieldPanel;
+import org.jboss.qa.tool.saatr.web.component.bootstrap.BootstrapFeedbackPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

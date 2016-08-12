@@ -1,15 +1,16 @@
 package org.jboss.qa.tool.saatr.util;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
-import org.jboss.qa.tool.saatr.domain.Document;
-import org.jboss.qa.tool.saatr.domain.Field;
+import org.jboss.qa.tool.saatr.entity.Document;
+import org.jboss.qa.tool.saatr.entity.Field;
 import org.jboss.qa.tool.saatr.jenkins.IJenkinsMiner;
 import org.junit.Assert;
 import org.junit.Test;
