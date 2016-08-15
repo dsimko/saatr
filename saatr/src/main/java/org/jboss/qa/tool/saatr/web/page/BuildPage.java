@@ -3,6 +3,8 @@ package org.jboss.qa.tool.saatr.web.page;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.markup.html.form.Form;
@@ -12,22 +14,25 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.jboss.qa.tool.saatr.entity.Build;
-import org.jboss.qa.tool.saatr.web.WicketApplication;
-import org.jboss.qa.tool.saatr.web.component.BuildProvider;
-import org.jboss.qa.tool.saatr.web.component.BuildProvider.BuildFilter;
-import org.jboss.qa.tool.saatr.web.component.DocumentDetailPanel;
-import org.jboss.qa.tool.saatr.web.component.bootstrap.BootstrapButton;
-import org.jboss.qa.tool.saatr.web.component.bootstrap.BootstrapTable;
+import org.jboss.qa.tool.saatr.service.BuildService;
+import org.jboss.qa.tool.saatr.web.component.build.BuildDetailPanel;
+import org.jboss.qa.tool.saatr.web.component.build.BuildProvider;
+import org.jboss.qa.tool.saatr.web.component.build.BuildProvider.BuildFilter;
+import org.jboss.qa.tool.saatr.web.component.common.bootstrap.BootstrapButton;
+import org.jboss.qa.tool.saatr.web.component.common.bootstrap.BootstrapTable;
 
 /**
  * @author dsimko@redhat.com
  */
 @SuppressWarnings("serial")
-public class ListPage extends BasePage<Build> {
+public class BuildPage extends BasePage<Build> {
 
     private IModel<BuildFilter> filter = Model.of(new BuildFilter());
 
-    public ListPage() {
+    @Inject
+    private BuildService buildServicel;
+
+    public BuildPage() {
         super(new Model<>());
         Form<BuildFilter> form = new Form<>("form", new CompoundPropertyModel<BuildFilter>(filter));
         form.add(new TextField<>("buildNumber"));
@@ -40,7 +45,7 @@ public class ListPage extends BasePage<Build> {
         form.add(new BootstrapButton<Build>("dropDB", getModel()) {
             @Override
             public void onClick() {
-                WicketApplication.get().getDatastore().delete(WicketApplication.get().getDatastore().createQuery(Build.class));
+                buildServicel.deleteAll();
                 setModelObject(null);
             }
         });
@@ -59,6 +64,6 @@ public class ListPage extends BasePage<Build> {
             }
         };
         add(dataTable);
-        add(new DocumentDetailPanel("detail", getModel()));
+        add(new BuildDetailPanel("detail", getModel()));
     }
 }

@@ -1,4 +1,4 @@
-package org.jboss.qa.tool.saatr.web.component;
+package org.jboss.qa.tool.saatr.web.component.common;
 
 import java.net.MalformedURLException;
 import java.net.URL;

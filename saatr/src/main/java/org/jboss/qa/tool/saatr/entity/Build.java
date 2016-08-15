@@ -1,8 +1,8 @@
 package org.jboss.qa.tool.saatr.entity;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
@@ -26,8 +26,8 @@ public class Build implements Serializable {
     private Long buildNumber;
     private Long timestamp;
     private Long duration;
-    private final Set<Property> props = new HashSet<>();
-    private final Set<TestsuiteData> testsuites = new HashSet<>();
+    private final List<TestsuiteData> testsuites = new ArrayList<>();
+    private final List<Property> props = new ArrayList<>();
 
     @Override
     public int hashCode() {

@@ -1,4 +1,4 @@
-package org.jboss.qa.tool.saatr.web.component.bootstrap;
+package org.jboss.qa.tool.saatr.web.component.common.bootstrap;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.OddEvenItem;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.jboss.qa.tool.saatr.web.component.bootstrap.paging.ajax.BootstrapAjaxPagingNavigator;
+import org.jboss.qa.tool.saatr.web.component.common.bootstrap.paging.ajax.BootstrapAjaxPagingNavigator;
 
 @SuppressWarnings("serial")
 public abstract class BootstrapTable<T, S> extends DataTable<T, S> {
@@ -49,7 +49,9 @@ public abstract class BootstrapTable<T, S> extends DataTable<T, S> {
             row.add(new AttributeAppender("class", Model.of("active"), " "));
         }
         row.add(new AttributeAppender("class", Model.of("clicableTableRow"), " "));
-        row.add(new AjaxEventBehavior("onclick") {
+        row.add(new AjaxEventBehavior("click") {
+
+            @Override
             protected void onEvent(AjaxRequestTarget target) {
                 selectRowClicked = true;
                 onRowClicked(target, model.getObject());

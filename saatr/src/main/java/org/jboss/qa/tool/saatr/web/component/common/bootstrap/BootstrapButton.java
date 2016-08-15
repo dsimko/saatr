@@ -1,4 +1,4 @@
-package org.jboss.qa.tool.saatr.web.component.bootstrap;
+package org.jboss.qa.tool.saatr.web.component.common.bootstrap;
 
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.link.Link;

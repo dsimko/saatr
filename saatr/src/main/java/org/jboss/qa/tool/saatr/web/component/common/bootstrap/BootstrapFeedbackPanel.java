@@ -1,4 +1,4 @@
-package org.jboss.qa.tool.saatr.web.component.bootstrap;
+package org.jboss.qa.tool.saatr.web.component.common.bootstrap;
 
 import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.feedback.IFeedbackMessageFilter;

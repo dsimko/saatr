@@ -25,6 +25,7 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 
 		<version.wicket>7.3.0</version.wicket>
+		<version.spring>4.3.2.RELEASE</version.spring>
 		<version.mongo>3.2.2</version.mongo>
 		<version.mongodb.morphia>1.2.1</version.mongodb.morphia>
 		<version.lombok>1.16.10</version.lombok>
@@ -65,7 +66,23 @@
 				<version>${version.wicket}</version>
 			</dependency>
 
+			<dependency>
+				<groupId>org.apache.wicket</groupId>
+				<artifactId>wicket-spring</artifactId>
+				<version>${version.wicket}</version>
+			</dependency>
+
 			<!-- OTHER DEPENDENCIES -->
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-core</artifactId>
+				<version>${version.spring}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-web</artifactId>
+				<version>${version.spring}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.mongodb</groupId>
 				<artifactId>mongo-java-driver</artifactId>

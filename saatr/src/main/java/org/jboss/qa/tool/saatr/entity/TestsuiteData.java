@@ -6,8 +6,10 @@ import java.util.List;
 
 import javax.xml.bind.JAXBElement;
 
+import org.jboss.qa.tool.saatr.entity.TestsuiteData.TestcaseData.ErrorData;
 import org.jboss.qa.tool.saatr.entity.TestsuiteData.TestcaseData.FailureData;
 import org.jboss.qa.tool.saatr.entity.TestsuiteData.TestcaseData.RerunFailureData;
+import org.jboss.qa.tool.saatr.entity.TestsuiteData.TestcaseData.SkippedData;
 import org.jboss.qa.tool.saatr.entity.jaxb.surefire.Testsuite;
 import org.jboss.qa.tool.saatr.entity.jaxb.surefire.Testsuite.Testcase;
 
@@ -17,7 +19,7 @@ import lombok.Data;
 @SuppressWarnings("serial")
 public class TestsuiteData implements Serializable {
 
-    private final List<TestcaseData> testcase = new ArrayList<>();
+    private final List<TestcaseData> testcases = new ArrayList<>();
     private String name;
     private Double time;
     private Integer tests;
@@ -31,8 +33,8 @@ public class TestsuiteData implements Serializable {
 
         private final List<FailureData> failure = new ArrayList<>();
         private final List<RerunFailureData> rerunFailure = new ArrayList<>();
-        private final SkippedData skipped = new SkippedData();
-        private final ErrorData error = new ErrorData();
+        private SkippedData skipped;
+        private ErrorData error;
         private String systemOut;
         private String systemErr;
         private String name;
@@ -100,12 +102,14 @@ public class TestsuiteData implements Serializable {
             testcaseData.time = toDouble(testcase.getTime());
             JAXBElement<Testsuite.Testcase.Error> error = testcase.getError();
             if (error != null) {
+                testcaseData.error = new ErrorData();
                 testcaseData.error.message = error.getValue().getMessage();
                 testcaseData.error.type = error.getValue().getType();
                 testcaseData.error.value = error.getValue().getValue();
             }
             JAXBElement<Testsuite.Testcase.Skipped> skipped = testcase.getSkipped();
             if (skipped != null) {
+                testcaseData.skipped = new SkippedData();
                 testcaseData.skipped.message = skipped.getValue().getMessage();
                 testcaseData.skipped.value = skipped.getValue().getValue();
             }
@@ -125,7 +129,7 @@ public class TestsuiteData implements Serializable {
                 failureData.value = failure.getValue();
                 testcaseData.rerunFailure.add(failureData);
             }
-            testsuiteData.testcase.add(testcaseData);
+            testsuiteData.testcases.add(testcaseData);
         }
         return testsuiteData;
     }

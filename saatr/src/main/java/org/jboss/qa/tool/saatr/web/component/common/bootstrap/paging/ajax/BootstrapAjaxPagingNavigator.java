@@ -1,4 +1,4 @@
-package org.jboss.qa.tool.saatr.web.component.bootstrap.paging.ajax;
+package org.jboss.qa.tool.saatr.web.component.common.bootstrap.paging.ajax;
 
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.markup.html.navigation.paging.IPageable;

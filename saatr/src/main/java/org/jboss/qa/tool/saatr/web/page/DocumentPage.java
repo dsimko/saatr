@@ -1,5 +1,7 @@
 package org.jboss.qa.tool.saatr.web.page;
 
+import javax.inject.Inject;
+
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.StatelessForm;
@@ -8,9 +10,9 @@ import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.jboss.qa.tool.saatr.entity.Document;
 import org.jboss.qa.tool.saatr.entity.Field;
-import org.jboss.qa.tool.saatr.util.DocumentUtils;
+import org.jboss.qa.tool.saatr.service.DocumentService;
 import org.jboss.qa.tool.saatr.web.component.FieldPanel;
-import org.jboss.qa.tool.saatr.web.component.bootstrap.BootstrapFeedbackPanel;
+import org.jboss.qa.tool.saatr.web.component.common.bootstrap.BootstrapFeedbackPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +28,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public class DocumentPage extends BasePage<Document> {
 
     private static final Logger LOG = LoggerFactory.getLogger(DocumentPage.class);
+
+    @Inject
+    private DocumentService documentUtils;
 
     public DocumentPage() {
         redirectToHomePage();
@@ -43,7 +48,7 @@ public class DocumentPage extends BasePage<Document> {
             @Override
             public void onSubmit() {
                 try {
-                    String json = DocumentUtils.persist(document);
+                    String json = documentUtils.persist(document);
                     setResponsePage(new InfoPage(json));
                 } catch (JsonProcessingException e) {
                     LOG.warn(e.getMessage(), e);
