@@ -1,29 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document>
-	<name>CrashRecFailed</name>
-	<jenkinsMinerClass>org.jboss.qa.tool.saatr.jenkins.miner.crashrec.CrashRecJenkinsMiner</jenkinsMinerClass>
-	<fields>
-		<field>
-			<name>timestamp</name>
-		</field>
-		<field>
-			<name>jobName</name>
-		</field>
-		<field>
-			<name>eapVersion</name>
-		</field>
-		<field>
-			<name>testCase</name>
-		</field>
-		<field>
-			<name>testName</name>
-		</field>
-		<field>
-			<name>txType</name>
+<config>
+	<properties>
+		<property name="timestamp"/>
+		<property name="jobName"/>
+		<property name="eapVersion"/>
+		<property name="testCase"/>
+		<property name="testName"/>
+		<property name="txType">
 			<options>
 				<option>JTA</option>
 				<option>JTS</option>
 			</options>
-		</field>
-	</fields>
-</document>
+		</property>
+	</properties>
+</config>

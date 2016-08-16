@@ -5,30 +5,42 @@
 
 	<display-name>Simple tool for storing and analyzing tests results</display-name>
 
- 	<!--
-		There are three means to configure Wickets configuration mode and they 
-		are tested in the order given.
-		
-		1) A system property: -Dwicket.configuration 
-		2) servlet specific <init-param> 
-		3) context specific <context-param>
-
-		The value might be either "development" (reloading when templates change) or 
-		"deployment". If no configuration is found, "development" is the default. -->
     <filter>
-        <filter-name>Wicket</filter-name>
+        <filter-name>wicketfilter</filter-name>
         <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
         <init-param>
-            <!-- Specify the "entry point" for Wicket to configure itself
-                from -->
-            <param-name>applicationClassName</param-name>
-            <param-value>org.jboss.qa.tool.saatr.web.WicketApplication</param-value>
+            <param-name>applicationFactoryClassName</param-name>
+            <param-value>org.apache.wicket.spring.SpringWebApplicationFactory</param-value>
         </init-param>
     </filter>
 
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/applicationContext.xml</param-value>
+    </context-param>
+
     <filter-mapping>
-        <filter-name>Wicket</filter-name>
+        <filter-name>wicketfilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
+
+	<servlet>
+		<servlet-name>UploadServlet</servlet-name>
+		<servlet-class>org.jboss.qa.tool.saatr.web.upload.UploadServlet</servlet-class>
+		<multipart-config>
+			<max-file-size>10485760</max-file-size>
+			<max-request-size>20971520</max-request-size>
+			<file-size-threshold>5242880</file-size-threshold>
+		</multipart-config>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>UploadServlet</servlet-name>
+		<url-pattern>/UploadServlet</url-pattern>
+	</servlet-mapping>
 
 </web-app>

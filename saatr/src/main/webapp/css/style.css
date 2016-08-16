@@ -1,3 +1,12 @@
+html, body {
+	height: 100%;
+}
+
+body {
+	padding-top: 50px;
+	padding-bottom: 30px;
+}
+
 div.wicket-aa {
 	font-family: "Lucida Grande", "Lucida Sans Unicode", Tahoma, Verdana;
 	font-size: 12px;
@@ -21,4 +30,16 @@ div.wicket-aa ul li.selected {
 	padding: 2px;
 	margin: 0;
 	color: white;
+}
+
+.clicableTableRow {
+	cursor: pointer;
+}
+
+.sub-panel-heading {
+	padding: 5px 5px;
+}
+
+.tab-panel {
+	margin-top: 15px;
 }

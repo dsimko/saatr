@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<html xmlns:wicket>
+<body>
+	<wicket:panel>
+		<div wicket:id="panel" class="panel">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					<wicket:container wicket:id="name"></wicket:container>
+				</h3>
+			</div>
+			<div class="panel-body">
+				<div class="table-responsive">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Tests</th>
+								<th>Failures</th>
+								<th>Errors</th>
+								<th>Skipped</th>
+								<th>Time</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td><span class="text-info" wicket:id="tests"></span></td>
+								<td><span class="text-danger" wicket:id="failures"></span></td>
+								<td><span class="text-danger" wicket:id="errors"></span></td>
+								<td><span class="text-warning" wicket:id="skipped"></span></td>
+								<td><span class="text-muted" wicket:id="time"></span></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div wicket:id="testcases">
+					<div wicket:id="testcase"></div>
+				</div>
+			</div>
+		</div>
+	</wicket:panel>
+</body>
+</html>
