@@ -5,7 +5,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.IModel;
-import org.jboss.qa.tool.saatr.entity.TestsuiteData.TestcaseData;
+import org.jboss.qa.tool.saatr.entity.Build.TestsuiteData.TestcaseData;
 
 /**
  * 
@@ -33,6 +33,7 @@ public class TestcasePanel extends GenericPanel<TestcaseData> {
         add(panel);
         panel.add(new Label("name"));
         panel.add(new Label("time"));
+        panel.add(new SkippedPanel("skipped"));
         panel.add(new ErrorPanel("error"));
         panel.add(new FailuresPanel("failure"));
     }

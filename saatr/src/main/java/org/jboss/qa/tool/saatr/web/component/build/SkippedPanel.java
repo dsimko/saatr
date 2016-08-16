@@ -2,7 +2,7 @@ package org.jboss.qa.tool.saatr.web.component.build;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.GenericPanel;
-import org.jboss.qa.tool.saatr.entity.Build.TestsuiteData.TestcaseData.ErrorData;
+import org.jboss.qa.tool.saatr.entity.Build.TestsuiteData.TestcaseData.SkippedData;
 
 /**
  * 
@@ -10,7 +10,7 @@ import org.jboss.qa.tool.saatr.entity.Build.TestsuiteData.TestcaseData.ErrorData
  *
  */
 @SuppressWarnings("serial")
-public class ErrorPanel extends GenericPanel<ErrorData> {
+public class SkippedPanel extends GenericPanel<SkippedData> {
 
     @Override
     protected void onConfigure() {
@@ -18,10 +18,9 @@ public class ErrorPanel extends GenericPanel<ErrorData> {
         setVisible(getModelObject() != null);
     }
 
-    public ErrorPanel(String id) {
+    public SkippedPanel(String id) {
         super(id);
-        add(new Label("error.value"));
-        add(new Label("error.message"));
-        add(new Label("error.type"));
+        add(new Label("skipped.value"));
+        add(new Label("skipped.message"));
     }
 }

@@ -1,4 +1,4 @@
-package org.jboss.qa.tool.saatr.web.component;
+package org.jboss.qa.tool.saatr.web.component.build.addinfo;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -10,7 +10,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
-import org.jboss.qa.tool.saatr.entity.Field;
+import org.jboss.qa.tool.saatr.entity.jaxb.config.Config.Property;
 
 /**
  * Panel for filling fields with values.
@@ -19,9 +19,9 @@ import org.jboss.qa.tool.saatr.entity.Field;
  *
  */
 @SuppressWarnings("serial")
-public class FieldPanel extends GenericPanel<Field> {
+public class PropertyPanel extends GenericPanel<Property> {
 
-    public FieldPanel(String id, final IModel<Field> model) {
+    public PropertyPanel(String id, final IModel<Property> model) {
         super(id, model);
         add(new Label("name"));
         AutoCompleteSettings settings = new AutoCompleteSettings();

@@ -12,8 +12,8 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RefreshingView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.jboss.qa.tool.saatr.entity.TestsuiteData;
-import org.jboss.qa.tool.saatr.entity.TestsuiteData.TestcaseData;
+import org.jboss.qa.tool.saatr.entity.Build.TestsuiteData;
+import org.jboss.qa.tool.saatr.entity.Build.TestsuiteData.TestcaseData;
 
 /**
  * 

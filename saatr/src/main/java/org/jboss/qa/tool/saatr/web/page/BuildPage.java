@@ -7,18 +7,24 @@ import javax.inject.Inject;
 
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
+import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
+import org.apache.wicket.extensions.markup.html.tabs.ITab;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.jboss.qa.tool.saatr.entity.Build;
 import org.jboss.qa.tool.saatr.service.BuildService;
 import org.jboss.qa.tool.saatr.web.component.build.BuildDetailPanel;
+import org.jboss.qa.tool.saatr.web.component.build.BuildJsonPanel;
 import org.jboss.qa.tool.saatr.web.component.build.BuildProvider;
 import org.jboss.qa.tool.saatr.web.component.build.BuildProvider.BuildFilter;
 import org.jboss.qa.tool.saatr.web.component.common.bootstrap.BootstrapButton;
+import org.jboss.qa.tool.saatr.web.component.common.bootstrap.BootstrapTabbedPanel;
 import org.jboss.qa.tool.saatr.web.component.common.bootstrap.BootstrapTable;
 
 /**
@@ -64,6 +70,30 @@ public class BuildPage extends BasePage<Build> {
             }
         };
         add(dataTable);
-        add(new BuildDetailPanel("detail", getModel()));
+        List<ITab> tabs = new ArrayList<ITab>();
+        tabs.add(new AbstractTab(new AbstractReadOnlyModel<String>() {
+            @Override
+            public String getObject() {
+                return "Tables";
+            }
+        }) {
+            @Override
+            public WebMarkupContainer getPanel(String panelId) {
+                return new BuildDetailPanel(panelId, getModel());
+            }
+        });
+
+        tabs.add(new AbstractTab(new AbstractReadOnlyModel<String>() {
+            @Override
+            public String getObject() {
+                return "JSON";
+            }
+        }) {
+            @Override
+            public WebMarkupContainer getPanel(String panelId) {
+                return new BuildJsonPanel(panelId, getModel());
+            }
+        });
+        add(new BootstrapTabbedPanel<>("tabs", tabs));
     }
 }

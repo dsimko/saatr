@@ -4,13 +4,15 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.jboss.qa.tool.saatr.entity.Build;
-import org.jboss.qa.tool.saatr.entity.TestsuiteData;
+import org.jboss.qa.tool.saatr.entity.Build.PropertyData;
+import org.jboss.qa.tool.saatr.entity.Build.TestsuiteData;
+import org.jboss.qa.tool.saatr.entity.jaxb.config.Config;
 import org.jboss.qa.tool.saatr.entity.jaxb.surefire.Testsuite;
-import org.jboss.qa.tool.saatr.entity.jaxb.surefire.Testsuite.Properties;
-import org.jboss.qa.tool.saatr.entity.jaxb.surefire.Testsuite.Properties.Property;
 import org.jboss.qa.tool.saatr.web.component.build.BuildProvider.BuildFilter;
 import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.mapping.Mapper;
 import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.UpdateOperations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,15 @@ public class BuildService {
     public void save(Build build) {
         datastore.save(build);
         LOG.info("Build successfully stored in MongoDB.");
+    }
+
+    public void update(Build build, List<Config.Property> properties) {
+        Query<Build> updateQuery = datastore.createQuery(Build.class).field(Mapper.ID_KEY).equal(build.getId());
+        for (Config.Property property : properties) {
+            UpdateOperations<Build> ops = datastore.createUpdateOperations(Build.class).add("properties",
+                    new PropertyData(property.getName(), property.getValue()), true);
+            datastore.update(updateQuery, ops);
+        }
     }
 
     public Iterator<Build> query(long first, long count, BuildFilter filter) {
@@ -52,20 +63,9 @@ public class BuildService {
             TestsuiteData testsuiteData = TestsuiteData.create(testsuite);
             // only first testsuite properties are added to the build
             if (build.getTestsuites().isEmpty()) {
-                fillBuildByProperties(testsuite.getProperties(), build);
+                build.getProperties().addAll(PropertyData.create(testsuite.getProperties()));
             }
             build.getTestsuites().add(testsuiteData);
-        }
-    }
-
-    private void fillBuildByProperties(List<Properties> input, Build build) {
-        for (Properties properties : input) {
-            for (Property property : properties.getProperty()) {
-                org.jboss.qa.tool.saatr.entity.Property prop = new org.jboss.qa.tool.saatr.entity.Property();
-                prop.setName(property.getName());
-                prop.setValue(property.getValue());
-                build.getProps().add(prop);
-            }
         }
     }
 

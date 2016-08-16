@@ -11,8 +11,9 @@ import org.apache.wicket.markup.repeater.RefreshingView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.jboss.qa.tool.saatr.entity.Build;
-import org.jboss.qa.tool.saatr.entity.Property;
-import org.jboss.qa.tool.saatr.entity.TestsuiteData;
+import org.jboss.qa.tool.saatr.entity.Build.PropertyData;
+import org.jboss.qa.tool.saatr.entity.Build.TestsuiteData;
+import org.jboss.qa.tool.saatr.web.component.build.addinfo.AddInfoPanel;
 
 /**
  * @author dsimko@redhat.com
@@ -27,22 +28,23 @@ public class BuildDetailPanel extends GenericPanel<Build> {
         add(new Label("buildNumber"));
         add(new Label("duration"));
         add(new Label("timestamp"));
-        add(new RefreshingView<Property>("properties") {
+        add(new RefreshingView<PropertyData>("properties") {
             @Override
-            protected Iterator<IModel<Property>> getItemModels() {
-                List<IModel<Property>> models = new ArrayList<>();
-                for (Property property : getModelObject().getProps()) {
+            protected Iterator<IModel<PropertyData>> getItemModels() {
+                List<IModel<PropertyData>> models = new ArrayList<>();
+                for (PropertyData property : getModelObject().getProperties()) {
                     models.add(new CompoundPropertyModel<>(property));
                 }
                 return models.iterator();
             }
 
             @Override
-            protected void populateItem(Item<Property> item) {
+            protected void populateItem(Item<PropertyData> item) {
                 item.add(new Label("name"));
                 item.add(new Label("value"));
             }
         });
+        add(new AddInfoPanel<>("addinfoPanel", model));
         add(new RefreshingView<TestsuiteData>("testsuites") {
             @Override
             protected Iterator<IModel<TestsuiteData>> getItemModels() {

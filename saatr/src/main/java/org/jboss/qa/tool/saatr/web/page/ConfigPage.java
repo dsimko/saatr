@@ -95,13 +95,7 @@ public class ConfigPage extends BasePage<Void> {
             @Override
             protected Iterator<IModel<File>> getItemModels() {
                 List<IModel<File>> models = new ArrayList<>();
-                for (File file : (new Folder(getConfigFolderPath())).getFiles(new FileFilter() {
-
-                    @Override
-                    public boolean accept(File file) {
-                        return "xml".equals(file.getExtension());
-                    }
-                })) {
+                for (File file : (new Folder(getConfigFolderPath())).getFiles(XmlFileFilter.INSTANCE)) {
                     models.add(Model.of(file));
                 }
                 return models.iterator();
@@ -152,5 +146,19 @@ public class ConfigPage extends BasePage<Void> {
 
     private String getConfigFolderPath() {
         return ((WicketApplication) getApplication()).getConfigFolderPath();
+    }
+
+    public static class XmlFileFilter implements FileFilter {
+
+        public static FileFilter INSTANCE = new XmlFileFilter();
+
+        private XmlFileFilter() {
+        }
+
+        @Override
+        public boolean accept(File file) {
+            return "xml".equals(file.getExtension());
+        }
+
     }
 }

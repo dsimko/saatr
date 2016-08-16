@@ -2,19 +2,19 @@ package org.jboss.qa.tool.saatr.util;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import org.jboss.qa.tool.saatr.entity.Document;
 import org.jboss.qa.tool.saatr.entity.jaxb.surefire.Testsuite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,20 +33,27 @@ public class IOUtils {
     private static final Logger LOG = LoggerFactory.getLogger(IOUtils.class);
 
     /**
-     * Unmarshal XML data from the specified file and return the resulting
-     * document.
-     * 
-     * @param xml
-     * @return
+     * Loads properties from a classpath resource
+     *
+     * @param resource
+     * @return loaded properties
      */
-    public static Document unmarshal(File xml) {
+    public static Properties loadFromClassPath(String resource) {
+        URL url = IOUtils.class.getClassLoader().getResource(resource);
+        if (url == null) {
+            throw new IllegalStateException("Could not find classpath properties resource: " + resource);
+        }
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(Document.class);
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            Document document = (Document) jaxbUnmarshaller.unmarshal(xml);
-            return document;
-        } catch (JAXBException e) {
-            throw new RuntimeException(e);
+            Properties props = new Properties();
+            InputStream is = url.openStream();
+            try {
+                props.load(url.openStream());
+            } finally {
+                is.close();
+            }
+            return props;
+        } catch (IOException e) {
+            throw new RuntimeException("Could not read properties at classpath resource: " + resource, e);
         }
     }
 
