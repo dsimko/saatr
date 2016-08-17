@@ -31,11 +31,8 @@ public class BuildDetailPanel extends GenericPanel<Build> {
         add(new RefreshingView<PropertyData>("properties") {
             @Override
             protected Iterator<IModel<PropertyData>> getItemModels() {
-                List<IModel<PropertyData>> models = new ArrayList<>();
-                for (PropertyData property : getModelObject().getProperties()) {
-                    models.add(new CompoundPropertyModel<>(property));
-                }
-                return models.iterator();
+                return getModelObject().getProperties().stream().sorted().map(p -> (IModel<PropertyData>) new CompoundPropertyModel<>(p))
+                        .iterator();
             }
 
             @Override
@@ -67,4 +64,5 @@ public class BuildDetailPanel extends GenericPanel<Build> {
         super.onConfigure();
         setVisible(getModelObject() != null);
     }
+
 }

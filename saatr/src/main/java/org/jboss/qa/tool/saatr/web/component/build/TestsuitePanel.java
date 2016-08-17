@@ -14,6 +14,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.jboss.qa.tool.saatr.entity.Build.TestsuiteData;
 import org.jboss.qa.tool.saatr.entity.Build.TestsuiteData.TestcaseData;
+import org.jboss.qa.tool.saatr.web.component.build.addinfo.AddInfoPanel;
 
 /**
  * 
@@ -60,5 +61,6 @@ public class TestsuitePanel extends GenericPanel<TestsuiteData> {
                 item.add(new TestcasePanel("testcase", item.getModel()));
             }
         });
+        panel.add(new AddInfoPanel<>("addinfoPanel", model));
     }
 }

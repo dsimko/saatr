@@ -3,16 +3,15 @@ package org.jboss.qa.tool.saatr.service;
 import java.util.Iterator;
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.entity.Build;
 import org.jboss.qa.tool.saatr.entity.Build.PropertyData;
 import org.jboss.qa.tool.saatr.entity.Build.TestsuiteData;
-import org.jboss.qa.tool.saatr.entity.jaxb.config.Config;
 import org.jboss.qa.tool.saatr.entity.jaxb.surefire.Testsuite;
 import org.jboss.qa.tool.saatr.web.component.build.BuildProvider.BuildFilter;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.mapping.Mapper;
 import org.mongodb.morphia.query.Query;
-import org.mongodb.morphia.query.UpdateOperations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,18 +28,19 @@ public class BuildService {
     @Autowired
     private Datastore datastore;
 
-    public void save(Build build) {
-        datastore.save(build);
-        LOG.info("Build successfully stored in MongoDB.");
+    public Build findById(ObjectId id) {
+        return datastore.find(Build.class, Mapper.ID_KEY, id).get();
     }
 
-    public void update(Build build, List<Config.Property> properties) {
-        Query<Build> updateQuery = datastore.createQuery(Build.class).field(Mapper.ID_KEY).equal(build.getId());
-        for (Config.Property property : properties) {
-            UpdateOperations<Build> ops = datastore.createUpdateOperations(Build.class).add("properties",
-                    new PropertyData(property.getName(), property.getValue()), true);
-            datastore.update(updateQuery, ops);
-        }
+    public void save(Build build) {
+        build.getTestsuites().forEach(ts -> {
+            ts.getTestcases().forEach(tc -> {
+                datastore.save(tc);
+            });
+            datastore.save(ts);
+        });
+        datastore.save(build);
+        LOG.info("Build successfully stored in MongoDB.");
     }
 
     public Iterator<Build> query(long first, long count, BuildFilter filter) {

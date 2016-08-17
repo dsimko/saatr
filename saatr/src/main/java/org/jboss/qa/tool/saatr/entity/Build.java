@@ -3,6 +3,8 @@ package org.jboss.qa.tool.saatr.entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.xml.bind.JAXBElement;
 
@@ -16,6 +18,7 @@ import org.jboss.qa.tool.saatr.entity.jaxb.surefire.Testsuite.Properties;
 import org.jboss.qa.tool.saatr.entity.jaxb.surefire.Testsuite.Testcase;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Reference;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,10 +29,10 @@ import lombok.NoArgsConstructor;
  * @author dsimko@redhat.com
  *
  */
-@Entity
+@Entity("builds")
 @Data
 @SuppressWarnings("serial")
-public class Build implements WithProperties {
+public class Build implements Extensible {
 
     @Id
     private ObjectId id;
@@ -37,13 +40,14 @@ public class Build implements WithProperties {
     private Long buildNumber;
     private Long timestamp;
     private Long duration;
-    private final List<PropertyData> properties = new ArrayList<>();
+    private final Set<PropertyData> properties = new TreeSet<>();
+    @Reference
     private final List<TestsuiteData> testsuites = new ArrayList<>();
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class PropertyData implements Serializable {
+    public static class PropertyData implements Serializable, Comparable<PropertyData> {
 
         private String name;
         private String value;
@@ -58,12 +62,48 @@ public class Build implements WithProperties {
             return list;
         }
 
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            PropertyData other = (PropertyData) obj;
+            if (name == null) {
+                if (other.name != null)
+                    return false;
+            } else if (!name.equals(other.name))
+                return false;
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((name == null) ? 0 : name.hashCode());
+            return result;
+        }
+
+        @Override
+        public int compareTo(PropertyData o) {
+            if (this.name == null || o == null) {
+                return 0;
+            }
+            return this.name.compareToIgnoreCase(o.name);
+        }
+
     }
 
     @Data
-    public static class TestsuiteData implements WithProperties {
+    public static class TestsuiteData implements Extensible {
 
-        private final List<PropertyData> properties = new ArrayList<>();
+        @Id
+        private ObjectId id;
+        private final Set<PropertyData> properties = new TreeSet<>();
+        @Reference
         private final List<TestcaseData> testcases = new ArrayList<>();
         private String name;
         private Double time;
@@ -74,9 +114,11 @@ public class Build implements WithProperties {
         private String group;
 
         @Data
-        public static class TestcaseData implements WithProperties {
+        public static class TestcaseData implements Extensible {
 
-            private final List<PropertyData> properties = new ArrayList<>();
+            @Id
+            private ObjectId id;
+            private final Set<PropertyData> properties = new TreeSet<>();
             private final List<FailureData> failure = new ArrayList<>();
             private final List<RerunFailureData> rerunFailure = new ArrayList<>();
             private SkippedData skipped;
