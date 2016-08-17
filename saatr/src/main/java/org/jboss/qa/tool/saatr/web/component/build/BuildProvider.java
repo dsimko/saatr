@@ -18,7 +18,7 @@ import lombok.Data;
 public class BuildProvider extends SortableDataProvider<Build, String> {
 
     @Inject
-    private BuildService mongoDBUtils;
+    private BuildService buildService;
 
     private final IModel<BuildFilter> filter;
 
@@ -29,12 +29,12 @@ public class BuildProvider extends SortableDataProvider<Build, String> {
 
     @Override
     public Iterator<Build> iterator(long first, long count) {
-        return mongoDBUtils.query(first, count, filter.getObject());
+        return buildService.query(first, count, filter.getObject());
     }
 
     @Override
     public long size() {
-        return mongoDBUtils.count(filter.getObject());
+        return buildService.count(filter.getObject());
     }
 
     @Override

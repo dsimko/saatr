@@ -17,6 +17,7 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.util.file.Folder;
+import org.jboss.qa.tool.saatr.entity.WithProperties;
 import org.jboss.qa.tool.saatr.entity.jaxb.config.Config;
 import org.jboss.qa.tool.saatr.service.ConfigService;
 import org.jboss.qa.tool.saatr.web.WicketApplication;
@@ -27,7 +28,7 @@ import org.jboss.qa.tool.saatr.web.page.ConfigPage.XmlFileFilter;
  *
  */
 @SuppressWarnings("serial")
-public class AddInfoFormPanel<T> extends GenericPanel<T> {
+public class AddInfoFormPanel<T extends WithProperties> extends GenericPanel<T> {
 
     @Inject
     private ConfigService configService;
@@ -54,7 +55,8 @@ public class AddInfoFormPanel<T> extends GenericPanel<T> {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 Config config = configService.unmarshal(configModel.getObject());
-                propertiesFormPanel.replaceWith(new PropertiesFormPanel(propertiesFormPanel.getId(), Model.of(config)));
+                configService.fillValues(config, getModelObject());
+                propertiesFormPanel.replaceWith(new PropertiesFormPanel(propertiesFormPanel.getId(), Model.of(config), getModel()));
                 dropDownChoiceVisible = false;
                 target.add(wmc);
             }

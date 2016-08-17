@@ -23,6 +23,7 @@ import org.jboss.qa.tool.saatr.web.component.build.BuildDetailPanel;
 import org.jboss.qa.tool.saatr.web.component.build.BuildJsonPanel;
 import org.jboss.qa.tool.saatr.web.component.build.BuildProvider;
 import org.jboss.qa.tool.saatr.web.component.build.BuildProvider.BuildFilter;
+import org.jboss.qa.tool.saatr.web.component.common.BuildModel;
 import org.jboss.qa.tool.saatr.web.component.common.bootstrap.BootstrapButton;
 import org.jboss.qa.tool.saatr.web.component.common.bootstrap.BootstrapTabbedPanel;
 import org.jboss.qa.tool.saatr.web.component.common.bootstrap.BootstrapTable;
@@ -39,7 +40,7 @@ public class BuildPage extends BasePage<Build> {
     private BuildService buildServicel;
 
     public BuildPage() {
-        super(new Model<>());
+        super(new BuildModel());
         Form<BuildFilter> form = new Form<>("form", new CompoundPropertyModel<BuildFilter>(filter));
         form.add(new TextField<>("buildNumber"));
         form.add(new Link<Void>("clear") {

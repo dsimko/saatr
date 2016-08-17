@@ -11,7 +11,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author dsimko@redhat.com
@@ -27,6 +29,8 @@ public class Config implements Serializable {
     private List<Property> properties = new ArrayList<>();
 
     @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
     @XmlAccessorType(XmlAccessType.FIELD)
     public static class Property implements Serializable {
 

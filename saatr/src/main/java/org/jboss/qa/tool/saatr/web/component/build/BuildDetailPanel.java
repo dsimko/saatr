@@ -1,9 +1,13 @@
 package org.jboss.qa.tool.saatr.web.component.build;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import org.apache.wicket.event.IEvent;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.markup.repeater.Item;
@@ -13,7 +17,13 @@ import org.apache.wicket.model.IModel;
 import org.jboss.qa.tool.saatr.entity.Build;
 import org.jboss.qa.tool.saatr.entity.Build.PropertyData;
 import org.jboss.qa.tool.saatr.entity.Build.TestsuiteData;
+import org.jboss.qa.tool.saatr.entity.WithProperties;
+import org.jboss.qa.tool.saatr.entity.jaxb.config.Config;
+import org.jboss.qa.tool.saatr.service.BuildService;
 import org.jboss.qa.tool.saatr.web.component.build.addinfo.AddInfoPanel;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 /**
  * @author dsimko@redhat.com
@@ -21,6 +31,9 @@ import org.jboss.qa.tool.saatr.web.component.build.addinfo.AddInfoPanel;
  */
 @SuppressWarnings("serial")
 public class BuildDetailPanel extends GenericPanel<Build> {
+
+    @Inject
+    private BuildService buildService;
 
     public BuildDetailPanel(String id, final IModel<Build> model) {
         super(id, new CompoundPropertyModel<>(model));
@@ -31,11 +44,8 @@ public class BuildDetailPanel extends GenericPanel<Build> {
         add(new RefreshingView<PropertyData>("properties") {
             @Override
             protected Iterator<IModel<PropertyData>> getItemModels() {
-                List<IModel<PropertyData>> models = new ArrayList<>();
-                for (PropertyData property : getModelObject().getProperties()) {
-                    models.add(new CompoundPropertyModel<>(property));
-                }
-                return models.iterator();
+                return getModelObject().getProperties().stream().sorted().map(p -> (IModel<PropertyData>) new CompoundPropertyModel<>(p))
+                        .iterator();
             }
 
             @Override
@@ -67,4 +77,23 @@ public class BuildDetailPanel extends GenericPanel<Build> {
         super.onConfigure();
         setVisible(getModelObject() != null);
     }
+
+    @Override
+    public void onEvent(IEvent<?> event) {
+        Object payload = event.getPayload();
+        if (payload instanceof AddInfoSubmitEvent) {
+            AddInfoSubmitEvent eventPayload = (AddInfoSubmitEvent) payload;
+            buildService.addOrUpdateProperties(getModelObject(), eventPayload.getConfig().getProperties(),
+                    eventPayload.getWithProperties());
+        }
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class AddInfoSubmitEvent implements Serializable {
+
+        private final Config config;
+        private final WithProperties withProperties;
+    }
+
 }
