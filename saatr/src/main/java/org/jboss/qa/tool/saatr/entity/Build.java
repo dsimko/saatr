@@ -18,6 +18,7 @@ import org.jboss.qa.tool.saatr.entity.jaxb.surefire.Testsuite.Properties;
 import org.jboss.qa.tool.saatr.entity.jaxb.surefire.Testsuite.Testcase;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Reference;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,10 +29,10 @@ import lombok.NoArgsConstructor;
  * @author dsimko@redhat.com
  *
  */
-@Entity
+@Entity("builds")
 @Data
 @SuppressWarnings("serial")
-public class Build implements WithProperties {
+public class Build implements Extensible {
 
     @Id
     private ObjectId id;
@@ -40,6 +41,7 @@ public class Build implements WithProperties {
     private Long timestamp;
     private Long duration;
     private final Set<PropertyData> properties = new TreeSet<>();
+    @Reference
     private final List<TestsuiteData> testsuites = new ArrayList<>();
 
     @Data
@@ -96,9 +98,12 @@ public class Build implements WithProperties {
     }
 
     @Data
-    public static class TestsuiteData implements WithProperties {
+    public static class TestsuiteData implements Extensible {
 
+        @Id
+        private ObjectId id;
         private final Set<PropertyData> properties = new TreeSet<>();
+        @Reference
         private final List<TestcaseData> testcases = new ArrayList<>();
         private String name;
         private Double time;
@@ -109,8 +114,10 @@ public class Build implements WithProperties {
         private String group;
 
         @Data
-        public static class TestcaseData implements WithProperties {
+        public static class TestcaseData implements Extensible {
 
+            @Id
+            private ObjectId id;
             private final Set<PropertyData> properties = new TreeSet<>();
             private final List<FailureData> failure = new ArrayList<>();
             private final List<RerunFailureData> rerunFailure = new ArrayList<>();

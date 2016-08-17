@@ -6,6 +6,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.IModel;
 import org.jboss.qa.tool.saatr.entity.Build.TestsuiteData.TestcaseData;
+import org.jboss.qa.tool.saatr.web.component.build.addinfo.AddInfoPanel;
 
 /**
  * 
@@ -36,5 +37,7 @@ public class TestcasePanel extends GenericPanel<TestcaseData> {
         panel.add(new SkippedPanel("skipped"));
         panel.add(new ErrorPanel("error"));
         panel.add(new FailuresPanel("failure"));
+        panel.add(new AddInfoPanel<>("addinfoPanel", model));
+
     }
 }

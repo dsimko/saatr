@@ -1,6 +1,9 @@
 package org.jboss.qa.tool.saatr.web.component.build.addinfo;
 
 import java.io.Serializable;
+import java.util.Optional;
+
+import javax.inject.Inject;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -10,7 +13,9 @@ import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
-import org.jboss.qa.tool.saatr.entity.WithProperties;
+import org.jboss.qa.tool.saatr.entity.Extensible;
+import org.jboss.qa.tool.saatr.entity.jaxb.config.Config;
+import org.jboss.qa.tool.saatr.service.ExtendInfoService;
 
 import lombok.Data;
 
@@ -19,7 +24,10 @@ import lombok.Data;
  *
  */
 @SuppressWarnings("serial")
-public class AddInfoPanel<T extends WithProperties> extends GenericPanel<T> {
+public class AddInfoPanel<T extends Extensible> extends GenericPanel<T> {
+
+    @Inject
+    private ExtendInfoService extendInfoService;
 
     private Panel formPanel;
     private final WebMarkupContainer wmc;
@@ -56,13 +64,14 @@ public class AddInfoPanel<T extends WithProperties> extends GenericPanel<T> {
     @Override
     public void onEvent(IEvent<?> event) {
         Object payload = event.getPayload();
-        if (payload instanceof ResetPanelEvent) {
+        if (payload instanceof AddInfoSubmitEvent) {
+            AddInfoSubmitEvent eventPayload = (AddInfoSubmitEvent) payload;
+            extendInfoService.extend(getModelObject(), eventPayload.getConfig().getProperties());
+        } else if (payload instanceof ResetPanelEvent) {
             ResetPanelEvent eventPayload = (ResetPanelEvent) payload;
             replaceFormPanel(new EmptyPanel(formPanel.getId()));
             addInfoButtonVisible = true;
-            if (eventPayload.getTarget() != null) {
-                eventPayload.getTarget().add(wmc);
-            }
+            eventPayload.getTarget().ifPresent(t -> t.add(wmc));
         }
     }
 
@@ -72,9 +81,15 @@ public class AddInfoPanel<T extends WithProperties> extends GenericPanel<T> {
     }
 
     @Data
+    static class AddInfoSubmitEvent implements Serializable {
+
+        private final Config config;
+    }
+
+    @Data
     static class ResetPanelEvent implements Serializable {
 
-        private final AjaxRequestTarget target;
+        private final Optional<AjaxRequestTarget> target;
     }
 
 }

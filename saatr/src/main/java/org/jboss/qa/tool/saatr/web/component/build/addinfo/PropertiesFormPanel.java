@@ -1,5 +1,7 @@
 package org.jboss.qa.tool.saatr.web.component.build.addinfo;
 
+import java.util.Optional;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.event.Broadcast;
@@ -10,10 +12,9 @@ import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.jboss.qa.tool.saatr.entity.WithProperties;
 import org.jboss.qa.tool.saatr.entity.jaxb.config.Config;
 import org.jboss.qa.tool.saatr.entity.jaxb.config.Config.Property;
-import org.jboss.qa.tool.saatr.web.component.build.BuildDetailPanel.AddInfoSubmitEvent;
+import org.jboss.qa.tool.saatr.web.component.build.addinfo.AddInfoPanel.AddInfoSubmitEvent;
 import org.jboss.qa.tool.saatr.web.component.build.addinfo.AddInfoPanel.ResetPanelEvent;
 import org.jboss.qa.tool.saatr.web.component.common.bootstrap.BootstrapFeedbackPanel;
 
@@ -24,7 +25,7 @@ import org.jboss.qa.tool.saatr.web.component.common.bootstrap.BootstrapFeedbackP
 @SuppressWarnings("serial")
 public class PropertiesFormPanel extends GenericPanel<Config> {
 
-    public PropertiesFormPanel(String id, final IModel<Config> model, final IModel<? extends WithProperties> model2) {
+    public PropertiesFormPanel(String id, final IModel<Config> model) {
         super(id, model);
         Form<Config> form = new StatelessForm<Config>("form");
         form.add(new BootstrapFeedbackPanel("feedback"));
@@ -37,15 +38,15 @@ public class PropertiesFormPanel extends GenericPanel<Config> {
 
             @Override
             public void onSubmit() {
-                send(getPage(), Broadcast.BREADTH, new AddInfoSubmitEvent(getModelObject(), model2.getObject()));
-                send(getPage(), Broadcast.BREADTH, new ResetPanelEvent(null));
+                send(this, Broadcast.BUBBLE, new AddInfoSubmitEvent(getModelObject()));
+                send(this, Broadcast.BUBBLE, new ResetPanelEvent(Optional.empty()));
             }
         });
         form.add(new AjaxLink<Void>("cancel") {
 
             @Override
             public void onClick(AjaxRequestTarget target) {
-                send(getPage(), Broadcast.BREADTH, new ResetPanelEvent(target));
+                send(this, Broadcast.BUBBLE, new ResetPanelEvent(Optional.of(target)));
             }
         });
         add(form);

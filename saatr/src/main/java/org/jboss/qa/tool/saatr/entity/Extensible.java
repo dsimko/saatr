@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.jboss.qa.tool.saatr.entity.Build.PropertyData;
 
-public interface WithProperties extends Serializable {
+public interface Extensible extends Serializable {
 
     Set<PropertyData> getProperties();
 }

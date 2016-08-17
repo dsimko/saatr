@@ -2,15 +2,11 @@ package org.jboss.qa.tool.saatr.service;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Stream;
 
 import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.entity.Build;
-import org.jboss.qa.tool.saatr.entity.WithProperties;
 import org.jboss.qa.tool.saatr.entity.Build.PropertyData;
 import org.jboss.qa.tool.saatr.entity.Build.TestsuiteData;
-import org.jboss.qa.tool.saatr.entity.jaxb.config.Config;
-import org.jboss.qa.tool.saatr.entity.jaxb.config.Config.Property;
 import org.jboss.qa.tool.saatr.entity.jaxb.surefire.Testsuite;
 import org.jboss.qa.tool.saatr.web.component.build.BuildProvider.BuildFilter;
 import org.mongodb.morphia.Datastore;
@@ -37,35 +33,14 @@ public class BuildService {
     }
 
     public void save(Build build) {
+        build.getTestsuites().forEach(ts -> {
+            ts.getTestcases().forEach(tc -> {
+                datastore.save(tc);
+            });
+            datastore.save(ts);
+        });
         datastore.save(build);
         LOG.info("Build successfully stored in MongoDB.");
-    }
-
-    public void addOrUpdateProperties(Build build, List<Config.Property> newProperties, WithProperties withProperties) {
-
-        if (withProperties instanceof Build) {
-            // clear properties
-            datastore.update(build, datastore.createUpdateOperations(Build.class).unset("properties"));
-
-            Stream<PropertyData> oldWithoutNewProperties = build.getProperties().stream()
-                    .filter(p -> !newProperties.contains(new Config.Property(p.getName(), null, null)));
-
-            // merge old and new properties set
-            Stream<PropertyData> allProperties = Stream.concat(oldWithoutNewProperties,
-                    newProperties.stream().map(p -> new PropertyData(p.getName(), p.getValue())));
-
-            // update all properties
-            allProperties.forEach(property -> {
-                datastore.update(build, datastore.createUpdateOperations(Build.class).add("properties", property));
-            });
-        } else if (withProperties instanceof TestsuiteData) {
-            TestsuiteData testsuiteData = (TestsuiteData) withProperties;
-
-        }
-    }
-
-    public void addOrUpdateProperties(TestsuiteData modelObject, List<Property> properties) {
-
     }
 
     public Iterator<Build> query(long first, long count, BuildFilter filter) {

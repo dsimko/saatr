@@ -1,14 +1,11 @@
 package org.jboss.qa.tool.saatr.service;
 
 import java.io.File;
-import java.util.Optional;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import org.jboss.qa.tool.saatr.entity.Build.PropertyData;
-import org.jboss.qa.tool.saatr.entity.WithProperties;
 import org.jboss.qa.tool.saatr.entity.jaxb.config.Config;
 import org.springframework.stereotype.Component;
 
@@ -33,15 +30,6 @@ public class ConfigService {
             return document;
         } catch (JAXBException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    public void fillValues(Config config, WithProperties props) {
-        for (Config.Property property : config.getProperties()) {
-            Optional<PropertyData> val = props.getProperties().stream().filter(p -> p.getName().equals(property.getName())).findFirst();
-            if (val.isPresent()) {
-                property.setValue(val.get().getValue());
-            }
         }
     }
 
