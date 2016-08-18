@@ -4,7 +4,7 @@ import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.GenericWebPage;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.jboss.qa.tool.saatr.web.component.common.bootstrap.BootstrapNavbarLink;
+import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapNavbarLink;
 
 /**
  * Base page for all web pages.
@@ -30,7 +30,8 @@ public abstract class BasePage<T> extends GenericWebPage<T> {
     }
 
     private void initNavbar() {
-        add(new BootstrapNavbarLink("builds", BuildPage.class, Model.of("Builds")));
-        add(new BootstrapNavbarLink("config", ConfigPage.class, Model.of("Config")));
+        add(new BootstrapNavbarLink("builds", BuildPage.class, Model.of("Builds"), "glyphicon glyphicon-th-list"));
+        add(new BootstrapNavbarLink("config", ConfigPage.class, Model.of("Config"), "glyphicon glyphicon-wrench"));
+        add(new BootstrapNavbarLink("debug", DebugPage.class, Model.of("Debug"), "glyphicon glyphicon-trash"));
     }
 }

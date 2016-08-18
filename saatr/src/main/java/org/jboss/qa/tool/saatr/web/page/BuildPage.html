@@ -5,41 +5,26 @@
 		<div class="page-header">
 			<h2>Builds</h2>
 		</div>
-		<div class="row">
-			<div class="col-sm-12 col-md-12">
-				<div class="panel panel-default">
-					<div class="panel-body">
-						<div class="row">
-							<div class="col-sm-12 col-md-6">
-								<div class="panel panel-default">
-									<div class="panel-body">
-										<form wicket:id="form" class="form-horizontal" role="form">
-											<div class="form-group">
-												<label for="inputName" class="col-sm-6 control-label">Build
-													Number</label>
-												<div class="col-sm-6">
-													<input type="text" class="form-control input-sm"
-														wicket:id="buildNumber" placeholder="Build Number">
-												</div>
-											</div>
-											<div class="form-group">
-												<div class="col-sm-offset-6 col-sm-6">
-													<a wicket:id="clear" class="btn btn-default btn-xs">Clear</a>
-													<button type="submit" class="btn btn-primary btn-xs">Filter</button>
-													<a class="btn btn-danger btn-xs" wicket:id="dropDB">Drop
-														MongoDB!</a>
-												</div>
-											</div>
-										</form>
-									</div>
-								</div>
-							</div>
-						</div>
-						<table wicket:id="table" class="table table-hover"></table>
+		<div class="panel panel-default">
+  			<div class="panel-body">
+				<form wicket:id="form" class="form-inline" role="form">
+					<div class="form-group">
+						<label>Job Name</label> 
+						<input type="text" class="form-control input-sm" wicket:id="jobName" placeholder="Job Name">
 					</div>
-				</div>
+					<div class="form-group">
+						<label>Build Number</label> 
+						<input type="text" class="form-control input-sm" wicket:id="buildNumber" placeholder="Build Number">
+					</div>
+					<div class="form-group">
+						<label>Status</label> 
+						<select wicket:id="status" class="form-control input-sm"></select>
+					</div>
+					<a wicket:id="clear" class="btn btn-default btn-sm">Clear</a> <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+				</form>
 			</div>
 		</div>
+		<table wicket:id="table" class="table table-hover"></table>
 		<wicket:container wicket:id="tabs"></wicket:container>
 	</wicket:extend>
 </body>

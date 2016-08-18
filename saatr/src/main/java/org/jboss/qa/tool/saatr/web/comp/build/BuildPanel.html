@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<html xmlns:wicket>
+<body>
+	<wicket:panel>
+		<div class="panel panel-info">
+			<div class="panel-body">
+				<table class="table-condensed">
+					<tr>
+						<th><small>Job Name</small></th>
+						<td><small wicket:id="jobName"></small></td>
+					</tr>
+					<tr>
+						<th><small>Build Number</small></th>
+						<td><small wicket:id="buildNumber"></small></td>
+					</tr>
+					<tr>
+						<th><small>Status</small></th>
+						<td><small wicket:id="status"></small></td>
+					</tr>
+					<tr>
+						<th><small>Timestamp</small></th>
+						<td><small wicket:id="timestamp"></small></td>
+					</tr>
+					<tr>
+						<th><small>Duration</small></th>
+						<td><small wicket:id="duration"></small></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div wicket:id="properties"></div>
+		<h3>Testsuites</h3>
+		<div wicket:id="testsuites">
+			<div wicket:id="testsuite"></div>
+		</div>
+	</wicket:panel>
+</body>
+</html>

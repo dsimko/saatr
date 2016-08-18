@@ -6,6 +6,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import org.jboss.qa.tool.saatr.entity.PersistableWithProperties;
 import org.jboss.qa.tool.saatr.entity.jaxb.config.Config;
 import org.springframework.stereotype.Component;
 
@@ -21,16 +22,20 @@ public class ConfigService {
      * 
      * @param xml
      * @return
+     * @throws JAXBException
      */
-    public Config unmarshal(File xml) {
-        try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(Config.class);
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            Config document = (Config) jaxbUnmarshaller.unmarshal(xml);
-            return document;
-        } catch (JAXBException e) {
-            throw new RuntimeException(e);
-        }
+    public Config unmarshal(File xml) throws JAXBException {
+        JAXBContext jaxbContext = JAXBContext.newInstance(Config.class);
+        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+        Config document = (Config) jaxbUnmarshaller.unmarshal(xml);
+        return document;
+    }
+
+    public void prefillValues(Config config, PersistableWithProperties persistable) {
+        config.getProperties().forEach(cp -> {
+            persistable.getProperties().stream().filter(p -> p.getName().equals(cp.getName())).findFirst()
+                    .ifPresent(found -> cp.setValue(found.getValue()));
+        });
     }
 
 }
