@@ -4,7 +4,7 @@ import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.GenericWebPage;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.jboss.qa.tool.saatr.web.component.common.bootstrap.BootstrapNavbarLink;
+import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapNavbarLink;
 
 /**
  * Base page for all web pages.

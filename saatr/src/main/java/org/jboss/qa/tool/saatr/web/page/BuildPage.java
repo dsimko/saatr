@@ -19,14 +19,14 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.jboss.qa.tool.saatr.entity.Build;
 import org.jboss.qa.tool.saatr.service.BuildService;
-import org.jboss.qa.tool.saatr.web.component.build.BuildDetailPanel;
-import org.jboss.qa.tool.saatr.web.component.build.BuildJsonPanel;
-import org.jboss.qa.tool.saatr.web.component.build.BuildProvider;
-import org.jboss.qa.tool.saatr.web.component.build.BuildProvider.BuildFilter;
-import org.jboss.qa.tool.saatr.web.component.common.BuildModel;
-import org.jboss.qa.tool.saatr.web.component.common.bootstrap.BootstrapButton;
-import org.jboss.qa.tool.saatr.web.component.common.bootstrap.BootstrapTabbedPanel;
-import org.jboss.qa.tool.saatr.web.component.common.bootstrap.BootstrapTable;
+import org.jboss.qa.tool.saatr.web.comp.EntityModel;
+import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapButton;
+import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapTabbedPanel;
+import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapTable;
+import org.jboss.qa.tool.saatr.web.comp.build.BuildJsonPanel;
+import org.jboss.qa.tool.saatr.web.comp.build.BuildPanel;
+import org.jboss.qa.tool.saatr.web.comp.build.BuildProvider;
+import org.jboss.qa.tool.saatr.web.comp.build.BuildProvider.BuildFilter;
 
 /**
  * @author dsimko@redhat.com
@@ -40,7 +40,7 @@ public class BuildPage extends BasePage<Build> {
     private BuildService buildServicel;
 
     public BuildPage() {
-        super(new BuildModel());
+        super(new EntityModel<Build>(Build.class, null));
         Form<BuildFilter> form = new Form<>("form", new CompoundPropertyModel<BuildFilter>(filter));
         form.add(new TextField<>("buildNumber"));
         form.add(new Link<Void>("clear") {
@@ -80,7 +80,7 @@ public class BuildPage extends BasePage<Build> {
         }) {
             @Override
             public WebMarkupContainer getPanel(String panelId) {
-                return new BuildDetailPanel(panelId, getModel());
+                return new BuildPanel(panelId, getModel());
             }
         });
 

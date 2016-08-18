@@ -32,7 +32,7 @@ import lombok.NoArgsConstructor;
 @Entity("builds")
 @Data
 @SuppressWarnings("serial")
-public class Build implements Extensible {
+public class Build implements PersistableWithProperties {
 
     @Id
     private ObjectId id;
@@ -98,7 +98,7 @@ public class Build implements Extensible {
     }
 
     @Data
-    public static class TestsuiteData implements Extensible {
+    public static class TestsuiteData implements PersistableWithProperties {
 
         @Id
         private ObjectId id;
@@ -114,7 +114,7 @@ public class Build implements Extensible {
         private String group;
 
         @Data
-        public static class TestcaseData implements Extensible {
+        public static class TestcaseData implements PersistableWithProperties {
 
             @Id
             private ObjectId id;
@@ -165,6 +165,11 @@ public class Build implements Extensible {
                 private String value;
                 private String message;
 
+            }
+
+            @Override
+            public String toString() {
+                return "TestcaseData [id=" + id + ", name=" + name + ", classname=" + classname + "]";
             }
 
         }
@@ -233,6 +238,12 @@ public class Build implements Extensible {
         private static String toString(JAXBElement<?> input) {
             return input != null && input.getValue() != null ? input.getValue().toString() : null;
         }
+
+        @Override
+        public String toString() {
+            return "TestsuiteData [id=" + id + ", name=" + name + "]";
+        }
+
     }
 
     @Override
@@ -258,6 +269,11 @@ public class Build implements Extensible {
         } else if (!id.equals(other.id))
             return false;
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Build [id=" + id + ", jobName=" + jobName + ", buildNumber=" + buildNumber + "]";
     }
 
 }

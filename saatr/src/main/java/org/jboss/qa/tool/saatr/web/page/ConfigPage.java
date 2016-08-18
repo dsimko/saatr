@@ -30,7 +30,7 @@ import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
 import org.jboss.qa.tool.saatr.web.WicketApplication;
-import org.jboss.qa.tool.saatr.web.component.common.bootstrap.BootstrapFeedbackPanel;
+import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapFeedbackPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

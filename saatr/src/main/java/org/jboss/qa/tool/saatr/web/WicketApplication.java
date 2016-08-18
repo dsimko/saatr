@@ -11,10 +11,9 @@ import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.crypt.CharEncoding;
 import org.jboss.qa.tool.saatr.entity.Build;
 import org.jboss.qa.tool.saatr.util.IOUtils;
-import org.jboss.qa.tool.saatr.web.component.common.URLConverter;
+import org.jboss.qa.tool.saatr.web.comp.URLConverter;
 import org.jboss.qa.tool.saatr.web.page.BuildPage;
 import org.jboss.qa.tool.saatr.web.page.ConfigPage;
-import org.jboss.qa.tool.saatr.web.page.InfoPage;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import org.springframework.beans.BeansException;
@@ -51,9 +50,7 @@ public class WicketApplication extends WebApplication implements BeanFactoryPost
     protected void init() {
         super.init();
 
-        mountPage("build", BuildPage.class);
         mountPage("config", ConfigPage.class);
-        mountPage("info", InfoPage.class);
 
         getMarkupSettings().setStripWicketTags(true);
         getMarkupSettings().setDefaultMarkupEncoding(CharEncoding.UTF_8);
