@@ -9,6 +9,7 @@ import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvid
 import org.apache.wicket.injection.Injector;
 import org.apache.wicket.model.IModel;
 import org.jboss.qa.tool.saatr.entity.Build;
+import org.jboss.qa.tool.saatr.entity.Build.Status;
 import org.jboss.qa.tool.saatr.service.BuildService;
 import org.jboss.qa.tool.saatr.web.comp.EntityModel;
 
@@ -45,5 +46,7 @@ public class BuildProvider extends SortableDataProvider<Build, String> {
     @Data
     public static class BuildFilter implements Serializable {
         private Long buildNumber;
+        private String jobName;
+        private Status status;
     }
 }

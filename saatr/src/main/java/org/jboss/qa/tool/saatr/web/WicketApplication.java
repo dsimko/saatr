@@ -14,6 +14,7 @@ import org.jboss.qa.tool.saatr.util.IOUtils;
 import org.jboss.qa.tool.saatr.web.comp.URLConverter;
 import org.jboss.qa.tool.saatr.web.page.BuildPage;
 import org.jboss.qa.tool.saatr.web.page.ConfigPage;
+import org.jboss.qa.tool.saatr.web.page.DebugPage;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import org.springframework.beans.BeansException;
@@ -51,6 +52,7 @@ public class WicketApplication extends WebApplication implements BeanFactoryPost
         super.init();
 
         mountPage("config", ConfigPage.class);
+        mountPage("debug", DebugPage.class);
 
         getMarkupSettings().setStripWicketTags(true);
         getMarkupSettings().setDefaultMarkupEncoding(CharEncoding.UTF_8);

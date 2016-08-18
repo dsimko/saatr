@@ -6,33 +6,33 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 <title>SAATR - Simple tool for storing and analyzing tests results</title>
-<!-- Bootstrap -->
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <link href="css/style.css" rel="stylesheet">
 </head>
 <body>
-	<div class="bs-navbar-top" data-example-id="navbar-fixed-to-top">
-		<nav class="navbar navbar-default navbar-fixed-top">
+	<div class="container">
+		<nav class="navbar navbar-default">
 			<div class="container-fluid">
 				<div class="navbar-header">
-					<button type="button" class="collapsed navbar-toggle" data-toggle="collapse" data-target="#bs-navbar-collapse" aria-expanded="false">
-						<span class="sr-only">Toggle navigation</span> 
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+						<span class="sr-only">Toggle navigation</span>
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-					<a href="/" class="navbar-brand">SAATR <small> - Simple tool for storing and analyzing tests results</small></a>
+					<a href="/" class="navbar-brand">SAATR</a>
 				</div>
-				<div class="collapse navbar-collapse" id="bs-navbar-collapse">
+				<div id="navbar" class="navbar-collapse collapse">
 					<ul class="nav navbar-nav">
 						<li wicket:id="builds"></li>
 						<li wicket:id="config"></li>
 					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<li wicket:id="debug"></li>
+					</ul>
 				</div>
 			</div>
 		</nav>
-	</div>
-	<div class="container">
 		<wicket:child />
 	</div>
 	<script src="js/bootstrap.min.js"></script>

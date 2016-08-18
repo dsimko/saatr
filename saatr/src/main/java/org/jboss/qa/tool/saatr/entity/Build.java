@@ -34,11 +34,16 @@ import lombok.NoArgsConstructor;
 @SuppressWarnings("serial")
 public class Build implements PersistableWithProperties {
 
+    public static enum Status {
+        Success, Failed
+    }
+
     @Id
     private ObjectId id;
     private String jobName;
     private Long buildNumber;
     private Long timestamp;
+    private Status status;
     private Long duration;
     private final Set<PropertyData> properties = new TreeSet<>();
     @Reference

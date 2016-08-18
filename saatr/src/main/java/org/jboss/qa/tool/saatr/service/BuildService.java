@@ -1,14 +1,17 @@
 package org.jboss.qa.tool.saatr.service;
 
+import static org.jboss.qa.tool.saatr.entity.Build.Status.Failed;
+import static org.jboss.qa.tool.saatr.entity.Build.Status.Success;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
 import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.entity.Build;
-import org.jboss.qa.tool.saatr.entity.PersistableWithProperties;
 import org.jboss.qa.tool.saatr.entity.Build.PropertyData;
 import org.jboss.qa.tool.saatr.entity.Build.TestsuiteData;
+import org.jboss.qa.tool.saatr.entity.PersistableWithProperties;
 import org.jboss.qa.tool.saatr.entity.jaxb.config.Config;
 import org.jboss.qa.tool.saatr.entity.jaxb.surefire.Testsuite;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildProvider.BuildFilter;
@@ -32,7 +35,11 @@ public class BuildService {
     private Datastore datastore;
 
     public void save(Build build) {
+        build.setStatus(Success);
         build.getTestsuites().forEach(ts -> {
+            if (isFailed(build, ts)) {
+                build.setStatus(Failed);
+            }
             ts.getTestcases().forEach(tc -> {
                 datastore.save(tc);
             });
@@ -46,6 +53,7 @@ public class BuildService {
         final Query<Build> query = createQueryAndApplyFilter(filter);
         query.limit((int) count);
         query.offset((int) first);
+        query.order("-" + Mapper.ID_KEY);
         return query.iterator();
     }
 
@@ -98,7 +106,17 @@ public class BuildService {
         if (filter.getBuildNumber() != null) {
             query.and(query.criteria("buildNumber").equal(filter.getBuildNumber()));
         }
+        if (filter.getJobName() != null) {
+            query.and(query.criteria("jobName").startsWith(filter.getJobName()));
+        }
+        if (filter.getStatus() != null) {
+            query.and(query.criteria("status").equal(filter.getStatus()));
+        }
         return query;
+    }
+
+    private boolean isFailed(Build build, TestsuiteData ts) {
+        return build.getStatus() == Success && (ts.getErrors() > 0 || ts.getFailures() > 0);
     }
 
 }
