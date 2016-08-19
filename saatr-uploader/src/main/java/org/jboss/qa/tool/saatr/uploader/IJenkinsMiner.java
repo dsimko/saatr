@@ -1,4 +1,4 @@
-package org.jboss.qa.tool.saatr.jenkins;
+package org.jboss.qa.tool.saatr.uploader;
 
 import java.net.URL;
 import java.util.Map;

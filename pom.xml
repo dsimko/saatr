@@ -10,8 +10,7 @@
 
 	<modules>
 		<module>saatr</module>
-		<module>saatr-jenkins</module>
-		<module>saatr-spi</module>
+		<module>saatr-uploader</module>
 	</modules>
 
 	<properties>
@@ -30,11 +29,9 @@
 		<version.mongodb.morphia>1.2.1</version.mongodb.morphia>
 		<version.lombok>1.16.10</version.lombok>
 		<version.jackson>2.7.5</version.jackson>
-		<version.danielpacak.jenkins.ci>1.0.0-rc4</version.danielpacak.jenkins.ci>
-		<version.commons-io>2.5</version.commons-io>
-		<version.json>20160212</version.json>
 		<version.log4j>2.5</version.log4j>
 		<version.junit>4.12</version.junit>
+		<version.javax.servlet>3.1.0</version.javax.servlet>
 		<version.jetty9>9.2.13.v20150730</version.jetty9>
 	</properties>
 
@@ -104,21 +101,10 @@
 				<version>${version.jackson}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.github.danielpacak.jenkins.ci</groupId>
-				<artifactId>jenkins.ci.core</artifactId>
-				<version>${version.danielpacak.jenkins.ci}</version>
+			    <groupId>javax.servlet</groupId>
+			    <artifactId>javax.servlet-api</artifactId>
+			    <version>${version.javax.servlet}</version>
 			</dependency>
-			<dependency>
-				<groupId>org.json</groupId>
-				<artifactId>json</artifactId>
-				<version>${version.json}</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-io</groupId>
-				<artifactId>commons-io</artifactId>
-				<version>${version.commons-io}</version>
-			</dependency>
-
 
 			<!-- LOGGING DEPENDENCIES - LOG4J -->
 			<dependency>

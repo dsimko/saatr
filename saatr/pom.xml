@@ -14,10 +14,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.jboss.qa</groupId>
-			<artifactId>saatr-jenkins</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.wicket</groupId>
 			<artifactId>wicket-core</artifactId>
 		</dependency>
@@ -58,7 +54,10 @@
 			<artifactId>jetty-all</artifactId>
 			<scope>test</scope>
 		</dependency>
-
+		<dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>javax.servlet-api</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
