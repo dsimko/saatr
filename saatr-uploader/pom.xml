@@ -10,7 +10,7 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>saatr-spi</artifactId>
+	<artifactId>saatr-uploader</artifactId>
 	<packaging>jar</packaging>
 
 </project>

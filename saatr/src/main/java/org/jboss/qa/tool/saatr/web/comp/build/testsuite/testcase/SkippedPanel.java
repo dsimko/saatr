@@ -2,7 +2,7 @@ package org.jboss.qa.tool.saatr.web.comp.build.testsuite.testcase;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.GenericPanel;
-import org.jboss.qa.tool.saatr.entity.Build.TestsuiteData.TestcaseData.SkippedData;
+import org.jboss.qa.tool.saatr.entity.TestcaseData.SkippedData;
 
 /**
  * 
