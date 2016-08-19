@@ -101,11 +101,10 @@
 				<version>${version.jackson}</version>
 			</dependency>
 			<dependency>
-			    <groupId>javax.servlet</groupId>
-			    <artifactId>javax.servlet-api</artifactId>
-			    <version>${version.javax.servlet}</version>
+				<groupId>javax.servlet</groupId>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>${version.javax.servlet}</version>
 			</dependency>
-
 			<!-- LOGGING DEPENDENCIES - LOG4J -->
 			<dependency>
 				<groupId>org.apache.logging.log4j</groupId>
