@@ -10,7 +10,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
-import org.jboss.qa.tool.saatr.entity.jaxb.config.Config.Property;
+import org.jboss.qa.tool.saatr.entity.ConfigData.ConfigProperty;
 
 /**
  * Panel for filling fields with values.
@@ -19,9 +19,9 @@ import org.jboss.qa.tool.saatr.entity.jaxb.config.Config.Property;
  *
  */
 @SuppressWarnings("serial")
-class PropertyPanel extends GenericPanel<Property> {
+class PropertyPanel extends GenericPanel<ConfigProperty> {
 
-    public PropertyPanel(String id, final IModel<Property> model) {
+    public PropertyPanel(String id, final IModel<ConfigProperty> model) {
         super(id, model);
         add(new Label("name"));
         AutoCompleteSettings settings = new AutoCompleteSettings();

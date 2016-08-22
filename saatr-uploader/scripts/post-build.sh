@@ -1,4 +1,7 @@
 #!/bin/bash
+
+set -x
+printenv
  
 # https://wiki.jenkins-ci.org/display/JENKINS/Building+a+software+project#Buildingasoftwareproject-JenkinsSetEnvironmentVariables
 function getJobName(){

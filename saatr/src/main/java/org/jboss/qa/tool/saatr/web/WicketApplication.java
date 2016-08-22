@@ -34,7 +34,6 @@ import com.mongodb.MongoClient;
 @Component
 public class WicketApplication extends WebApplication implements BeanFactoryPostProcessor {
 
-    private String configFolderPath;
     private MongoClient mongoClient;
 
     @Override
@@ -62,7 +61,6 @@ public class WicketApplication extends WebApplication implements BeanFactoryPost
 
     private Datastore createDatastore() {
         Properties properties = IOUtils.loadFromClassPath("application.properties");
-        configFolderPath = properties.getProperty("config.folder.path");
         mongoClient = new MongoClient(properties.getProperty("mongo.host"), Integer.parseInt(properties.getProperty("mongo.port")));
         final Morphia morphia = new Morphia();
         morphia.mapPackage(Build.class.getPackage().getName());
@@ -88,13 +86,5 @@ public class WicketApplication extends WebApplication implements BeanFactoryPost
 
     public static WicketApplication get() {
         return (WicketApplication) WebApplication.get();
-    }
-
-    public String getConfigFolderPath() {
-        return configFolderPath;
-    }
-
-    public void setConfigFolderPath(String configFolderPath) {
-        this.configFolderPath = configFolderPath;
     }
 }

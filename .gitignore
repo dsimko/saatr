@@ -25,4 +25,5 @@ bin
 *.log
 .clover
 *.swp
+*.war
 

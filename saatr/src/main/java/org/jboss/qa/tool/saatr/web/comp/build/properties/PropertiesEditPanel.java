@@ -12,8 +12,8 @@ import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.jboss.qa.tool.saatr.entity.ConfigData;
 import org.jboss.qa.tool.saatr.entity.PersistableWithProperties;
-import org.jboss.qa.tool.saatr.entity.jaxb.config.Config;
 import org.jboss.qa.tool.saatr.service.BuildService;
 
 import lombok.Data;
@@ -89,7 +89,7 @@ class PropertiesEditPanel<T extends PersistableWithProperties> extends GenericPa
     @Data
     static class AddInfoSubmitEvent implements Serializable {
 
-        private final Config config;
+        private final ConfigData config;
         private final AjaxRequestTarget target;
     }
 
