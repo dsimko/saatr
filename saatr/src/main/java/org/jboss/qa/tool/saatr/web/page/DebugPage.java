@@ -4,6 +4,7 @@ import javax.inject.Inject;
 
 import org.apache.wicket.markup.html.link.Link;
 import org.jboss.qa.tool.saatr.service.BuildService;
+import org.jboss.qa.tool.saatr.service.ConfigService;
 
 /**
  * @author dsimko@redhat.com
@@ -12,14 +13,23 @@ import org.jboss.qa.tool.saatr.service.BuildService;
 public class DebugPage extends BasePage<Void> {
 
     @Inject
-    private BuildService buildServicel;
+    private BuildService buildService;
+    @Inject
+    private ConfigService configService;
 
     public DebugPage() {
-        add(new Link<Void>("dropDb") {
+        add(new Link<Void>("deleteAllBuilds") {
             @Override
             public void onClick() {
-                buildServicel.deleteAll();
+                buildService.deleteAll();
             }
         });
+        add(new Link<Void>("deleteAllConfigs") {
+            @Override
+            public void onClick() {
+                configService.deleteAll();
+            }
+        });
+
     }
 }

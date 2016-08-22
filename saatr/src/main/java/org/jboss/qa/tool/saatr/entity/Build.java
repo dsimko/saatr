@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
  * @author dsimko@redhat.com
  *
  */
-@Entity("builds")
+@Entity
 @Data
 @SuppressWarnings("serial")
 public class Build implements PersistableWithProperties {
@@ -91,7 +91,6 @@ public class Build implements PersistableWithProperties {
             }
             return this.name.compareToIgnoreCase(o.name);
         }
-
     }
 
     @Override

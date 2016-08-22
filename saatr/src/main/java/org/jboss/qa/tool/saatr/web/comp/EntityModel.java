@@ -5,11 +5,11 @@ import javax.inject.Inject;
 import org.apache.wicket.injection.Injector;
 import org.apache.wicket.model.IModel;
 import org.bson.types.ObjectId;
-import org.jboss.qa.tool.saatr.entity.PersistableWithProperties;
+import org.jboss.qa.tool.saatr.entity.Persistable;
 import org.jboss.qa.tool.saatr.service.BuildService;
 
 @SuppressWarnings("serial")
-public class EntityModel<T extends PersistableWithProperties> implements IModel<T> {
+public class EntityModel<T extends Persistable<ObjectId>> implements IModel<T> {
 
     @Inject
     private BuildService service;

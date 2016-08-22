@@ -48,12 +48,5 @@ If you want to run this application without deploying, run the Start class. But 
 ## Run in Docker
 
 ```sh
-# start mongo (data will be stored on host file system on /var/saatr/datadir)
-sh saatr-parent/docker/mongo/run.sh
-# build saatr application
-mvn clean install
-cp saatr-parent/saatr/target/saatr-1.0.0-SNAPSHOT.war saatr-parent/docker/wildfly/ROOT.war
-# build and run wildfly with saatr application
-sh saatr-parent/docker/wildfly/build.sh
-sh saatr-parent/docker/wildfly/run.sh 
+sh build_and_run_in_docker.sh
 ```

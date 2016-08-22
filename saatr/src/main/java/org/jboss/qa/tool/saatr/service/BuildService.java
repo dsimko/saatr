@@ -5,11 +5,15 @@ import static org.jboss.qa.tool.saatr.entity.Build.Status.Success;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.entity.Build;
 import org.jboss.qa.tool.saatr.entity.Build.PropertyData;
+import org.jboss.qa.tool.saatr.entity.ConfigData.ConfigProperty;
+import org.jboss.qa.tool.saatr.entity.Persistable;
 import org.jboss.qa.tool.saatr.entity.PersistableWithProperties;
 import org.jboss.qa.tool.saatr.entity.TestsuiteData;
 import org.jboss.qa.tool.saatr.entity.jaxb.config.Config;
@@ -68,28 +72,42 @@ public class BuildService {
     public void fillBuildByTestsuites(List<Testsuite> input, Build build) {
         for (Testsuite testsuite : input) {
             TestsuiteData testsuiteData = TestsuiteData.create(testsuite);
-            // only first testsuite properties are added to the build
-            if (build.getTestsuites().isEmpty()) {
-                build.getProperties().addAll(PropertyData.create(testsuite.getProperties()));
-            }
+
+            PropertyData.create(testsuite.getProperties()).forEach(p -> {
+                addIfAbsent(p, build.getProperties());
+            });
+
             build.getTestsuites().add(testsuiteData);
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public <T extends PersistableWithProperties> void addOrUpdateProperties(T persistable, List<Config.Property> newProperties) {
+    public void addIfAbsent(PropertyData property, Set<PropertyData> properties) {
+        if (!properties.contains(property)) {
+            properties.add(property);
+        } else {
+            Optional<PropertyData> withDifferentValue = properties.stream()
+                    .filter(p -> p.getName().equals(property.getName()) && !p.getValue().equals(property.getValue())).findFirst();
+            if (withDifferentValue.isPresent()) {
+                LOG.warn("Property [name = {}, value = {}] has not been added because already exists with value {}.", property.getName(),
+                        property.getValue(), withDifferentValue.get().getValue());
+            }
+        }
+    }
 
-        LOG.info("Adding or updating properties {} for {}", newProperties, persistable);
+    @SuppressWarnings("unchecked")
+    public <T extends PersistableWithProperties> void addOrUpdateProperties(T persistable, Set<ConfigProperty> configProperties) {
+
+        LOG.info("Adding or updating properties {} for {}", configProperties, persistable);
 
         // clear properties
         datastore.update(persistable, datastore.createUpdateOperations((Class<T>) persistable.getClass()).unset("properties"));
 
         Stream<PropertyData> oldWithoutNewProperties = persistable.getProperties().stream()
-                .filter(p -> !newProperties.contains(new Config.Property(p.getName(), null, null)));
+                .filter(p -> !configProperties.contains(new Config.Property(p.getName(), null, null)));
 
         // merge old and new properties set
         Stream<PropertyData> allProperties = Stream.concat(oldWithoutNewProperties,
-                newProperties.stream().map(p -> new PropertyData(p.getName(), p.getValue())));
+                configProperties.stream().map(p -> new PropertyData(p.getName(), p.getValue())));
 
         // update all non null properties
         allProperties.filter(property -> property.getValue() != null).forEach(property -> {
@@ -97,7 +115,7 @@ public class BuildService {
         });
     }
 
-    public <T extends PersistableWithProperties> T findById(ObjectId id, Class<T> clazz) {
+    public <T extends Persistable<ObjectId>> T findById(ObjectId id, Class<T> clazz) {
         return datastore.find(clazz, Mapper.ID_KEY, id).get();
     }
 

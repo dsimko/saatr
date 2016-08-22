@@ -17,6 +17,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.jboss.qa.tool.saatr.entity.Build;
+import org.jboss.qa.tool.saatr.entity.Build.PropertyData;
 import org.jboss.qa.tool.saatr.service.BuildService;
 import org.jboss.qa.tool.saatr.util.IOUtils;
 import org.slf4j.Logger;
@@ -91,7 +92,7 @@ public class UploadServlet extends HttpServlet {
                     break;
                 }
                 default:
-                    throw new IllegalArgumentException("Unknown param " + name);
+                    buildService.addIfAbsent(new PropertyData(name, value), build.getProperties());
                 }
             }
         }

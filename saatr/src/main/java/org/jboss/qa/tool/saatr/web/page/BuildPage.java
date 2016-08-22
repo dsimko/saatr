@@ -57,8 +57,8 @@ public class BuildPage extends BasePage<Build> {
                 getModel()) {
 
             @Override
-            protected void selectRow(Build user) {
-                setModelObject(user);
+            protected void selectRow(Build build) {
+                setModelObject(build);
             }
         };
         add(dataTable);

@@ -11,6 +11,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.jboss.qa.tool.saatr.entity.ConfigData;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -66,7 +68,11 @@ public class Config implements Serializable {
             result = prime * result + ((name == null) ? 0 : name.hashCode());
             return result;
         }
-
     }
 
+    public static Config create(ConfigData configData) {
+        Config config = new Config();
+        configData.getProperties().forEach(p -> config.properties.add(new Property(p.getName(), p.getValue(), p.getOptions())));
+        return config;
+    }
 }

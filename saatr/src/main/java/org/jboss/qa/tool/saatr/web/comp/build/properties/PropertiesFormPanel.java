@@ -10,8 +10,9 @@ import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.jboss.qa.tool.saatr.entity.ConfigData;
+import org.jboss.qa.tool.saatr.entity.ConfigData.ConfigProperty;
 import org.jboss.qa.tool.saatr.entity.jaxb.config.Config;
-import org.jboss.qa.tool.saatr.entity.jaxb.config.Config.Property;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapFeedbackPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.properties.PropertiesEditPanel.AddInfoSubmitEvent;
 import org.jboss.qa.tool.saatr.web.comp.build.properties.PropertiesEditPanel.ResetPanelEvent;
@@ -21,15 +22,15 @@ import org.jboss.qa.tool.saatr.web.comp.build.properties.PropertiesEditPanel.Res
  *
  */
 @SuppressWarnings("serial")
-class PropertiesFormPanel extends GenericPanel<Config> {
+class PropertiesFormPanel extends GenericPanel<ConfigData> {
 
-    public PropertiesFormPanel(String id, final IModel<Config> model) {
+    public PropertiesFormPanel(String id, final IModel<ConfigData> model) {
         super(id, model);
         Form<Config> form = new StatelessForm<Config>("form");
         form.add(new BootstrapFeedbackPanel("feedback"));
         RepeatingView view = new RepeatingView("props");
-        for (Property prop : getModelObject().getProperties()) {
-            view.add(new PropertyPanel(view.newChildId(), new CompoundPropertyModel<Property>(prop)));
+        for (ConfigProperty prop : getModelObject().getProperties()) {
+            view.add(new PropertyPanel(view.newChildId(), new CompoundPropertyModel<ConfigProperty>(prop)));
         }
         form.add(view);
         form.add(new AjaxSubmitLink("submit") {
