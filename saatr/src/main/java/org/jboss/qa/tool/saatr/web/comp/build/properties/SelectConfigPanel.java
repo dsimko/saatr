@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.GenericPanel;
@@ -35,7 +36,7 @@ class SelectConfigPanel<T extends PersistableWithProperties> extends GenericPane
         wmc.add(new BootstrapFeedbackPanel("feedback"));
         wmc.setOutputMarkupId(true);
         final IModel<ConfigData> configModel = new Model<>();
-        wmc.add(new DropDownChoice<ConfigData>("config", configModel, configService.findAll()) {
+        wmc.add(new DropDownChoice<ConfigData>("config", configModel, configService.findAll(), new ChoiceRenderer<>("name")) {
             @Override
             public boolean isVisible() {
                 return dropDownChoiceVisible;
