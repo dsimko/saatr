@@ -1,22 +1,17 @@
 package org.jboss.qa.tool.saatr.web.comp.build.testsuite;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
+import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.GenericPanel;
-import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.markup.repeater.RefreshingView;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.jboss.qa.tool.saatr.entity.TestcaseData;
 import org.jboss.qa.tool.saatr.entity.TestsuiteData;
-import org.jboss.qa.tool.saatr.web.comp.EntityModel;
-import org.jboss.qa.tool.saatr.web.comp.build.properties.PropertiesPanel;
-import org.jboss.qa.tool.saatr.web.comp.build.testsuite.testcase.TestcasePanel;
 
 /**
  * 
@@ -26,9 +21,11 @@ import org.jboss.qa.tool.saatr.web.comp.build.testsuite.testcase.TestcasePanel;
 @SuppressWarnings("serial")
 public class TestsuitePanel extends GenericPanel<TestsuiteData> {
 
+    private Component body;
+
     public TestsuitePanel(String id, final IModel<TestsuiteData> model) {
         super(id, new CompoundPropertyModel<>(model));
-        WebMarkupContainer panel = new WebMarkupContainer("panel") {
+        final WebMarkupContainer panel = new WebMarkupContainer("panel") {
             @Override
             protected void onComponentTag(ComponentTag tag) {
                 super.onComponentTag(tag);
@@ -41,28 +38,37 @@ public class TestsuitePanel extends GenericPanel<TestsuiteData> {
                 }
             }
         };
-        add(panel);
+        add(panel.setOutputMarkupId(true));
         panel.add(new Label("name"));
-        panel.add(new Label("time"));
-        panel.add(new Label("tests"));
-        panel.add(new Label("errors"));
-        panel.add(new Label("skipped"));
-        panel.add(new Label("failures"));
-        panel.add(new PropertiesPanel<>("properties", model));
-        panel.add(new RefreshingView<TestcaseData>("testcases") {
+        panel.add(body = new BodyPanel("bodyPanel", model));
+        panel.add(new AjaxLink<Void>("collapse") {
             @Override
-            protected Iterator<IModel<TestcaseData>> getItemModels() {
-                List<IModel<TestcaseData>> models = new ArrayList<>();
-                for (TestcaseData testcaseData : getModelObject().getTestcases()) {
-                    models.add(new EntityModel<>(testcaseData));
-                }
-                return models.iterator();
+            public void onClick(AjaxRequestTarget target) {
+                replaceBodyPanel(new EmptyPanel(body.getId()));
+                target.add(panel);
             }
 
             @Override
-            protected void populateItem(Item<TestcaseData> item) {
-                item.add(new TestcasePanel("testcase", item.getModel()));
+            public boolean isVisible() {
+                return body instanceof BodyPanel;
             }
         });
+        panel.add(new AjaxLink<Void>("expand") {
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                replaceBodyPanel(new BodyPanel(body.getId(), model));
+                target.add(panel);
+            }
+
+            @Override
+            public boolean isVisible() {
+                return body instanceof EmptyPanel;
+            }
+        });
+    }
+
+    private void replaceBodyPanel(Panel with) {
+        body.replaceWith(with);
+        body = with;
     }
 }
