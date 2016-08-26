@@ -1,33 +1,24 @@
 #!/bin/bash
-
 set -x
-printenv
- 
-# https://wiki.jenkins-ci.org/display/JENKINS/Building+a+software+project#Buildingasoftwareproject-JenkinsSetEnvironmentVariables
-function getJobName(){
-	if [[ -v JOB_NAME ]]
-	then
-	    echo "$JOB_NAME"
-	else
-	    echo "testing_job"
-	fi
-}
 
-function getBuildNumber(){
-	if [[ -v BUILD_NUMBER ]]
-	then
-	    echo "$BUILD_NUMBER"
-	else
-	    # echo "$(( ( RANDOM % 10 )  + 1 ))"
-	    echo 0
-	fi
+# https://wiki.jenkins-ci.org/display/JENKINS/Building+a+software+project#Buildingasoftwareproject-JenkinsSetEnvironmentVariables
+function allVariables(){
+    declare -a arr=("NODE_NAME" "NODE_LABELS" "BUILD_URL" "TARGET" "DB" "JDK" "jdk" "EAP_VERSION" "LABEL")
+    for i in "${arr[@]}"
+    do
+    	var=$i
+        echo "-F $i=${!var}" 
+    done
 }
 
 echo "--------------UPLOAD-TESTS-RESULTS-TO-SAATR---------------"
 find . -path \*target/surefire-reports/TEST-*.xml | zip testsuite -@
-curl \
-  -F "jobName=$(getJobName)" \
-  -F "buildNumber=$(getBuildNumber)" \
-  -F "testsuite=@testsuite.zip" \
-  localhost:8080/UploadServlet
-
+command="curl \
+  -u saatr:S44TR! \
+  -F \"jobName=${JOB_NAME-testing_job}\" \
+  -F \"buildNumber=${BUILD_NUMBER-0}\" \
+  -F \"timestamp=$(date +%s)\" \
+  -F \"testsuite=@testsuite.zip\" \
+  $(allVariables)
+  http://46.183.65.66:14414/UploadServlet"
+eval ${command}

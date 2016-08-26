@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.GenericPanel;
@@ -32,7 +33,6 @@ public class BuildPanel extends GenericPanel<Build> {
         super(id, new CompoundPropertyModel<>(model));
         add(new Label("jobName"));
         add(new Label("buildNumber"));
-        add(new Label("duration"));
         add(new Label("status"));
         add(new Label("timestamp") {
             @Override
@@ -47,7 +47,14 @@ public class BuildPanel extends GenericPanel<Build> {
                     @Override
                     public String convertToString(C value, Locale locale) {
                         if (value instanceof Long) {
-                            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date((Long) value * 1000L));
+                            StringBuilder builder = new StringBuilder();
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+                            builder.append(value);
+                            builder.append(" (");
+                            builder.append(dateFormat.format(new Date((Long) value * 1000L)));
+                            builder.append(" UTC)");
+                            return builder.toString();
                         }
                         return String.valueOf(value);
                     }
@@ -77,5 +84,4 @@ public class BuildPanel extends GenericPanel<Build> {
         super.onConfigure();
         setVisible(getModelObject() != null);
     }
-
 }

@@ -16,7 +16,6 @@ import org.jboss.qa.tool.saatr.entity.ConfigData.ConfigProperty;
 import org.jboss.qa.tool.saatr.entity.Persistable;
 import org.jboss.qa.tool.saatr.entity.PersistableWithProperties;
 import org.jboss.qa.tool.saatr.entity.TestsuiteData;
-import org.jboss.qa.tool.saatr.entity.jaxb.config.Config;
 import org.jboss.qa.tool.saatr.entity.jaxb.surefire.Testsuite;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildProvider.BuildFilter;
 import org.mongodb.morphia.Datastore;
@@ -103,7 +102,7 @@ public class BuildService {
         datastore.update(persistable, datastore.createUpdateOperations((Class<T>) persistable.getClass()).unset("properties"));
 
         Stream<PropertyData> oldWithoutNewProperties = persistable.getProperties().stream()
-                .filter(p -> !configProperties.contains(new Config.Property(p.getName(), null, null)));
+                .filter(p -> !configProperties.contains(new ConfigProperty(p.getName(), null, null)));
 
         // merge old and new properties set
         Stream<PropertyData> allProperties = Stream.concat(oldWithoutNewProperties,
