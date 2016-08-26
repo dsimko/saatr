@@ -1,5 +1,7 @@
 package org.jboss.qa.tool.saatr.entity;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -91,7 +93,14 @@ public class TestsuiteData implements PersistableWithProperties {
     }
 
     private static Double toDouble(String input) {
-        return input != null ? Double.valueOf(input) : null;
+        if (input == null) {
+            return null;
+        }
+        try {
+            return NumberFormat.getInstance().parse(input).doubleValue();
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static Integer toInteger(String input) {
@@ -106,5 +115,4 @@ public class TestsuiteData implements PersistableWithProperties {
     public String toString() {
         return "TestsuiteData [id=" + id + ", name=" + name + "]";
     }
-
 }
