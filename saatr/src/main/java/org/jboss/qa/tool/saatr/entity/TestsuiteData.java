@@ -48,8 +48,8 @@ public class TestsuiteData implements PersistableWithProperties {
         testsuiteData.failures = toInteger(testsuite.getFailures());
         testsuiteData.group = testsuite.getGroup();
 
-        TestcaseData testcaseData = new TestcaseData();
         for (Testcase testcase : testsuite.getTestcase()) {
+            TestcaseData testcaseData = new TestcaseData();
             testcaseData.systemOut = toString(testcase.getSystemOut());
             testcaseData.systemErr = toString(testcase.getSystemErr());
             testcaseData.name = testcase.getName();
