@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.event.Broadcast;
 import org.apache.wicket.event.IEvent;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
@@ -15,6 +16,7 @@ import org.apache.wicket.model.IModel;
 import org.jboss.qa.tool.saatr.entity.ConfigData;
 import org.jboss.qa.tool.saatr.entity.PersistableWithProperties;
 import org.jboss.qa.tool.saatr.service.BuildService;
+import org.jboss.qa.tool.saatr.web.comp.build.properties.PropertiesPanel.RefreshPropertiesPanelEvent;
 
 import lombok.Data;
 
@@ -57,7 +59,6 @@ class PropertiesEditPanel<T extends PersistableWithProperties> extends GenericPa
     @Override
     protected void onConfigure() {
         super.onConfigure();
-        getParent().setOutputMarkupId(true);
         setVisible(getModelObject() != null);
     }
 
@@ -68,7 +69,7 @@ class PropertiesEditPanel<T extends PersistableWithProperties> extends GenericPa
             AddInfoSubmitEvent eventPayload = (AddInfoSubmitEvent) payload;
             buildService.addOrUpdateProperties(getModelObject(), eventPayload.getConfig().getProperties());
             resetPanel();
-            eventPayload.getTarget().add(getParent());
+            send(this, Broadcast.BUBBLE, new RefreshPropertiesPanelEvent(eventPayload.getTarget()));
         } else if (payload instanceof ResetPanelEvent) {
             ResetPanelEvent eventPayload = (ResetPanelEvent) payload;
             resetPanel();
