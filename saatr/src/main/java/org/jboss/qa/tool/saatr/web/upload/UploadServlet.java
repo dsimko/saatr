@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Enumeration;
 import java.util.List;
 
 import javax.servlet.ServletConfig;
@@ -48,7 +47,6 @@ public class UploadServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        LOG.info("Received request: {}", toString(request));
         DiskFileItemFactory factory = new DiskFileItemFactory();
         factory.setSizeThreshold(10_000_000);
 
@@ -99,16 +97,5 @@ public class UploadServlet extends HttpServlet {
             }
         }
         return build;
-    }
-
-    private String toString(HttpServletRequest req) {
-        StringBuilder builder = new StringBuilder();
-        Enumeration<String> parameters = req.getParameterNames();
-        while (parameters.hasMoreElements()) {
-            String name = parameters.nextElement();
-            Object value = req.getParameter(name);
-            builder.append(name + ": " + value + ", ");
-        }
-        return builder.toString();
     }
 }
