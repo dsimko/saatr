@@ -12,6 +12,7 @@ import org.apache.wicket.util.crypt.CharEncoding;
 import org.jboss.qa.tool.saatr.entity.Build;
 import org.jboss.qa.tool.saatr.util.IOUtils;
 import org.jboss.qa.tool.saatr.web.comp.URLConverter;
+import org.jboss.qa.tool.saatr.web.page.AggregationPage;
 import org.jboss.qa.tool.saatr.web.page.BuildPage;
 import org.jboss.qa.tool.saatr.web.page.ConfigPage;
 import org.jboss.qa.tool.saatr.web.page.DebugPage;
@@ -52,6 +53,7 @@ public class WicketApplication extends WebApplication implements BeanFactoryPost
 
         mountPage("config", ConfigPage.class);
         mountPage("debug", DebugPage.class);
+        mountPage("aggregation", AggregationPage.class);
 
         getMarkupSettings().setStripWicketTags(true);
         getMarkupSettings().setDefaultMarkupEncoding(CharEncoding.UTF_8);
@@ -86,5 +88,9 @@ public class WicketApplication extends WebApplication implements BeanFactoryPost
 
     public static WicketApplication get() {
         return (WicketApplication) WebApplication.get();
+    }
+
+    public MongoClient getMongoClient() {
+        return mongoClient;
     }
 }
