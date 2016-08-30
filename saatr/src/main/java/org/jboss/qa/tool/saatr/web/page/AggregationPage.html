@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<body>
+	<wicket:extend>
+		<div class="page-header">
+			<h2>Aggregation Pipelines</h2>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<form wicket:id="form">
+					<div wicket:id="feedback"></div>
+					<div class="form-group">
+						<label>Collection</label>
+						<select wicket:id="collection" class="form-control"></select>
+					</div>
+					<div class="form-group">
+						<label>Predefined pipelines</label>
+						<select wicket:id="predefinedPipelines" class="form-control"></select>
+					</div>
+					<div class="form-group">
+						<label>Pipelines</label>
+						<textarea wicket:id="pipelines" class="form-control" rows="8"></textarea>
+					</div>
+					<button type="submit" class="btn btn-default">Submit</button>
+				</form>
+			</div>
+		</div>
+		<pre wicket:id="result"></pre>
+	</wicket:extend>
+</body>
+</html>
