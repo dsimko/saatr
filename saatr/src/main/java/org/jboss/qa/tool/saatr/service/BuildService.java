@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.mongodb.client.MongoDatabase;
+
 /**
  * @author dsimko@redhat.com
  */
@@ -34,6 +36,8 @@ public class BuildService {
 
     @Autowired
     private Datastore datastore;
+    @Autowired
+    private MongoDatabase mongoDatabase;
 
     public void save(Build build) {
         build.getTestsuites().forEach(ts -> {
@@ -69,7 +73,7 @@ public class BuildService {
             TestsuiteData testsuiteData = TestsuiteData.create(testsuite);
 
             PropertyData.create(testsuite.getProperties()).forEach(p -> {
-                addIfAbsent(p, build.getProperties());
+                addIfAbsent(p, build.getSystemProperties());
             });
 
             build.getTestsuites().add(testsuiteData);
@@ -126,7 +130,18 @@ public class BuildService {
         if (filter.getStatus() != null) {
             query.and(query.criteria("status").equal(filter.getStatus()));
         }
+        if (filter.getVariableName() != null) {
+            query.field("variables").hasThisElement(new PropertyData(filter.getVariableName(), filter.getVariableValue()));
+        }
         return query;
+    }
+
+    public Iterable<String> getDistinctVariableNames() {
+        return mongoDatabase.getCollection(Build.class.getSimpleName()).distinct("variables.name", String.class);
+    }
+
+    public Iterable<String> getDistinctVariableValues() {
+        return mongoDatabase.getCollection(Build.class.getSimpleName()).distinct("variables.value", String.class);
     }
 
 }

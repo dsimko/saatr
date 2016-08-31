@@ -24,6 +24,7 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.stereotype.Component;
 
 import com.mongodb.MongoClient;
+import com.mongodb.client.MongoDatabase;
 
 /**
  * Application object for the web application. If you want to run this
@@ -36,6 +37,7 @@ import com.mongodb.MongoClient;
 public class WicketApplication extends WebApplication implements BeanFactoryPostProcessor {
 
     private MongoClient mongoClient;
+    private MongoDatabase mongoDatabase;
 
     @Override
     public Class<? extends Page> getHomePage() {
@@ -45,6 +47,7 @@ public class WicketApplication extends WebApplication implements BeanFactoryPost
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
         beanFactory.registerSingleton("datastore", createDatastore());
+        beanFactory.registerSingleton("mongoDatabase", mongoDatabase);
     }
 
     @Override
@@ -71,6 +74,8 @@ public class WicketApplication extends WebApplication implements BeanFactoryPost
 
         Datastore datastore = morphia.createDatastore(mongoClient, properties.getProperty("mongo.database.name"));
         datastore.ensureIndexes();
+
+        mongoDatabase = mongoClient.getDatabase(properties.getProperty("mongo.database.name"));
         return datastore;
     }
 
@@ -90,7 +95,4 @@ public class WicketApplication extends WebApplication implements BeanFactoryPost
         return (WicketApplication) WebApplication.get();
     }
 
-    public MongoClient getMongoClient() {
-        return mongoClient;
-    }
 }

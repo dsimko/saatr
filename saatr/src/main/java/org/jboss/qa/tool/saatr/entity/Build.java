@@ -37,7 +37,10 @@ public class Build implements PersistableWithProperties {
     private Long timestamp;
     private Status status;
     private Long duration;
+    private final Set<PropertyData> systemProperties = new TreeSet<>();
+    private final Set<PropertyData> variables = new TreeSet<>();
     private final Set<PropertyData> properties = new TreeSet<>();
+
     @Reference
     private final List<TestsuiteData> testsuites = new ArrayList<>();
 
