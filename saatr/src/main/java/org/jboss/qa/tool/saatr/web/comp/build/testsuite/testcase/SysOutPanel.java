@@ -10,7 +10,7 @@ import org.jboss.qa.tool.saatr.web.comp.HideableLabel;
  *
  */
 @SuppressWarnings("serial")
-class SkippedPanel extends GenericPanel<FailureData> {
+class SysOutPanel extends GenericPanel<FailureData> {
 
     @Override
     protected void onConfigure() {
@@ -18,7 +18,7 @@ class SkippedPanel extends GenericPanel<FailureData> {
         setVisible(getModelObject() != null);
     }
 
-    public SkippedPanel(String id) {
+    public SysOutPanel(String id) {
         super(id);
         add(new HideableLabel("skipped.value"));
         add(new HideableLabel("skipped.message"));

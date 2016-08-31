@@ -1,8 +1,5 @@
 package org.jboss.qa.tool.saatr.service;
 
-import static org.jboss.qa.tool.saatr.entity.Build.Status.Failed;
-import static org.jboss.qa.tool.saatr.entity.Build.Status.Success;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +12,7 @@ import org.jboss.qa.tool.saatr.entity.Build.PropertyData;
 import org.jboss.qa.tool.saatr.entity.ConfigData.ConfigProperty;
 import org.jboss.qa.tool.saatr.entity.Persistable;
 import org.jboss.qa.tool.saatr.entity.PersistableWithProperties;
+import org.jboss.qa.tool.saatr.entity.TestcaseData;
 import org.jboss.qa.tool.saatr.entity.TestsuiteData;
 import org.jboss.qa.tool.saatr.entity.jaxb.surefire.Testsuite;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildProvider.BuildFilter;
@@ -38,11 +36,7 @@ public class BuildService {
     private Datastore datastore;
 
     public void save(Build build) {
-        build.setStatus(Success);
         build.getTestsuites().forEach(ts -> {
-            if (isFailed(build, ts)) {
-                build.setStatus(Failed);
-            }
             ts.getTestcases().forEach(tc -> {
                 datastore.save(tc);
             });
@@ -66,6 +60,8 @@ public class BuildService {
 
     public void deleteAll() {
         datastore.delete(datastore.createQuery(Build.class));
+        datastore.delete(datastore.createQuery(TestsuiteData.class));
+        datastore.delete(datastore.createQuery(TestcaseData.class));
     }
 
     public void fillBuildByTestsuites(List<Testsuite> input, Build build) {
@@ -78,6 +74,7 @@ public class BuildService {
 
             build.getTestsuites().add(testsuiteData);
         }
+        build.setStatus(Build.determineStatus(build.getTestsuites()));
     }
 
     public void addIfAbsent(PropertyData property, Set<PropertyData> properties) {
@@ -130,10 +127,6 @@ public class BuildService {
             query.and(query.criteria("status").equal(filter.getStatus()));
         }
         return query;
-    }
-
-    private boolean isFailed(Build build, TestsuiteData ts) {
-        return build.getStatus() == Success && (ts.getErrors() > 0 || ts.getFailures() > 0);
     }
 
 }

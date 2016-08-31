@@ -7,6 +7,7 @@ import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.jboss.qa.tool.saatr.entity.TestcaseData;
+import org.jboss.qa.tool.saatr.web.comp.HideableLabel;
 import org.jboss.qa.tool.saatr.web.comp.build.properties.PropertiesPanel;
 
 /**
@@ -23,12 +24,21 @@ public class TestcasePanel extends GenericPanel<TestcaseData> {
             @Override
             protected void onComponentTag(ComponentTag tag) {
                 super.onComponentTag(tag);
-                if (getModelObject().getError() != null || !getModelObject().getFailure().isEmpty()) {
+                switch (getModelObject().getStatus()) {
+                case Error:
+                case Failure:
                     tag.append("class", "panel-danger", " ");
-                } else if (getModelObject().getSkipped() != null) {
+                    break;
+                case FlakyFailure:
+                case FlakyError:
                     tag.append("class", "panel-warning", " ");
-                } else {
+                    break;
+                case Skipped:
+                    tag.append("class", "panel-info", " ");
+                    break;
+                case Success:
                     tag.append("class", "panel-success", " ");
+                    break;
                 }
             }
         };
@@ -37,7 +47,12 @@ public class TestcasePanel extends GenericPanel<TestcaseData> {
         panel.add(new Label("time"));
         panel.add(new SkippedPanel("skipped"));
         panel.add(new ErrorPanel("error"));
-        panel.add(new FailuresPanel("failure"));
+        panel.add(new FailuresPanel("failure", "Failures"));
+        panel.add(new FailuresPanel("flakyErrors", "Flaky Errors"));
+        panel.add(new FailuresPanel("flakyFailures", "Flaky Failures"));
+        panel.add(new FailuresPanel("rerunFailure", "Rerun Failure"));
+        panel.add(new HideableLabel("systemOut"));
+        panel.add(new HideableLabel("systemErr"));
         panel.add(new PropertiesPanel<>("properties", model));
 
     }

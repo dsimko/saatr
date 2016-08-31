@@ -2,19 +2,19 @@
 <html xmlns:wicket>
 <body>
 	<wicket:panel>
+		<strong wicket:id="name"></strong>
 		<div class="table-responsive">
 			<table wicket:id="failures" class="table">
-				<caption>Failure:</caption>
 				<tbody>
-					<tr>
+					<tr wicket:enclosure="type">
 						<th scope="row">Type</th>
 						<td><span class="text-muted" wicket:id="type"></span></td>
 					</tr>
-					<tr>
+					<tr wicket:enclosure="message">
 						<th scope="row">Message</th>
 						<td><span class="text-muted" wicket:id="message"></span></td>
 					</tr>
-					<tr>
+					<tr wicket:enclosure="value">
 						<th scope="row">Value</th>
 						<td><pre class="text-muted pre-scrollable" wicket:id="value"></pre></td>
 					</tr>

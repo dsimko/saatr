@@ -2,6 +2,7 @@ package org.jboss.qa.tool.saatr.web.comp.build;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -66,7 +67,9 @@ public class BuildPanel extends GenericPanel<Build> {
             @Override
             protected Iterator<IModel<TestsuiteData>> getItemModels() {
                 List<IModel<TestsuiteData>> models = new ArrayList<>();
-                for (TestsuiteData testsuiteData : getModelObject().getTestsuites()) {
+                List<TestsuiteData> testsuites = getModelObject().getTestsuites();
+                Collections.sort(testsuites);
+                for (TestsuiteData testsuiteData : testsuites) {
                     models.add(new EntityModel<>(testsuiteData));
                 }
                 return models.iterator();

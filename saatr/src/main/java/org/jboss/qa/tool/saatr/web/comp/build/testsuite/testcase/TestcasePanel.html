@@ -19,6 +19,17 @@
 				<div wicket:id="skipped"></div>
 				<div wicket:id="error"></div>
 				<div wicket:id="failure"></div>
+				<div wicket:id="flakyFailures"></div>
+				<div wicket:id="rerunFailure"></div>
+				<div wicket:id="flakyErrors"></div>
+				<div wicket:enclosure="systemOut">
+					<strong>System Out</strong>
+					<pre class="text-muted pre-scrollable" wicket:id="systemOut"></pre>
+				</div>
+				<div wicket:enclosure="systemErr">
+					<strong>System Err</strong>
+					<pre class="text-muted pre-scrollable" wicket:id="systemErr"></pre>
+				</div>
 			</div>
 		</div>
 	</wicket:panel>

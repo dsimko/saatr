@@ -11,6 +11,7 @@ import org.apache.wicket.markup.repeater.RefreshingView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.jboss.qa.tool.saatr.entity.TestcaseData.FailureData;
+import org.jboss.qa.tool.saatr.web.comp.HideableLabel;
 
 /**
  * 
@@ -26,8 +27,9 @@ class FailuresPanel extends GenericPanel<List<FailureData>> {
         setVisible(!getModelObject().isEmpty());
     }
 
-    public FailuresPanel(String id) {
+    public FailuresPanel(String id, String name) {
         super(id);
+        add(new Label("name", name));
         add(new RefreshingView<FailureData>("failures") {
 
             @Override
@@ -41,9 +43,9 @@ class FailuresPanel extends GenericPanel<List<FailureData>> {
 
             @Override
             protected void populateItem(Item<FailureData> item) {
-                item.add(new Label("value"));
-                item.add(new Label("message"));
-                item.add(new Label("type"));
+                item.add(new HideableLabel("value"));
+                item.add(new HideableLabel("message"));
+                item.add(new HideableLabel("type"));
             }
         });
     }

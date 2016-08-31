@@ -6,15 +6,15 @@
 			<table class="table">
 				<caption>Error:</caption>
 				<tbody>
-					<tr>
+					<tr wicket:enclosure="error.type">
 						<th scope="row">Type</th>
 						<td><span class="text-muted" wicket:id="error.type"></span></td>
 					</tr>
-					<tr>
+					<tr wicket:enclosure="error.message">
 						<th scope="row">Message</th>
 						<td><span class="text-muted" wicket:id="error.message"></span></td>
 					</tr>
-					<tr>
+					<tr wicket:enclosure="error.value">
 						<th scope="row">Value</th>
 						<td><pre class="text-muted pre-scrollable" wicket:id="error.value"></pre></td>
 					</tr>

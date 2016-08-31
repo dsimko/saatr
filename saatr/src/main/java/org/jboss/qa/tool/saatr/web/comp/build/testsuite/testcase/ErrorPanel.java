@@ -1,8 +1,8 @@
 package org.jboss.qa.tool.saatr.web.comp.build.testsuite.testcase;
 
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.GenericPanel;
-import org.jboss.qa.tool.saatr.entity.TestcaseData.ErrorData;
+import org.jboss.qa.tool.saatr.entity.TestcaseData.FailureData;
+import org.jboss.qa.tool.saatr.web.comp.HideableLabel;
 
 /**
  * 
@@ -10,7 +10,7 @@ import org.jboss.qa.tool.saatr.entity.TestcaseData.ErrorData;
  *
  */
 @SuppressWarnings("serial")
-class ErrorPanel extends GenericPanel<ErrorData> {
+class ErrorPanel extends GenericPanel<FailureData> {
 
     @Override
     protected void onConfigure() {
@@ -20,8 +20,8 @@ class ErrorPanel extends GenericPanel<ErrorData> {
 
     public ErrorPanel(String id) {
         super(id);
-        add(new Label("error.value"));
-        add(new Label("error.message"));
-        add(new Label("error.type"));
+        add(new HideableLabel("error.value"));
+        add(new HideableLabel("error.message"));
+        add(new HideableLabel("error.type"));
     }
 }
