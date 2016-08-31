@@ -11,20 +11,24 @@ import javax.xml.bind.JAXBElement;
 
 import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.entity.Build.PropertyData;
-import org.jboss.qa.tool.saatr.entity.TestcaseData.ErrorData;
 import org.jboss.qa.tool.saatr.entity.TestcaseData.FailureData;
-import org.jboss.qa.tool.saatr.entity.TestcaseData.RerunFailureData;
-import org.jboss.qa.tool.saatr.entity.TestcaseData.SkippedData;
 import org.jboss.qa.tool.saatr.entity.jaxb.surefire.Testsuite;
 import org.jboss.qa.tool.saatr.entity.jaxb.surefire.Testsuite.Testcase;
+import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Reference;
+import org.w3c.dom.Element;
 
 import lombok.Data;
 
 @Data
+@Entity
 @SuppressWarnings("serial")
-public class TestsuiteData implements PersistableWithProperties {
+public class TestsuiteData implements PersistableWithProperties, Comparable<TestsuiteData> {
+
+    public static enum Status {
+        Success, FlakyError, FlakyFailure, Error, Failure
+    }
 
     @Id
     private ObjectId id;
@@ -38,6 +42,7 @@ public class TestsuiteData implements PersistableWithProperties {
     private Integer skipped;
     private Integer failures;
     private String group;
+    private Status status;
 
     public static TestsuiteData create(Testsuite testsuite) {
 
@@ -58,16 +63,17 @@ public class TestsuiteData implements PersistableWithProperties {
             testcaseData.classname = testcase.getClassname();
             testcaseData.group = testcase.getGroup();
             testcaseData.time = toDouble(testcase.getTime());
+            testcaseData.status = TestcaseData.determineStatus(testcase);
             JAXBElement<Testsuite.Testcase.Error> error = testcase.getError();
             if (error != null) {
-                testcaseData.error = new ErrorData();
+                testcaseData.error = new FailureData();
                 testcaseData.error.message = error.getValue().getMessage();
                 testcaseData.error.type = error.getValue().getType();
                 testcaseData.error.value = error.getValue().getValue();
             }
             JAXBElement<Testsuite.Testcase.Skipped> skipped = testcase.getSkipped();
             if (skipped != null) {
-                testcaseData.skipped = new SkippedData();
+                testcaseData.skipped = new FailureData();
                 testcaseData.skipped.message = skipped.getValue().getMessage();
                 testcaseData.skipped.value = skipped.getValue().getValue();
             }
@@ -79,8 +85,24 @@ public class TestsuiteData implements PersistableWithProperties {
                 failureData.value = failure.getValue();
                 testcaseData.failure.add(failureData);
             }
+            for (Testsuite.Testcase.FlakyFailure failure : testcase.getFlakyFailure()) {
+                FailureData failureData = new FailureData();
+                failureData.message = failure.getMessage();
+                failureData.time = toDouble(failure.getTime());
+                failureData.type = failure.getType();
+                failureData.value = failure.getValue();
+                testcaseData.flakyFailures.add(failureData);
+            }
+            for (Testsuite.Testcase.FlakyError failure : testcase.getFlakyError()) {
+                FailureData failureData = new FailureData();
+                failureData.message = failure.getMessage();
+                failureData.time = toDouble(failure.getTime());
+                failureData.type = failure.getType();
+                failureData.value = failure.getValue();
+                testcaseData.flakyErrors.add(failureData);
+            }
             for (Testsuite.Testcase.RerunFailure failure : testcase.getRerunFailure()) {
-                RerunFailureData failureData = new RerunFailureData();
+                FailureData failureData = new FailureData();
                 failureData.message = failure.getMessage();
                 failureData.time = toDouble(failure.getTime());
                 failureData.type = failure.getType();
@@ -89,7 +111,32 @@ public class TestsuiteData implements PersistableWithProperties {
             }
             testsuiteData.testcases.add(testcaseData);
         }
+        testsuiteData.status = determineStatus(testsuiteData.testcases);
         return testsuiteData;
+    }
+
+    private static Status determineStatus(List<TestcaseData> testcases) {
+        Status status = Status.Success;
+        for (TestcaseData testcaseData : testcases) {
+            switch (testcaseData.getStatus()) {
+            case Failure:
+                return Status.Failure;
+            case Error:
+                status = Status.Error;
+                break;
+            case FlakyFailure:
+                if (status != Status.Error)
+                    status = Status.FlakyFailure;
+                break;
+            case FlakyError:
+                if (status != Status.Error && status != Status.FlakyFailure)
+                    status = Status.FlakyError;
+                break;
+            case Skipped:
+            case Success:
+            }
+        }
+        return status;
     }
 
     private static Double toDouble(String input) {
@@ -108,7 +155,27 @@ public class TestsuiteData implements PersistableWithProperties {
     }
 
     private static String toString(JAXBElement<?> input) {
-        return input != null && input.getValue() != null ? input.getValue().toString() : null;
+        if (input != null) {
+            Object value = input.getValue();
+            if (value instanceof Element) {
+                Element element = (Element) value;
+                return element.getTextContent();
+            } else {
+                throw new IllegalArgumentException("Input not known " + input);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public int compareTo(TestsuiteData o) {
+        if (this.equals(o) || status == null || status == o.status) {
+            return 0;
+        }
+        if (o.status == null) {
+            return 1;
+        }
+        return o.status.ordinal() - status.ordinal();
     }
 
     @Override

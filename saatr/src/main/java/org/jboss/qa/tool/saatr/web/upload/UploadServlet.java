@@ -92,7 +92,7 @@ public class UploadServlet extends HttpServlet {
                     break;
                 }
                 default:
-                    buildService.addIfAbsent(new PropertyData(name, value), build.getProperties());
+                    buildService.addIfAbsent(new PropertyData(name, value), build.getVariables());
                 }
             }
         }

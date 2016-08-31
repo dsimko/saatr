@@ -11,16 +11,16 @@ import org.bson.conversions.Bson;
 import org.jboss.qa.tool.saatr.entity.Build;
 import org.jboss.qa.tool.saatr.entity.TestcaseData;
 import org.jboss.qa.tool.saatr.entity.TestsuiteData;
-import org.jboss.qa.tool.saatr.web.WicketApplication;
 import org.jboss.qa.tool.saatr.web.page.AggregationPage.CollectionType;
 import org.jboss.qa.tool.saatr.web.page.AggregationPage.PredefinedPipelines;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.Block;
-import com.mongodb.MongoClient;
 import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import com.mongodb.util.JSON;
 
 /**
@@ -28,6 +28,9 @@ import com.mongodb.util.JSON;
  */
 @Component
 public class AggregationService {
+
+    @Autowired
+    private MongoDatabase mongoDatabase;
 
     // TODO move to mongo ------------------
     public static final List<CollectionType> COLLECTIONS = Arrays.asList(new CollectionType("Build", Build.class),
@@ -88,8 +91,7 @@ public class AggregationService {
         Object json = JSON.parse(query);
         StringBuilder result = new StringBuilder();
         if (json instanceof BasicDBList) {
-            MongoClient mongoClient = WicketApplication.get().getMongoClient();
-            MongoCollection<Document> suites = mongoClient.getDatabase("saatr").getCollection(database.getType().getSimpleName());
+            MongoCollection<Document> suites = mongoDatabase.getCollection(database.getType().getSimpleName());
             @SuppressWarnings("unchecked")
             AggregateIterable<Document> suitesIt = suites.aggregate((List<? extends Bson>) json);
             suitesIt.forEach(new Block<Document>() {

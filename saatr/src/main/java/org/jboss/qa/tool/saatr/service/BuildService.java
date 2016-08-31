@@ -1,8 +1,5 @@
 package org.jboss.qa.tool.saatr.service;
 
-import static org.jboss.qa.tool.saatr.entity.Build.Status.Failed;
-import static org.jboss.qa.tool.saatr.entity.Build.Status.Success;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +12,7 @@ import org.jboss.qa.tool.saatr.entity.Build.PropertyData;
 import org.jboss.qa.tool.saatr.entity.ConfigData.ConfigProperty;
 import org.jboss.qa.tool.saatr.entity.Persistable;
 import org.jboss.qa.tool.saatr.entity.PersistableWithProperties;
+import org.jboss.qa.tool.saatr.entity.TestcaseData;
 import org.jboss.qa.tool.saatr.entity.TestsuiteData;
 import org.jboss.qa.tool.saatr.entity.jaxb.surefire.Testsuite;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildProvider.BuildFilter;
@@ -26,6 +24,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.mongodb.client.MongoDatabase;
+
 /**
  * @author dsimko@redhat.com
  */
@@ -36,13 +36,11 @@ public class BuildService {
 
     @Autowired
     private Datastore datastore;
+    @Autowired
+    private MongoDatabase mongoDatabase;
 
     public void save(Build build) {
-        build.setStatus(Success);
         build.getTestsuites().forEach(ts -> {
-            if (isFailed(build, ts)) {
-                build.setStatus(Failed);
-            }
             ts.getTestcases().forEach(tc -> {
                 datastore.save(tc);
             });
@@ -66,6 +64,8 @@ public class BuildService {
 
     public void deleteAll() {
         datastore.delete(datastore.createQuery(Build.class));
+        datastore.delete(datastore.createQuery(TestsuiteData.class));
+        datastore.delete(datastore.createQuery(TestcaseData.class));
     }
 
     public void fillBuildByTestsuites(List<Testsuite> input, Build build) {
@@ -73,11 +73,12 @@ public class BuildService {
             TestsuiteData testsuiteData = TestsuiteData.create(testsuite);
 
             PropertyData.create(testsuite.getProperties()).forEach(p -> {
-                addIfAbsent(p, build.getProperties());
+                addIfAbsent(p, build.getSystemProperties());
             });
 
             build.getTestsuites().add(testsuiteData);
         }
+        build.setStatus(Build.determineStatus(build.getTestsuites()));
     }
 
     public void addIfAbsent(PropertyData property, Set<PropertyData> properties) {
@@ -129,11 +130,18 @@ public class BuildService {
         if (filter.getStatus() != null) {
             query.and(query.criteria("status").equal(filter.getStatus()));
         }
+        if (filter.getVariableName() != null) {
+            query.field("variables").hasThisElement(new PropertyData(filter.getVariableName(), filter.getVariableValue()));
+        }
         return query;
     }
 
-    private boolean isFailed(Build build, TestsuiteData ts) {
-        return build.getStatus() == Success && (ts.getErrors() > 0 || ts.getFailures() > 0);
+    public Iterable<String> getDistinctVariableNames() {
+        return mongoDatabase.getCollection(Build.class.getSimpleName()).distinct("variables.name", String.class);
+    }
+
+    public Iterable<String> getDistinctVariableValues() {
+        return mongoDatabase.getCollection(Build.class.getSimpleName()).distinct("variables.value", String.class);
     }
 
 }

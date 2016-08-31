@@ -12,6 +12,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.jboss.qa.tool.saatr.entity.TestsuiteData;
+import org.jboss.qa.tool.saatr.entity.TestsuiteData.Status;
 
 /**
  * 
@@ -29,18 +30,29 @@ public class TestsuitePanel extends GenericPanel<TestsuiteData> {
             @Override
             protected void onComponentTag(ComponentTag tag) {
                 super.onComponentTag(tag);
-                if (getModelObject().getErrors() > 0 || getModelObject().getFailures() > 0) {
+                switch (getModelObject().getStatus()) {
+                case Failure:
+                case Error:
                     tag.append("class", "panel-danger", " ");
-                } else if (getModelObject().getTests().equals(getModelObject().getSkipped())) {
+                    break;
+                case FlakyFailure:
+                case FlakyError:
                     tag.append("class", "panel-warning", " ");
-                } else {
+                    break;
+                case Success:
                     tag.append("class", "panel-success", " ");
+                    break;
                 }
             }
         };
+        if (getModelObject().getStatus() == Status.Failure || getModelObject().getStatus() == Status.Error) {
+            body = new BodyPanel("bodyPanel", model);
+        } else {
+            body = new EmptyPanel("bodyPanel");
+        }
         add(panel.setOutputMarkupId(true));
         panel.add(new Label("name"));
-        panel.add(body = new BodyPanel("bodyPanel", model));
+        panel.add(body);
         panel.add(new AjaxLink<Void>("collapse") {
             @Override
             public void onClick(AjaxRequestTarget target) {

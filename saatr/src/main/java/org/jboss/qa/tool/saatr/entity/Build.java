@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 public class Build implements PersistableWithProperties {
 
     public static enum Status {
-        Success, Failed
+        Success, SuccessWithFlakyFailure, SuccessWithFlakyError, Failed
     }
 
     @Id
@@ -37,7 +37,10 @@ public class Build implements PersistableWithProperties {
     private Long timestamp;
     private Status status;
     private Long duration;
+    private final Set<PropertyData> systemProperties = new TreeSet<>();
+    private final Set<PropertyData> variables = new TreeSet<>();
     private final Set<PropertyData> properties = new TreeSet<>();
+
     @Reference
     private final List<TestsuiteData> testsuites = new ArrayList<>();
 
@@ -91,6 +94,27 @@ public class Build implements PersistableWithProperties {
             }
             return this.name.compareToIgnoreCase(o.name);
         }
+    }
+
+    public static Status determineStatus(List<TestsuiteData> testsuites) {
+        Status status = Status.Success;
+        for (TestsuiteData testsuiteData : testsuites) {
+            switch (testsuiteData.getStatus()) {
+            case Failure:
+            case Error:
+                return Status.Failed;
+            case FlakyFailure:
+                status = Status.SuccessWithFlakyFailure;
+                break;
+            case FlakyError:
+                if (status != Status.SuccessWithFlakyFailure)
+                    status = Status.SuccessWithFlakyError;
+                break;
+            case Success:
+                break;
+            }
+        }
+        return status;
     }
 
     @Override

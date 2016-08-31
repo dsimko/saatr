@@ -48,5 +48,7 @@ public class BuildProvider extends SortableDataProvider<Build, String> {
         private Long buildNumber;
         private String jobName;
         private Status status;
+        private String variableName;
+        private String variableValue;
     }
 }

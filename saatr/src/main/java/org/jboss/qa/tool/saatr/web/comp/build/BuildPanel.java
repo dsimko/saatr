@@ -2,6 +2,7 @@ package org.jboss.qa.tool.saatr.web.comp.build;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +19,7 @@ import org.apache.wicket.util.convert.ConversionException;
 import org.apache.wicket.util.convert.IConverter;
 import org.jboss.qa.tool.saatr.entity.Build;
 import org.jboss.qa.tool.saatr.entity.TestsuiteData;
+import org.jboss.qa.tool.saatr.entity.Build.PropertyData;
 import org.jboss.qa.tool.saatr.web.comp.EntityModel;
 import org.jboss.qa.tool.saatr.web.comp.build.properties.PropertiesPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.testsuite.TestsuitePanel;
@@ -61,12 +63,41 @@ public class BuildPanel extends GenericPanel<Build> {
                 };
             }
         });
+        add(new RefreshingView<PropertyData>("systemProperties") {
+            @Override
+            protected Iterator<IModel<PropertyData>> getItemModels() {
+                return getModelObject().getSystemProperties().stream().sorted()
+                        .map(p -> (IModel<PropertyData>) new CompoundPropertyModel<>(p)).iterator();
+            }
+
+            @Override
+            protected void populateItem(Item<PropertyData> item) {
+                item.add(new Label("name"));
+                item.add(new Label("value"));
+            }
+        });
+        add(new RefreshingView<PropertyData>("variables") {
+            @Override
+            protected Iterator<IModel<PropertyData>> getItemModels() {
+                return getModelObject().getVariables().stream().sorted().map(p -> (IModel<PropertyData>) new CompoundPropertyModel<>(p))
+                        .iterator();
+            }
+
+            @Override
+            protected void populateItem(Item<PropertyData> item) {
+                item.add(new Label("name"));
+                item.add(new Label("value"));
+            }
+        });
+
         add(new PropertiesPanel<>("properties", model));
         add(new RefreshingView<TestsuiteData>("testsuites") {
             @Override
             protected Iterator<IModel<TestsuiteData>> getItemModels() {
                 List<IModel<TestsuiteData>> models = new ArrayList<>();
-                for (TestsuiteData testsuiteData : getModelObject().getTestsuites()) {
+                List<TestsuiteData> testsuites = getModelObject().getTestsuites();
+                Collections.sort(testsuites);
+                for (TestsuiteData testsuiteData : testsuites) {
                     models.add(new EntityModel<>(testsuiteData));
                 }
                 return models.iterator();

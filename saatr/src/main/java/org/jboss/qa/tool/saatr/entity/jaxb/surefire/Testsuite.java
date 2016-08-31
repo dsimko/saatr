@@ -5,11 +5,11 @@
 // Generated on: 2016.08.11 at 06:48:12 PM CEST 
 //
 
-
 package org.jboss.qa.tool.saatr.entity.jaxb.surefire;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -20,11 +20,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
-
 /**
- * <p>Java class for anonymous complex type.
+ * <p>
+ * Java class for anonymous complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -148,10 +150,7 @@ import javax.xml.bind.annotation.XmlValue;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "properties",
-    "testcase"
-})
+@XmlType(name = "", propOrder = { "properties", "testcase" })
 @XmlRootElement(name = "testsuite")
 public class Testsuite {
 
@@ -176,15 +175,16 @@ public class Testsuite {
      * Gets the value of the properties property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the properties property.
+     * This accessor method returns a reference to the live list, not a
+     * snapshot. Therefore any modification you make to the returned list will
+     * be present inside the JAXB object. This is why there is not a
+     * <CODE>set</CODE> method for the properties property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getProperties().add(newItem);
+     * getProperties().add(newItem);
      * </pre>
      * 
      * 
@@ -205,15 +205,16 @@ public class Testsuite {
      * Gets the value of the testcase property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the testcase property.
+     * This accessor method returns a reference to the live list, not a
+     * snapshot. Therefore any modification you make to the returned list will
+     * be present inside the JAXB object. This is why there is not a
+     * <CODE>set</CODE> method for the testcase property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getTestcase().add(newItem);
+     * getTestcase().add(newItem);
      * </pre>
      * 
      * 
@@ -233,10 +234,8 @@ public class Testsuite {
     /**
      * Gets the value of the name property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getName() {
         return name;
@@ -246,9 +245,8 @@ public class Testsuite {
      * Sets the value of the name property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is {@link String }
+     * 
      */
     public void setName(String value) {
         this.name = value;
@@ -257,10 +255,8 @@ public class Testsuite {
     /**
      * Gets the value of the time property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getTime() {
         return time;
@@ -270,9 +266,8 @@ public class Testsuite {
      * Sets the value of the time property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is {@link String }
+     * 
      */
     public void setTime(String value) {
         this.time = value;
@@ -281,10 +276,8 @@ public class Testsuite {
     /**
      * Gets the value of the tests property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getTests() {
         return tests;
@@ -294,9 +287,8 @@ public class Testsuite {
      * Sets the value of the tests property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is {@link String }
+     * 
      */
     public void setTests(String value) {
         this.tests = value;
@@ -305,10 +297,8 @@ public class Testsuite {
     /**
      * Gets the value of the errors property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getErrors() {
         return errors;
@@ -318,9 +308,8 @@ public class Testsuite {
      * Sets the value of the errors property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is {@link String }
+     * 
      */
     public void setErrors(String value) {
         this.errors = value;
@@ -329,10 +318,8 @@ public class Testsuite {
     /**
      * Gets the value of the skipped property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getSkipped() {
         return skipped;
@@ -342,9 +329,8 @@ public class Testsuite {
      * Sets the value of the skipped property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is {@link String }
+     * 
      */
     public void setSkipped(String value) {
         this.skipped = value;
@@ -353,10 +339,8 @@ public class Testsuite {
     /**
      * Gets the value of the failures property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getFailures() {
         return failures;
@@ -366,9 +350,8 @@ public class Testsuite {
      * Sets the value of the failures property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is {@link String }
+     * 
      */
     public void setFailures(String value) {
         this.failures = value;
@@ -377,10 +360,8 @@ public class Testsuite {
     /**
      * Gets the value of the group property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getGroup() {
         return group;
@@ -390,19 +371,20 @@ public class Testsuite {
      * Sets the value of the group property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is {@link String }
+     * 
      */
     public void setGroup(String value) {
         this.group = value;
     }
 
-
     /**
-     * <p>Java class for anonymous complex type.
+     * <p>
+     * Java class for anonymous complex type.
      * 
-     * <p>The following schema fragment specifies the expected content contained within this class.
+     * <p>
+     * The following schema fragment specifies the expected content contained
+     * within this class.
      * 
      * <pre>
      * &lt;complexType>
@@ -428,9 +410,7 @@ public class Testsuite {
      * 
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "property"
-    })
+    @XmlType(name = "", propOrder = { "property" })
     public static class Properties {
 
         protected List<Testsuite.Properties.Property> property;
@@ -439,15 +419,16 @@ public class Testsuite {
          * Gets the value of the property property.
          * 
          * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the property property.
+         * This accessor method returns a reference to the live list, not a
+         * snapshot. Therefore any modification you make to the returned list
+         * will be present inside the JAXB object. This is why there is not a
+         * <CODE>set</CODE> method for the property property.
          * 
          * <p>
          * For example, to add a new item, do as follows:
+         * 
          * <pre>
-         *    getProperty().add(newItem);
+         * getProperty().add(newItem);
          * </pre>
          * 
          * 
@@ -464,11 +445,13 @@ public class Testsuite {
             return this.property;
         }
 
-
         /**
-         * <p>Java class for anonymous complex type.
+         * <p>
+         * Java class for anonymous complex type.
          * 
-         * <p>The following schema fragment specifies the expected content contained within this class.
+         * <p>
+         * The following schema fragment specifies the expected content
+         * contained within this class.
          * 
          * <pre>
          * &lt;complexType>
@@ -495,10 +478,8 @@ public class Testsuite {
             /**
              * Gets the value of the name property.
              * 
-             * @return
-             *     possible object is
-             *     {@link String }
-             *     
+             * @return possible object is {@link String }
+             * 
              */
             public String getName() {
                 return name;
@@ -508,9 +489,8 @@ public class Testsuite {
              * Sets the value of the name property.
              * 
              * @param value
-             *     allowed object is
-             *     {@link String }
-             *     
+             *            allowed object is {@link String }
+             * 
              */
             public void setName(String value) {
                 this.name = value;
@@ -519,10 +499,8 @@ public class Testsuite {
             /**
              * Gets the value of the value property.
              * 
-             * @return
-             *     possible object is
-             *     {@link String }
-             *     
+             * @return possible object is {@link String }
+             * 
              */
             public String getValue() {
                 return value;
@@ -532,9 +510,8 @@ public class Testsuite {
              * Sets the value of the value property.
              * 
              * @param value
-             *     allowed object is
-             *     {@link String }
-             *     
+             *            allowed object is {@link String }
+             * 
              */
             public void setValue(String value) {
                 this.value = value;
@@ -544,11 +521,13 @@ public class Testsuite {
 
     }
 
-
     /**
-     * <p>Java class for anonymous complex type.
+     * <p>
+     * Java class for anonymous complex type.
      * 
-     * <p>The following schema fragment specifies the expected content contained within this class.
+     * <p>
+     * The following schema fragment specifies the expected content contained
+     * within this class.
      * 
      * <pre>
      * &lt;complexType>
@@ -629,18 +608,16 @@ public class Testsuite {
      * 
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "failure",
-        "rerunFailure",
-        "skipped",
-        "error",
-        "systemOut",
-        "systemErr"
-    })
+    @XmlType(name = "", propOrder = { "failure", "flakyError", "flakyFailure", "rerunFailure", "skipped", "error", "systemOut",
+            "systemErr" })
     public static class Testcase {
 
         @XmlElement(nillable = true)
         protected List<Testsuite.Testcase.Failure> failure;
+        @XmlElement(nillable = true)
+        protected List<Testsuite.Testcase.FlakyError> flakyError;
+        @XmlElement(nillable = true)
+        protected List<Testsuite.Testcase.FlakyFailure> flakyFailure;
         @XmlElement(nillable = true)
         protected List<Testsuite.Testcase.RerunFailure> rerunFailure;
         @XmlElementRef(name = "skipped", type = JAXBElement.class, required = false)
@@ -664,15 +641,16 @@ public class Testsuite {
          * Gets the value of the failure property.
          * 
          * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the failure property.
+         * This accessor method returns a reference to the live list, not a
+         * snapshot. Therefore any modification you make to the returned list
+         * will be present inside the JAXB object. This is why there is not a
+         * <CODE>set</CODE> method for the failure property.
          * 
          * <p>
          * For example, to add a new item, do as follows:
+         * 
          * <pre>
-         *    getFailure().add(newItem);
+         * getFailure().add(newItem);
          * </pre>
          * 
          * 
@@ -689,19 +667,34 @@ public class Testsuite {
             return this.failure;
         }
 
+        public List<Testsuite.Testcase.FlakyError> getFlakyError() {
+            if (flakyError == null) {
+                flakyError = new ArrayList<Testsuite.Testcase.FlakyError>();
+            }
+            return this.flakyError;
+        }
+
+        public List<Testsuite.Testcase.FlakyFailure> getFlakyFailure() {
+            if (flakyFailure == null) {
+                flakyFailure = new ArrayList<Testsuite.Testcase.FlakyFailure>();
+            }
+            return this.flakyFailure;
+        }
+
         /**
          * Gets the value of the rerunFailure property.
          * 
          * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the rerunFailure property.
+         * This accessor method returns a reference to the live list, not a
+         * snapshot. Therefore any modification you make to the returned list
+         * will be present inside the JAXB object. This is why there is not a
+         * <CODE>set</CODE> method for the rerunFailure property.
          * 
          * <p>
          * For example, to add a new item, do as follows:
+         * 
          * <pre>
-         *    getRerunFailure().add(newItem);
+         * getRerunFailure().add(newItem);
          * </pre>
          * 
          * 
@@ -721,10 +714,9 @@ public class Testsuite {
         /**
          * Gets the value of the skipped property.
          * 
-         * @return
-         *     possible object is
-         *     {@link JAXBElement }{@code <}{@link Testsuite.Testcase.Skipped }{@code >}
-         *     
+         * @return possible object is {@link JAXBElement }{@code <}
+         *         {@link Testsuite.Testcase.Skipped }{@code >}
+         * 
          */
         public JAXBElement<Testsuite.Testcase.Skipped> getSkipped() {
             return skipped;
@@ -734,9 +726,9 @@ public class Testsuite {
          * Sets the value of the skipped property.
          * 
          * @param value
-         *     allowed object is
-         *     {@link JAXBElement }{@code <}{@link Testsuite.Testcase.Skipped }{@code >}
-         *     
+         *            allowed object is {@link JAXBElement }{@code <}
+         *            {@link Testsuite.Testcase.Skipped }{@code >}
+         * 
          */
         public void setSkipped(JAXBElement<Testsuite.Testcase.Skipped> value) {
             this.skipped = value;
@@ -745,10 +737,9 @@ public class Testsuite {
         /**
          * Gets the value of the error property.
          * 
-         * @return
-         *     possible object is
-         *     {@link JAXBElement }{@code <}{@link Testsuite.Testcase.Error }{@code >}
-         *     
+         * @return possible object is {@link JAXBElement }{@code <}
+         *         {@link Testsuite.Testcase.Error }{@code >}
+         * 
          */
         public JAXBElement<Testsuite.Testcase.Error> getError() {
             return error;
@@ -758,9 +749,9 @@ public class Testsuite {
          * Sets the value of the error property.
          * 
          * @param value
-         *     allowed object is
-         *     {@link JAXBElement }{@code <}{@link Testsuite.Testcase.Error }{@code >}
-         *     
+         *            allowed object is {@link JAXBElement }{@code <}
+         *            {@link Testsuite.Testcase.Error }{@code >}
+         * 
          */
         public void setError(JAXBElement<Testsuite.Testcase.Error> value) {
             this.error = value;
@@ -769,10 +760,9 @@ public class Testsuite {
         /**
          * Gets the value of the systemOut property.
          * 
-         * @return
-         *     possible object is
-         *     {@link JAXBElement }{@code <}{@link Object }{@code >}
-         *     
+         * @return possible object is {@link JAXBElement }{@code <}{@link Object
+         *         }{@code >}
+         * 
          */
         public JAXBElement<Object> getSystemOut() {
             return systemOut;
@@ -782,9 +772,9 @@ public class Testsuite {
          * Sets the value of the systemOut property.
          * 
          * @param value
-         *     allowed object is
-         *     {@link JAXBElement }{@code <}{@link Object }{@code >}
-         *     
+         *            allowed object is {@link JAXBElement }{@code <}
+         *            {@link Object }{@code >}
+         * 
          */
         public void setSystemOut(JAXBElement<Object> value) {
             this.systemOut = value;
@@ -793,10 +783,9 @@ public class Testsuite {
         /**
          * Gets the value of the systemErr property.
          * 
-         * @return
-         *     possible object is
-         *     {@link JAXBElement }{@code <}{@link Object }{@code >}
-         *     
+         * @return possible object is {@link JAXBElement }{@code <}{@link Object
+         *         }{@code >}
+         * 
          */
         public JAXBElement<Object> getSystemErr() {
             return systemErr;
@@ -806,9 +795,9 @@ public class Testsuite {
          * Sets the value of the systemErr property.
          * 
          * @param value
-         *     allowed object is
-         *     {@link JAXBElement }{@code <}{@link Object }{@code >}
-         *     
+         *            allowed object is {@link JAXBElement }{@code <}
+         *            {@link Object }{@code >}
+         * 
          */
         public void setSystemErr(JAXBElement<Object> value) {
             this.systemErr = value;
@@ -817,10 +806,8 @@ public class Testsuite {
         /**
          * Gets the value of the name property.
          * 
-         * @return
-         *     possible object is
-         *     {@link String }
-         *     
+         * @return possible object is {@link String }
+         * 
          */
         public String getName() {
             return name;
@@ -830,9 +817,8 @@ public class Testsuite {
          * Sets the value of the name property.
          * 
          * @param value
-         *     allowed object is
-         *     {@link String }
-         *     
+         *            allowed object is {@link String }
+         * 
          */
         public void setName(String value) {
             this.name = value;
@@ -841,10 +827,8 @@ public class Testsuite {
         /**
          * Gets the value of the classname property.
          * 
-         * @return
-         *     possible object is
-         *     {@link String }
-         *     
+         * @return possible object is {@link String }
+         * 
          */
         public String getClassname() {
             return classname;
@@ -854,9 +838,8 @@ public class Testsuite {
          * Sets the value of the classname property.
          * 
          * @param value
-         *     allowed object is
-         *     {@link String }
-         *     
+         *            allowed object is {@link String }
+         * 
          */
         public void setClassname(String value) {
             this.classname = value;
@@ -865,10 +848,8 @@ public class Testsuite {
         /**
          * Gets the value of the group property.
          * 
-         * @return
-         *     possible object is
-         *     {@link String }
-         *     
+         * @return possible object is {@link String }
+         * 
          */
         public String getGroup() {
             return group;
@@ -878,9 +859,8 @@ public class Testsuite {
          * Sets the value of the group property.
          * 
          * @param value
-         *     allowed object is
-         *     {@link String }
-         *     
+         *            allowed object is {@link String }
+         * 
          */
         public void setGroup(String value) {
             this.group = value;
@@ -889,10 +869,8 @@ public class Testsuite {
         /**
          * Gets the value of the time property.
          * 
-         * @return
-         *     possible object is
-         *     {@link String }
-         *     
+         * @return possible object is {@link String }
+         * 
          */
         public String getTime() {
             return time;
@@ -902,19 +880,20 @@ public class Testsuite {
          * Sets the value of the time property.
          * 
          * @param value
-         *     allowed object is
-         *     {@link String }
-         *     
+         *            allowed object is {@link String }
+         * 
          */
         public void setTime(String value) {
             this.time = value;
         }
 
-
         /**
-         * <p>Java class for anonymous complex type.
+         * <p>
+         * Java class for anonymous complex type.
          * 
-         * <p>The following schema fragment specifies the expected content contained within this class.
+         * <p>
+         * The following schema fragment specifies the expected content
+         * contained within this class.
          * 
          * <pre>
          * &lt;complexType>
@@ -930,9 +909,7 @@ public class Testsuite {
          * 
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "value"
-        })
+        @XmlType(name = "", propOrder = { "value" })
         public static class Error {
 
             @XmlValue
@@ -945,10 +922,8 @@ public class Testsuite {
             /**
              * Gets the value of the value property.
              * 
-             * @return
-             *     possible object is
-             *     {@link String }
-             *     
+             * @return possible object is {@link String }
+             * 
              */
             public String getValue() {
                 return value;
@@ -958,9 +933,8 @@ public class Testsuite {
              * Sets the value of the value property.
              * 
              * @param value
-             *     allowed object is
-             *     {@link String }
-             *     
+             *            allowed object is {@link String }
+             * 
              */
             public void setValue(String value) {
                 this.value = value;
@@ -969,10 +943,8 @@ public class Testsuite {
             /**
              * Gets the value of the message property.
              * 
-             * @return
-             *     possible object is
-             *     {@link String }
-             *     
+             * @return possible object is {@link String }
+             * 
              */
             public String getMessage() {
                 return message;
@@ -982,9 +954,8 @@ public class Testsuite {
              * Sets the value of the message property.
              * 
              * @param value
-             *     allowed object is
-             *     {@link String }
-             *     
+             *            allowed object is {@link String }
+             * 
              */
             public void setMessage(String value) {
                 this.message = value;
@@ -993,10 +964,8 @@ public class Testsuite {
             /**
              * Gets the value of the type property.
              * 
-             * @return
-             *     possible object is
-             *     {@link String }
-             *     
+             * @return possible object is {@link String }
+             * 
              */
             public String getType() {
                 return type;
@@ -1006,9 +975,8 @@ public class Testsuite {
              * Sets the value of the type property.
              * 
              * @param value
-             *     allowed object is
-             *     {@link String }
-             *     
+             *            allowed object is {@link String }
+             * 
              */
             public void setType(String value) {
                 this.type = value;
@@ -1016,11 +984,13 @@ public class Testsuite {
 
         }
 
-
         /**
-         * <p>Java class for anonymous complex type.
+         * <p>
+         * Java class for anonymous complex type.
          * 
-         * <p>The following schema fragment specifies the expected content contained within this class.
+         * <p>
+         * The following schema fragment specifies the expected content
+         * contained within this class.
          * 
          * <pre>
          * &lt;complexType>
@@ -1043,9 +1013,7 @@ public class Testsuite {
          * 
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "value"
-        })
+        @XmlType(name = "", propOrder = { "value" })
         public static class Failure {
 
             @XmlValue
@@ -1060,10 +1028,8 @@ public class Testsuite {
             /**
              * Gets the value of the value property.
              * 
-             * @return
-             *     possible object is
-             *     {@link String }
-             *     
+             * @return possible object is {@link String }
+             * 
              */
             public String getValue() {
                 return value;
@@ -1073,9 +1039,8 @@ public class Testsuite {
              * Sets the value of the value property.
              * 
              * @param value
-             *     allowed object is
-             *     {@link String }
-             *     
+             *            allowed object is {@link String }
+             * 
              */
             public void setValue(String value) {
                 this.value = value;
@@ -1084,10 +1049,8 @@ public class Testsuite {
             /**
              * Gets the value of the message property.
              * 
-             * @return
-             *     possible object is
-             *     {@link String }
-             *     
+             * @return possible object is {@link String }
+             * 
              */
             public String getMessage() {
                 return message;
@@ -1097,9 +1060,8 @@ public class Testsuite {
              * Sets the value of the message property.
              * 
              * @param value
-             *     allowed object is
-             *     {@link String }
-             *     
+             *            allowed object is {@link String }
+             * 
              */
             public void setMessage(String value) {
                 this.message = value;
@@ -1108,10 +1070,8 @@ public class Testsuite {
             /**
              * Gets the value of the type property.
              * 
-             * @return
-             *     possible object is
-             *     {@link String }
-             *     
+             * @return possible object is {@link String }
+             * 
              */
             public String getType() {
                 return type;
@@ -1121,9 +1081,8 @@ public class Testsuite {
              * Sets the value of the type property.
              * 
              * @param value
-             *     allowed object is
-             *     {@link String }
-             *     
+             *            allowed object is {@link String }
+             * 
              */
             public void setType(String value) {
                 this.type = value;
@@ -1132,10 +1091,8 @@ public class Testsuite {
             /**
              * Gets the value of the time property.
              * 
-             * @return
-             *     possible object is
-             *     {@link String }
-             *     
+             * @return possible object is {@link String }
+             * 
              */
             public String getTime() {
                 return time;
@@ -1145,9 +1102,8 @@ public class Testsuite {
              * Sets the value of the time property.
              * 
              * @param value
-             *     allowed object is
-             *     {@link String }
-             *     
+             *            allowed object is {@link String }
+             * 
              */
             public void setTime(String value) {
                 this.time = value;
@@ -1155,11 +1111,211 @@ public class Testsuite {
 
         }
 
+        @XmlAccessorType(XmlAccessType.FIELD)
+        @XmlType(name = "", propOrder = { "value" })
+        public static class FlakyError {
+
+            @XmlValue
+            protected String value;
+            @XmlAttribute(name = "message")
+            protected String message;
+            @XmlAttribute(name = "type", required = true)
+            protected String type;
+            @XmlAttribute(name = "time")
+            protected String time;
+
+            /**
+             * Gets the value of the value property.
+             * 
+             * @return possible object is {@link String }
+             * 
+             */
+            public String getValue() {
+                return value;
+            }
+
+            /**
+             * Sets the value of the value property.
+             * 
+             * @param value
+             *            allowed object is {@link String }
+             * 
+             */
+            public void setValue(String value) {
+                this.value = value;
+            }
+
+            /**
+             * Gets the value of the message property.
+             * 
+             * @return possible object is {@link String }
+             * 
+             */
+            public String getMessage() {
+                return message;
+            }
+
+            /**
+             * Sets the value of the message property.
+             * 
+             * @param value
+             *            allowed object is {@link String }
+             * 
+             */
+            public void setMessage(String value) {
+                this.message = value;
+            }
+
+            /**
+             * Gets the value of the type property.
+             * 
+             * @return possible object is {@link String }
+             * 
+             */
+            public String getType() {
+                return type;
+            }
+
+            /**
+             * Sets the value of the type property.
+             * 
+             * @param value
+             *            allowed object is {@link String }
+             * 
+             */
+            public void setType(String value) {
+                this.type = value;
+            }
+
+            /**
+             * Gets the value of the time property.
+             * 
+             * @return possible object is {@link String }
+             * 
+             */
+            public String getTime() {
+                return time;
+            }
+
+            /**
+             * Sets the value of the time property.
+             * 
+             * @param value
+             *            allowed object is {@link String }
+             * 
+             */
+            public void setTime(String value) {
+                this.time = value;
+            }
+
+        }
+
+        @XmlAccessorType(XmlAccessType.FIELD)
+        @XmlType(name = "", propOrder = { "value" })
+        public static class FlakyFailure {
+
+            @XmlValue
+            protected String value;
+            @XmlAttribute(name = "message")
+            protected String message;
+            @XmlAttribute(name = "type", required = true)
+            protected String type;
+            @XmlAttribute(name = "time")
+            protected String time;
+
+            /**
+             * Gets the value of the value property.
+             * 
+             * @return possible object is {@link String }
+             * 
+             */
+            public String getValue() {
+                return value;
+            }
+
+            /**
+             * Sets the value of the value property.
+             * 
+             * @param value
+             *            allowed object is {@link String }
+             * 
+             */
+            public void setValue(String value) {
+                this.value = value;
+            }
+
+            /**
+             * Gets the value of the message property.
+             * 
+             * @return possible object is {@link String }
+             * 
+             */
+            public String getMessage() {
+                return message;
+            }
+
+            /**
+             * Sets the value of the message property.
+             * 
+             * @param value
+             *            allowed object is {@link String }
+             * 
+             */
+            public void setMessage(String value) {
+                this.message = value;
+            }
+
+            /**
+             * Gets the value of the type property.
+             * 
+             * @return possible object is {@link String }
+             * 
+             */
+            public String getType() {
+                return type;
+            }
+
+            /**
+             * Sets the value of the type property.
+             * 
+             * @param value
+             *            allowed object is {@link String }
+             * 
+             */
+            public void setType(String value) {
+                this.type = value;
+            }
+
+            /**
+             * Gets the value of the time property.
+             * 
+             * @return possible object is {@link String }
+             * 
+             */
+            public String getTime() {
+                return time;
+            }
+
+            /**
+             * Sets the value of the time property.
+             * 
+             * @param value
+             *            allowed object is {@link String }
+             * 
+             */
+            public void setTime(String value) {
+                this.time = value;
+            }
+
+        }
 
         /**
-         * <p>Java class for anonymous complex type.
+         * <p>
+         * Java class for anonymous complex type.
          * 
-         * <p>The following schema fragment specifies the expected content contained within this class.
+         * <p>
+         * The following schema fragment specifies the expected content
+         * contained within this class.
          * 
          * <pre>
          * &lt;complexType>
@@ -1182,9 +1338,7 @@ public class Testsuite {
          * 
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "value"
-        })
+        @XmlType(name = "", propOrder = { "value" })
         public static class RerunFailure {
 
             @XmlValue
@@ -1195,14 +1349,15 @@ public class Testsuite {
             protected String type;
             @XmlAttribute(name = "time")
             protected String time;
+            // @XmlElementRef(name = "system-out", type = JAXBElement.class,
+            // required = false)
+            // protected JAXBElement<Object> systemOut;
 
             /**
              * Gets the value of the value property.
              * 
-             * @return
-             *     possible object is
-             *     {@link String }
-             *     
+             * @return possible object is {@link String }
+             * 
              */
             public String getValue() {
                 return value;
@@ -1212,9 +1367,8 @@ public class Testsuite {
              * Sets the value of the value property.
              * 
              * @param value
-             *     allowed object is
-             *     {@link String }
-             *     
+             *            allowed object is {@link String }
+             * 
              */
             public void setValue(String value) {
                 this.value = value;
@@ -1223,10 +1377,8 @@ public class Testsuite {
             /**
              * Gets the value of the message property.
              * 
-             * @return
-             *     possible object is
-             *     {@link String }
-             *     
+             * @return possible object is {@link String }
+             * 
              */
             public String getMessage() {
                 return message;
@@ -1236,9 +1388,8 @@ public class Testsuite {
              * Sets the value of the message property.
              * 
              * @param value
-             *     allowed object is
-             *     {@link String }
-             *     
+             *            allowed object is {@link String }
+             * 
              */
             public void setMessage(String value) {
                 this.message = value;
@@ -1247,10 +1398,8 @@ public class Testsuite {
             /**
              * Gets the value of the type property.
              * 
-             * @return
-             *     possible object is
-             *     {@link String }
-             *     
+             * @return possible object is {@link String }
+             * 
              */
             public String getType() {
                 return type;
@@ -1260,9 +1409,8 @@ public class Testsuite {
              * Sets the value of the type property.
              * 
              * @param value
-             *     allowed object is
-             *     {@link String }
-             *     
+             *            allowed object is {@link String }
+             * 
              */
             public void setType(String value) {
                 this.type = value;
@@ -1271,10 +1419,8 @@ public class Testsuite {
             /**
              * Gets the value of the time property.
              * 
-             * @return
-             *     possible object is
-             *     {@link String }
-             *     
+             * @return possible object is {@link String }
+             * 
              */
             public String getTime() {
                 return time;
@@ -1284,21 +1430,30 @@ public class Testsuite {
              * Sets the value of the time property.
              * 
              * @param value
-             *     allowed object is
-             *     {@link String }
-             *     
+             *            allowed object is {@link String }
+             * 
              */
             public void setTime(String value) {
                 this.time = value;
             }
 
+            // public JAXBElement<Object> getSystemOut() {
+            // return systemOut;
+            // }
+            //
+            // public void setSystemOut(JAXBElement<Object> systemOut) {
+            // this.systemOut = systemOut;
+            // }
+
         }
 
-
         /**
-         * <p>Java class for anonymous complex type.
+         * <p>
+         * Java class for anonymous complex type.
          * 
-         * <p>The following schema fragment specifies the expected content contained within this class.
+         * <p>
+         * The following schema fragment specifies the expected content
+         * contained within this class.
          * 
          * <pre>
          * &lt;complexType>
@@ -1313,9 +1468,7 @@ public class Testsuite {
          * 
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "value"
-        })
+        @XmlType(name = "", propOrder = { "value" })
         public static class Skipped {
 
             @XmlValue
@@ -1326,10 +1479,8 @@ public class Testsuite {
             /**
              * Gets the value of the value property.
              * 
-             * @return
-             *     possible object is
-             *     {@link String }
-             *     
+             * @return possible object is {@link String }
+             * 
              */
             public String getValue() {
                 return value;
@@ -1339,9 +1490,8 @@ public class Testsuite {
              * Sets the value of the value property.
              * 
              * @param value
-             *     allowed object is
-             *     {@link String }
-             *     
+             *            allowed object is {@link String }
+             * 
              */
             public void setValue(String value) {
                 this.value = value;
@@ -1350,10 +1500,8 @@ public class Testsuite {
             /**
              * Gets the value of the message property.
              * 
-             * @return
-             *     possible object is
-             *     {@link String }
-             *     
+             * @return possible object is {@link String }
+             * 
              */
             public String getMessage() {
                 return message;
@@ -1363,9 +1511,8 @@ public class Testsuite {
              * Sets the value of the message property.
              * 
              * @param value
-             *     allowed object is
-             *     {@link String }
-             *     
+             *            allowed object is {@link String }
+             * 
              */
             public void setMessage(String value) {
                 this.message = value;
