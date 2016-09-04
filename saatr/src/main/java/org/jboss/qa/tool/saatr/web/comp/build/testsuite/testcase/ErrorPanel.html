@@ -14,12 +14,12 @@
 						<th scope="row">Message</th>
 						<td><span class="text-muted" wicket:id="error.message"></span></td>
 					</tr>
-					<tr wicket:enclosure="error.value">
-						<th scope="row">Value</th>
-						<td><pre class="text-muted pre-scrollable" wicket:id="error.value"></pre></td>
-					</tr>
 				</tbody>
 			</table>
+		</div>
+		<div wicket:enclosure="error.value">
+			<strong>Value</strong>
+			<pre class="text-muted pre-scrollable" wicket:id="error.value"></pre>
 		</div>
 	</wicket:panel>
 </body>

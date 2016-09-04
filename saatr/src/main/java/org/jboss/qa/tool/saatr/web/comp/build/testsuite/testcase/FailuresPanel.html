@@ -3,24 +3,26 @@
 <body>
 	<wicket:panel>
 		<strong wicket:id="name"></strong>
-		<div class="table-responsive">
-			<table wicket:id="failures" class="table">
-				<tbody>
-					<tr wicket:enclosure="type">
-						<th scope="row">Type</th>
-						<td><span class="text-muted" wicket:id="type"></span></td>
-					</tr>
-					<tr wicket:enclosure="message">
-						<th scope="row">Message</th>
-						<td><span class="text-muted" wicket:id="message"></span></td>
-					</tr>
-					<tr wicket:enclosure="value">
-						<th scope="row">Value</th>
-						<td><pre class="text-muted pre-scrollable" wicket:id="value"></pre></td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
+		<div wicket:id="failures">
+			<div class="table-responsive">
+				<table class="table">
+					<tbody>
+						<tr wicket:enclosure="type">
+							<th scope="row">Type</th>
+							<td><span class="text-muted" wicket:id="type"></span></td>
+						</tr>
+						<tr wicket:enclosure="message">
+							<th scope="row">Message</th>
+							<td><span class="text-muted" wicket:id="message"></span></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div wicket:enclosure="value">
+				<strong>Value</strong>
+				<pre class="text-muted pre-scrollable" wicket:id="value"></pre>
+			</div>
+		</div>	
 	</wicket:panel>
 </body>
 </html>
