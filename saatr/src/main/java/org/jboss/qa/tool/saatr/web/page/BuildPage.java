@@ -9,19 +9,23 @@ import javax.inject.Inject;
 
 import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AutoCompleteSettings;
 import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AutoCompleteTextField;
+import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.protocol.http.WebApplication;
 import org.jboss.qa.tool.saatr.entity.Build;
 import org.jboss.qa.tool.saatr.entity.Build.Status;
 import org.jboss.qa.tool.saatr.service.BuildService;
@@ -87,7 +91,18 @@ public class BuildPage extends BasePage<Build> {
         List<IColumn<Build, String>> columns = new ArrayList<IColumn<Build, String>>();
         columns.add(new PropertyColumn<Build, String>(new Model<String>("Job Name"), "jobName"));
         columns.add(new PropertyColumn<Build, String>(new Model<String>("Build Number"), "buildNumber"));
-        columns.add(new PropertyColumn<Build, String>(new Model<String>("Status"), "status"));
+        columns.add(new PropertyColumn<Build, String>(new Model<String>("Status"), "status") {
+
+            @Override
+            public void populateItem(final Item<ICellPopulator<Build>> item, final String componentId, final IModel<Build> rowModel) {
+                item.add(new Label(componentId, new AbstractReadOnlyModel<String>() {
+                    @Override
+                    public String getObject() {
+                        return getStatusHtml(getModelObject());
+                    }
+                }).setEscapeModelStrings(false));
+            }
+        });
 
         BootstrapTable<Build, String> dataTable = new BootstrapTable<Build, String>("table", columns, new BuildProvider(filter), 10,
                 getModel()) {
@@ -131,4 +146,26 @@ public class BuildPage extends BasePage<Build> {
         buildService.getDistinctVariableValues().forEach(val -> variableValues.add(val));
         LOG.debug("Loading variables filter took {} ms.", System.currentTimeMillis() - start);
     }
+
+    public static String getStatusHtml(Build build) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("<img src=\"");
+        builder.append(WebApplication.get().getServletContext().getContextPath());
+        builder.append("/images/");
+        if (build == null || build.getStatus() == null) {
+            builder.append("aborted16.png\" />");
+            return builder.toString();
+        } else {
+            Status status = build.getStatus();
+            if (status == Status.Failed) {
+                builder.append("yellow16.png");
+            } else {
+                builder.append("blue16.png");
+            }
+            builder.append("\" /> ");
+            builder.append(status);
+            return builder.toString();
+        }
+    }
+
 }

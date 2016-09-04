@@ -13,16 +13,18 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RefreshingView;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.convert.ConversionException;
 import org.apache.wicket.util.convert.IConverter;
 import org.jboss.qa.tool.saatr.entity.Build;
-import org.jboss.qa.tool.saatr.entity.TestsuiteData;
 import org.jboss.qa.tool.saatr.entity.Build.PropertyData;
+import org.jboss.qa.tool.saatr.entity.TestsuiteData;
 import org.jboss.qa.tool.saatr.web.comp.EntityModel;
 import org.jboss.qa.tool.saatr.web.comp.build.properties.PropertiesPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.testsuite.TestsuitePanel;
+import org.jboss.qa.tool.saatr.web.page.BuildPage;
 
 /**
  * @author dsimko@redhat.com
@@ -35,7 +37,12 @@ public class BuildPanel extends GenericPanel<Build> {
         super(id, new CompoundPropertyModel<>(model));
         add(new Label("jobName"));
         add(new Label("buildNumber"));
-        add(new Label("status"));
+        add(new Label("status", new AbstractReadOnlyModel<String>() {
+            @Override
+            public String getObject() {
+                return BuildPage.getStatusHtml(getModelObject());
+            }
+        }).setEscapeModelStrings(false));
         add(new Label("timestamp") {
             @Override
             public <C> IConverter<C> getConverter(Class<C> type) {
