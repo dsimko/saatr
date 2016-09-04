@@ -4,6 +4,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -144,7 +145,7 @@ public class TestsuiteData implements PersistableWithProperties, Comparable<Test
             return null;
         }
         try {
-            return NumberFormat.getInstance().parse(input).doubleValue();
+            return NumberFormat.getInstance(Locale.ENGLISH).parse(input).doubleValue();
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
