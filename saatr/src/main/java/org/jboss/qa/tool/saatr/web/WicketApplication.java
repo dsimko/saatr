@@ -21,6 +21,8 @@ import org.mongodb.morphia.Morphia;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import com.mongodb.MongoClient;
@@ -34,10 +36,11 @@ import com.mongodb.client.MongoDatabase;
  *
  */
 @Component
-public class WicketApplication extends WebApplication implements BeanFactoryPostProcessor {
+public class WicketApplication extends WebApplication implements BeanFactoryPostProcessor, ApplicationContextAware {
 
     private MongoClient mongoClient;
     private MongoDatabase mongoDatabase;
+    private ApplicationContext applicationContext;
 
     @Override
     public Class<? extends Page> getHomePage() {
@@ -61,7 +64,7 @@ public class WicketApplication extends WebApplication implements BeanFactoryPost
         getMarkupSettings().setStripWicketTags(true);
         getMarkupSettings().setDefaultMarkupEncoding(CharEncoding.UTF_8);
 
-        getComponentInstantiationListeners().add(new SpringComponentInjector(this));
+        getComponentInstantiationListeners().add(new SpringComponentInjector(this, applicationContext));
     }
 
     private Datastore createDatastore() {
@@ -93,6 +96,11 @@ public class WicketApplication extends WebApplication implements BeanFactoryPost
 
     public static WicketApplication get() {
         return (WicketApplication) WebApplication.get();
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 
 }

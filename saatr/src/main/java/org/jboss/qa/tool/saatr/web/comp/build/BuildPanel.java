@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import org.apache.wicket.extensions.markup.html.basic.ILinkParser;
+import org.apache.wicket.extensions.markup.html.basic.SmartLinkLabel;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.markup.repeater.Item;
@@ -21,6 +23,7 @@ import org.apache.wicket.util.convert.IConverter;
 import org.jboss.qa.tool.saatr.entity.Build;
 import org.jboss.qa.tool.saatr.entity.Build.PropertyData;
 import org.jboss.qa.tool.saatr.entity.TestsuiteData;
+import org.jboss.qa.tool.saatr.web.comp.SmartLinkParser;
 import org.jboss.qa.tool.saatr.web.comp.EntityModel;
 import org.jboss.qa.tool.saatr.web.comp.build.properties.PropertiesPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.testsuite.TestsuitePanel;
@@ -93,7 +96,12 @@ public class BuildPanel extends GenericPanel<Build> {
             @Override
             protected void populateItem(Item<PropertyData> item) {
                 item.add(new Label("name"));
-                item.add(new Label("value"));
+                item.add(new SmartLinkLabel("value") {
+                    @Override
+                    protected ILinkParser getLinkParser() {
+                        return new SmartLinkParser();
+                    }
+                });
             }
         });
 
