@@ -1,29 +1,33 @@
 package org.jboss.qa.tool.saatr.web;
 
 import org.apache.wicket.util.tester.WicketTester;
-import org.jboss.qa.tool.saatr.web.page.ConfigPage;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-/**
- * Simple test using the WicketTester
- */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath:/applicationContext.xml" })
 public class TestHomePage {
+
+    @Autowired
+    private WicketApplication wicketApplication;
+
     private WicketTester tester;
 
     @Before
     public void setUp() {
-        tester = new WicketTester(new WicketApplication());
+        tester = new WicketTester(wicketApplication);
     }
 
     @Test
-    @Ignore
     public void homepageRendersSuccessfully() {
         // start and render the test page
-        tester.startPage(ConfigPage.class);
+        tester.startPage(wicketApplication.getHomePage());
 
         // assert rendered page class
-        tester.assertRenderedPage(ConfigPage.class);
+        tester.assertRenderedPage(wicketApplication.getHomePage());
     }
 }
