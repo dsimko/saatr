@@ -6,6 +6,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.util.string.Strings;
 import org.jboss.qa.tool.saatr.entity.TestcaseData;
 import org.jboss.qa.tool.saatr.web.comp.HideableLabel;
 import org.jboss.qa.tool.saatr.web.comp.build.properties.PropertiesPanel;
@@ -44,7 +45,16 @@ public class TestcasePanel extends GenericPanel<TestcaseData> {
         };
         add(panel);
         panel.add(new Label("name"));
-        panel.add(new Label("time"));
+        panel.add(new Label("time") {
+            @Override
+            protected void onConfigure() {
+                super.onConfigure();
+                String value = getDefaultModelObjectAsString();
+                if (Strings.isEmpty(value) || "0".equals(value)) {
+                    setVisible(false);
+                }
+            }
+        });
         panel.add(new SkippedPanel("skipped"));
         panel.add(new ErrorPanel("error"));
         panel.add(new FailuresPanel("failure", "Failures"));
