@@ -64,7 +64,7 @@ public class AggregationService {
     private static String createMostFailingTestsuitePipelines() {
         StringBuilder builder = new StringBuilder();
         builder.append("[\n");
-        builder.append(" { $match: { $and: [ { \"errors\" : { $gt: 0 }  },  { \"failures\" : { $gt: 0 }  }  ] } },\n");
+        builder.append(" { $match: { $or: [ { \"status\" : { $eq: \"Failure\" } }, { \"status\" : { $eq: \"Error\" } } ] } },\n");
         builder.append(" { $group: {_id: \"$name\", count: {$sum: 1 } } },\n");
         builder.append(" { $sort: {count : -1 } },\n");
         builder.append(" { $limit: 20 },\n");
@@ -76,7 +76,7 @@ public class AggregationService {
     private static String createMostFailingTestcasePipelines() {
         StringBuilder builder = new StringBuilder();
         builder.append("[\n");
-        builder.append(" { $match: { $or: [ { \"error\" : { $ne: null }  },  { \"failure\" : { $ne: null } }  ] } },\n");
+        builder.append(" { $match: { $or: [ { \"status\" : { $eq: \"Failure\" } }, { \"status\" : { $eq: \"Error\" } } ] } },\n");
         builder.append(" { $group: { _id: { name: \"$name\", classname: \"$classname\"  }, count: {$sum: 1 } } },\n");
         builder.append(" { $sort: {count : -1 } },\n");
         builder.append(" { $limit: 20 },\n");
