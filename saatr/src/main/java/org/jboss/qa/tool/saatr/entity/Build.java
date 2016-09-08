@@ -41,7 +41,7 @@ public class Build implements PersistableWithProperties {
     private final Set<PropertyData> variables = new TreeSet<>();
     private final Set<PropertyData> properties = new TreeSet<>();
 
-    @Reference
+    @Reference(idOnly = true)
     private final List<TestsuiteData> testsuites = new ArrayList<>();
 
     @Data
