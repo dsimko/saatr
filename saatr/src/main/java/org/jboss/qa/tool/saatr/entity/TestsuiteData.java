@@ -34,7 +34,7 @@ public class TestsuiteData implements PersistableWithProperties, Comparable<Test
     @Id
     private ObjectId id;
     private final Set<PropertyData> properties = new TreeSet<>();
-    @Reference
+    @Reference(idOnly = true)
     private final List<TestcaseData> testcases = new ArrayList<>();
     private String name;
     private Double time;
