@@ -40,6 +40,7 @@ public class AggregationService {
     static {
         List<PredefinedPipelines> buildQueries = new ArrayList<>();
         buildQueries.add(new PredefinedPipelines("The most failing job", createMostFailingJobPipelines()));
+        buildQueries.add(new PredefinedPipelines("Find jobs which contains certain Testcase", createFindJobsWithTestcasePipelines()));
         PREDEFINED_PIPELINES.put(Build.class, buildQueries);
         List<PredefinedPipelines> testsuiteQueries = new ArrayList<>();
         testsuiteQueries.add(new PredefinedPipelines("The most failing testsuite", createMostFailingTestsuitePipelines()));
@@ -81,6 +82,24 @@ public class AggregationService {
         builder.append(" { $sort: {count : -1 } },\n");
         builder.append(" { $limit: 20 },\n");
         builder.append(" { $project: {ClassName : \"$_id.classname\", Name : \"$_id.name\", Count: \"$count\", _id : 0 } }\n");
+        builder.append("]");
+        return builder.toString();
+    }
+
+    private static String createFindJobsWithTestcasePipelines() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[\n");
+        builder.append(" { $unwind: \"$testsuites\" },\n");
+        builder.append(" { $lookup:\n");
+        builder.append("   { from: \"TestsuiteData\",\n");
+        builder.append("     localField: \"testsuites\",\n");
+        builder.append("     foreignField: \"_id\",\n");
+        builder.append("     as: \"ts\"\n");
+        builder.append("   }\n");
+        builder.append(" },\n");
+        builder.append(" { $match: { \"ts.name\" : { $eq: \"@TESTCASE_NAME@\" } } },\n");
+        builder.append(" { $group: { _id: { jobName: \"$jobName\", testcaseName: \"$ts.name\" } } },\n");
+        builder.append(" { $project: {Job_Name: \"$_id.jobName\", TestcaseName: \"$_id.testcaseName\", _id : 0 } }\n");
         builder.append("]");
         return builder.toString();
     }
