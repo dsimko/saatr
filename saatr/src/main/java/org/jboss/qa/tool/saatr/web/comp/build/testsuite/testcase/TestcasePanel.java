@@ -7,7 +7,7 @@ import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.string.Strings;
-import org.jboss.qa.tool.saatr.entity.TestcaseData;
+import org.jboss.qa.tool.saatr.domain.build.TestcaseDocument;
 import org.jboss.qa.tool.saatr.web.comp.HideableLabel;
 import org.jboss.qa.tool.saatr.web.comp.build.properties.PropertiesPanel;
 
@@ -17,9 +17,9 @@ import org.jboss.qa.tool.saatr.web.comp.build.properties.PropertiesPanel;
  *
  */
 @SuppressWarnings("serial")
-public class TestcasePanel extends GenericPanel<TestcaseData> {
+public class TestcasePanel extends GenericPanel<TestcaseDocument> {
 
-    public TestcasePanel(String id, final IModel<TestcaseData> model) {
+    public TestcasePanel(String id, final IModel<TestcaseDocument> model) {
         super(id, new CompoundPropertyModel<>(model));
         WebMarkupContainer panel = new WebMarkupContainer("panel") {
             @Override

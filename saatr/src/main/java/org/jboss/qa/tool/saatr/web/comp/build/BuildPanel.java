@@ -20,12 +20,12 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.convert.ConversionException;
 import org.apache.wicket.util.convert.IConverter;
-import org.jboss.qa.tool.saatr.entity.Build;
-import org.jboss.qa.tool.saatr.entity.Build.PropertyData;
-import org.jboss.qa.tool.saatr.entity.TestsuiteData;
+import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
+import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument;
+import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
 import org.jboss.qa.tool.saatr.web.comp.SmartLinkParser;
-import org.jboss.qa.tool.saatr.web.comp.EntityModel;
 import org.jboss.qa.tool.saatr.web.comp.build.properties.PropertiesPanel;
+import org.jboss.qa.tool.saatr.web.comp.build.testsuite.TestsuiteModel;
 import org.jboss.qa.tool.saatr.web.comp.build.testsuite.TestsuitePanel;
 import org.jboss.qa.tool.saatr.web.page.BuildPage;
 
@@ -34,9 +34,9 @@ import org.jboss.qa.tool.saatr.web.page.BuildPage;
  *
  */
 @SuppressWarnings("serial")
-public class BuildPanel extends GenericPanel<Build> {
+public class BuildPanel extends GenericPanel<BuildDocument> {
 
-    public BuildPanel(String id, final IModel<Build> model) {
+    public BuildPanel(String id, final IModel<BuildDocument> model) {
         super(id, new CompoundPropertyModel<>(model));
         add(new Label("jobName"));
         add(new Label("buildNumber"));
@@ -106,20 +106,22 @@ public class BuildPanel extends GenericPanel<Build> {
         });
 
         add(new PropertiesPanel<>("properties", model));
-        add(new RefreshingView<TestsuiteData>("testsuites") {
+        add(new RefreshingView<TestsuiteDocument>("testsuites") {
             @Override
-            protected Iterator<IModel<TestsuiteData>> getItemModels() {
-                List<IModel<TestsuiteData>> models = new ArrayList<>();
-                List<TestsuiteData> testsuites = getModelObject().getTestsuites();
+            protected Iterator<IModel<TestsuiteDocument>> getItemModels() {
+                List<IModel<TestsuiteDocument>> models = new ArrayList<>();
+                List<TestsuiteDocument> testsuites = getModelObject().getTestsuites();
                 Collections.sort(testsuites);
-                for (TestsuiteData testsuiteData : testsuites) {
-                    models.add(new EntityModel<>(testsuiteData));
+                for (TestsuiteDocument testsuiteData : testsuites) {
+                    // models.add(new EntityModel<>(testsuiteData));
+                    // FIXME
+                    models.add(new TestsuiteModel(testsuiteData));
                 }
                 return models.iterator();
             }
 
             @Override
-            protected void populateItem(Item<TestsuiteData> item) {
+            protected void populateItem(Item<TestsuiteDocument> item) {
                 item.add(new TestsuitePanel("testsuite", item.getModel()));
             }
         });

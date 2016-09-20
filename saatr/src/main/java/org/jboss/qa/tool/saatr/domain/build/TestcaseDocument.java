@@ -1,30 +1,27 @@
-package org.jboss.qa.tool.saatr.entity;
+package org.jboss.qa.tool.saatr.domain.build;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.UUID;
 
-import org.bson.types.ObjectId;
-import org.jboss.qa.tool.saatr.entity.Build.PropertyData;
-import org.jboss.qa.tool.saatr.entity.jaxb.surefire.Testsuite.Testcase;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
+import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
+import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
+import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite.Testcase;
+import org.springframework.data.annotation.Transient;
 
 import lombok.Data;
 
 @Data
-@Entity
 @SuppressWarnings("serial")
-public class TestcaseData implements PersistableWithProperties {
+public class TestcaseDocument implements DocumentWithProperties<UUID> {
 
     public static enum Status {
         Success, Skipped, FlakyFailure, Failure, FlakyError, Error
     }
 
-    @Id
-    ObjectId id;
     final Set<PropertyData> properties = new TreeSet<>();
     final List<FailureData> failure = new ArrayList<>();
     final List<FailureData> flakyErrors = new ArrayList<>();
@@ -39,6 +36,11 @@ public class TestcaseData implements PersistableWithProperties {
     String group;
     Double time;
     Status status;
+    final UUID id = UUID.randomUUID();
+    @Transient
+    private Integer index;
+    @Transient
+    private boolean dirty;
 
     @Data
     public static class FailureData implements Serializable {
@@ -52,7 +54,7 @@ public class TestcaseData implements PersistableWithProperties {
 
     @Override
     public String toString() {
-        return "TestcaseData [id=" + id + ", name=" + name + ", classname=" + classname + "]";
+        return "TestcaseData [name=" + name + ", classname=" + classname + "]";
     }
 
     public static Status determineStatus(Testcase testcase) {

@@ -13,9 +13,9 @@ import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
-import org.jboss.qa.tool.saatr.entity.ConfigData;
-import org.jboss.qa.tool.saatr.entity.PersistableWithProperties;
-import org.jboss.qa.tool.saatr.service.BuildService;
+import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
+import org.jboss.qa.tool.saatr.domain.config.ConfigDocument;
+import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 import org.jboss.qa.tool.saatr.web.comp.build.properties.PropertiesPanel.RefreshPropertiesPanelEvent;
 
 import lombok.Data;
@@ -25,10 +25,10 @@ import lombok.Data;
  *
  */
 @SuppressWarnings("serial")
-class PropertiesEditPanel<T extends PersistableWithProperties> extends GenericPanel<T> {
+class PropertiesEditPanel<T extends DocumentWithProperties<?>> extends GenericPanel<T> {
 
     @Inject
-    private BuildService buildService;
+    private BuildRepository buildRepository;
 
     private Panel formPanel;
     private final WebMarkupContainer wmc;
@@ -67,7 +67,7 @@ class PropertiesEditPanel<T extends PersistableWithProperties> extends GenericPa
         Object payload = event.getPayload();
         if (payload instanceof AddInfoSubmitEvent) {
             AddInfoSubmitEvent eventPayload = (AddInfoSubmitEvent) payload;
-            buildService.addOrUpdateProperties(getModelObject(), eventPayload.getConfig().getProperties());
+            buildRepository.addOrUpdateProperties(getModelObject(), eventPayload.getConfig().getProperties());
             resetPanel();
             send(this, Broadcast.BUBBLE, new RefreshPropertiesPanelEvent(eventPayload.getTarget()));
         } else if (payload instanceof ResetPanelEvent) {
@@ -90,7 +90,7 @@ class PropertiesEditPanel<T extends PersistableWithProperties> extends GenericPa
     @Data
     static class AddInfoSubmitEvent implements Serializable {
 
-        private final ConfigData config;
+        private final ConfigDocument config;
         private final AjaxRequestTarget target;
     }
 

@@ -5,7 +5,7 @@
 // Generated on: 2016.08.11 at 01:02:15 PM CEST 
 //
 
-package org.jboss.qa.tool.saatr.entity.jaxb.surefire;
+package org.jboss.qa.tool.saatr.jaxb.surefire;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;

@@ -8,17 +8,17 @@ import javax.inject.Inject;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.injection.Injector;
 import org.apache.wicket.model.IModel;
-import org.jboss.qa.tool.saatr.entity.ConfigData;
-import org.jboss.qa.tool.saatr.service.ConfigService;
-import org.jboss.qa.tool.saatr.web.comp.EntityModel;
+import org.jboss.qa.tool.saatr.domain.config.ConfigDocument;
+import org.jboss.qa.tool.saatr.repo.config.ConfigRepository;
+import org.jboss.qa.tool.saatr.web.comp.DocumentModel;
 
 import lombok.Data;
 
 @SuppressWarnings("serial")
-public class ConfigProvider extends SortableDataProvider<ConfigData, String> {
+public class ConfigProvider extends SortableDataProvider<ConfigDocument, String> {
 
     @Inject
-    private ConfigService configService;
+    private ConfigRepository configRepository;
 
     private final IModel<ConfigFilter> filter;
 
@@ -28,18 +28,18 @@ public class ConfigProvider extends SortableDataProvider<ConfigData, String> {
     }
 
     @Override
-    public Iterator<ConfigData> iterator(long first, long count) {
-        return configService.query(first, count, filter.getObject());
+    public Iterator<ConfigDocument> iterator(long first, long count) {
+        return configRepository.query(first, count, filter.getObject());
     }
 
     @Override
     public long size() {
-        return configService.count(filter.getObject());
+        return configRepository.count(filter.getObject());
     }
 
     @Override
-    public IModel<ConfigData> model(ConfigData configData) {
-        return new EntityModel<ConfigData>(configData);
+    public IModel<ConfigDocument> model(ConfigDocument configData) {
+        return new DocumentModel<ConfigDocument>(configData);
     }
 
     @Data

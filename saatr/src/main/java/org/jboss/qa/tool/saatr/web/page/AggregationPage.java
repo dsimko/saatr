@@ -16,7 +16,7 @@ import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.jboss.qa.tool.saatr.entity.PersistableWithProperties;
+import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
 import org.jboss.qa.tool.saatr.service.AggregationService;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapFeedbackPanel;
 import org.slf4j.Logger;
@@ -88,7 +88,7 @@ public class AggregationPage extends BasePage<Void> {
     @AllArgsConstructor
     public static class CollectionType implements Serializable {
         private String name;
-        private Class<? extends PersistableWithProperties> type;
+        private Class<? extends DocumentWithProperties<?>> type;
     }
 
     @Data

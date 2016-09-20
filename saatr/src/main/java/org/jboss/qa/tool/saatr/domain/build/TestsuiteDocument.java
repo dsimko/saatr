@@ -1,4 +1,4 @@
-package org.jboss.qa.tool.saatr.entity;
+package org.jboss.qa.tool.saatr.domain.build;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -7,35 +7,30 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.UUID;
 
 import javax.xml.bind.JAXBElement;
 
-import org.bson.types.ObjectId;
-import org.jboss.qa.tool.saatr.entity.Build.PropertyData;
-import org.jboss.qa.tool.saatr.entity.TestcaseData.FailureData;
-import org.jboss.qa.tool.saatr.entity.jaxb.surefire.Testsuite;
-import org.jboss.qa.tool.saatr.entity.jaxb.surefire.Testsuite.Testcase;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.Reference;
+import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
+import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
+import org.jboss.qa.tool.saatr.domain.build.TestcaseDocument.FailureData;
+import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite;
+import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite.Testcase;
+import org.springframework.data.annotation.Transient;
 import org.w3c.dom.Element;
 
 import lombok.Data;
 
 @Data
-@Entity
 @SuppressWarnings("serial")
-public class TestsuiteData implements PersistableWithProperties, Comparable<TestsuiteData> {
+public class TestsuiteDocument implements DocumentWithProperties<UUID>, Comparable<TestsuiteDocument> {
 
     public static enum Status {
         Success, FlakyError, FlakyFailure, Error, Failure
     }
 
-    @Id
-    private ObjectId id;
     private final Set<PropertyData> properties = new TreeSet<>();
-    @Reference(idOnly = true)
-    private final List<TestcaseData> testcases = new ArrayList<>();
+    private final List<TestcaseDocument> testcases = new ArrayList<>();
     private String name;
     private Double time;
     private Integer tests;
@@ -44,10 +39,13 @@ public class TestsuiteData implements PersistableWithProperties, Comparable<Test
     private Integer failures;
     private String group;
     private Status status;
+    private final UUID id = UUID.randomUUID();
+    @Transient
+    private boolean dirty;
 
-    public static TestsuiteData create(Testsuite testsuite) {
+    public static TestsuiteDocument create(Testsuite testsuite) {
 
-        TestsuiteData testsuiteData = new TestsuiteData();
+        TestsuiteDocument testsuiteData = new TestsuiteDocument();
         testsuiteData.name = testsuite.getName();
         testsuiteData.time = toDouble(testsuite.getTime());
         testsuiteData.tests = toInteger(testsuite.getTests());
@@ -57,14 +55,14 @@ public class TestsuiteData implements PersistableWithProperties, Comparable<Test
         testsuiteData.group = testsuite.getGroup();
 
         for (Testcase testcase : testsuite.getTestcase()) {
-            TestcaseData testcaseData = new TestcaseData();
+            TestcaseDocument testcaseData = new TestcaseDocument();
             testcaseData.systemOut = toString(testcase.getSystemOut());
             testcaseData.systemErr = toString(testcase.getSystemErr());
             testcaseData.name = testcase.getName();
             testcaseData.classname = testcase.getClassname();
             testcaseData.group = testcase.getGroup();
             testcaseData.time = toDouble(testcase.getTime());
-            testcaseData.status = TestcaseData.determineStatus(testcase);
+            testcaseData.status = TestcaseDocument.determineStatus(testcase);
             JAXBElement<Testsuite.Testcase.Error> error = testcase.getError();
             if (error != null) {
                 testcaseData.error = new FailureData();
@@ -116,9 +114,9 @@ public class TestsuiteData implements PersistableWithProperties, Comparable<Test
         return testsuiteData;
     }
 
-    private static Status determineStatus(List<TestcaseData> testcases) {
+    private static Status determineStatus(List<TestcaseDocument> testcases) {
         Status status = Status.Success;
-        for (TestcaseData testcaseData : testcases) {
+        for (TestcaseDocument testcaseData : testcases) {
             switch (testcaseData.getStatus()) {
             case Failure:
                 return Status.Failure;
@@ -169,7 +167,7 @@ public class TestsuiteData implements PersistableWithProperties, Comparable<Test
     }
 
     @Override
-    public int compareTo(TestsuiteData o) {
+    public int compareTo(TestsuiteDocument o) {
         if (this.equals(o) || status == null || status == o.status) {
             return 0;
         }
@@ -181,6 +179,6 @@ public class TestsuiteData implements PersistableWithProperties, Comparable<Test
 
     @Override
     public String toString() {
-        return "TestsuiteData [id=" + id + ", name=" + name + "]";
+        return "TestsuiteData [name=" + name + "]";
     }
 }

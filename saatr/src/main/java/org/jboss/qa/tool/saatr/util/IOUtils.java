@@ -2,60 +2,35 @@ package org.jboss.qa.tool.saatr.util;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
-import java.net.URL;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.jboss.qa.tool.saatr.entity.jaxb.surefire.Testsuite;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 
  * @author dsimko@redhat.com
  *
  */
+@Slf4j
 public class IOUtils {
-
-    private static final Logger LOG = LoggerFactory.getLogger(IOUtils.class);
-
-    /**
-     * Loads properties from a classpath resource
-     *
-     * @param resource
-     * @return loaded properties
-     */
-    public static Properties loadFromClassPath(String resource) {
-        URL url = IOUtils.class.getClassLoader().getResource(resource);
-        if (url == null) {
-            throw new IllegalStateException("Could not find classpath properties resource: " + resource);
-        }
-        try {
-            Properties props = new Properties();
-            InputStream is = url.openStream();
-            try {
-                props.load(url.openStream());
-            } finally {
-                is.close();
-            }
-            return props;
-        } catch (IOException e) {
-            throw new RuntimeException("Could not read properties at classpath resource: " + resource, e);
-        }
-    }
 
     public static List<Testsuite> unzipAndUnmarshalTestsuite(InputStream inputStream) throws Exception {
         ZipInputStream zipInputStream = new ZipInputStream(inputStream);
@@ -64,7 +39,7 @@ public class IOUtils {
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
         ZipEntry entry;
         while ((entry = zipInputStream.getNextEntry()) != null) {
-            LOG.debug("Unzipping: " + entry.getName());
+            log.debug("Unzipping: " + entry.getName());
             byte[] buffer = new byte[4096];
             try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
                 BufferedOutputStream bos = new BufferedOutputStream(outputStream, buffer.length);
@@ -87,6 +62,36 @@ public class IOUtils {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Unmarshal XML data from the specified file and return the resulting
+     * object.
+     * 
+     * @param xml
+     * @return
+     * @throws JAXBException
+     */
+    @SuppressWarnings("unchecked")
+	public static <T> T unmarshal(InputStream inputStream, Class<T> entityClass) throws JAXBException {
+        JAXBContext jaxbContext = JAXBContext.newInstance(entityClass);
+        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+        T document = (T) jaxbUnmarshaller.unmarshal(inputStream);
+        return document;
+    }
+
+    public static <T> String marshal(T t, Class<T> entityClass) {
+        StringWriter sw = new StringWriter();
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(entityClass);
+            Marshaller marshaller = jaxbContext.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_ENCODING, StandardCharsets.UTF_8.name());
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            marshaller.marshal(t, sw);
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
+        return sw.toString();
     }
 
 }
