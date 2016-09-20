@@ -5,26 +5,26 @@ import javax.inject.Inject;
 import org.apache.wicket.injection.Injector;
 import org.apache.wicket.model.IModel;
 import org.bson.types.ObjectId;
-import org.jboss.qa.tool.saatr.entity.Persistable;
-import org.jboss.qa.tool.saatr.service.BuildService;
+import org.jboss.qa.tool.saatr.domain.DocumentWithID;
+import org.springframework.data.mongodb.core.MongoOperations;
 
 @SuppressWarnings("serial")
-public class EntityModel<T extends Persistable<ObjectId>> implements IModel<T> {
+public class DocumentModel<T extends DocumentWithID<ObjectId>> implements IModel<T> {
 
     @Inject
-    private BuildService service;
+    private MongoOperations operations;
 
     private ObjectId id;
     private Class<T> type;
 
     private transient T entity;
 
-    public EntityModel(T entity) {
+    public DocumentModel(T entity) {
         Injector.get().inject(this);
         setObject(entity);
     }
 
-    public EntityModel(Class<T> clazz, ObjectId id) {
+    public DocumentModel(Class<T> clazz, ObjectId id) {
         Injector.get().inject(this);
         this.type = clazz;
         this.id = id;
@@ -33,7 +33,7 @@ public class EntityModel<T extends Persistable<ObjectId>> implements IModel<T> {
     @Override
     public T getObject() {
         if (entity == null && id != null) {
-            entity = service.findById(id, type);
+            entity = operations.findById(id, type);
         }
         return entity;
     }

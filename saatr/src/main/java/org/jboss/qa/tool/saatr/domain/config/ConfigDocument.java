@@ -1,4 +1,4 @@
-package org.jboss.qa.tool.saatr.entity;
+package org.jboss.qa.tool.saatr.domain.config;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -7,9 +7,10 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.bson.types.ObjectId;
-import org.jboss.qa.tool.saatr.entity.jaxb.config.Config;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
+import org.jboss.qa.tool.saatr.domain.DocumentWithID;
+import org.jboss.qa.tool.saatr.jaxb.config.Config;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,17 +20,17 @@ import lombok.NoArgsConstructor;
  * @author dsimko@redhat.com
  */
 @Data
-@Entity
+@Document
 @SuppressWarnings("serial")
-public class ConfigData implements Persistable<ObjectId> {
+public class ConfigDocument implements DocumentWithID<ObjectId> {
 
     @Id
     private ObjectId id;
     private String name;
     private final Set<ConfigProperty> properties = new TreeSet<>();
 
-    public static ConfigData create(Config config, String name) {
-        ConfigData configData = new ConfigData();
+    public static ConfigDocument create(Config config, String name) {
+        ConfigDocument configData = new ConfigDocument();
         configData.setName(name);
         config.getProperties().forEach(p -> {
             configData.properties.add(new ConfigProperty(p.getName(), p.getValue(), p.getOptions()));

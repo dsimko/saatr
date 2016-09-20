@@ -1,4 +1,4 @@
-package org.jboss.qa.tool.saatr.entity;
+package org.jboss.qa.tool.saatr.domain.build;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -7,10 +7,12 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.bson.types.ObjectId;
-import org.jboss.qa.tool.saatr.entity.jaxb.surefire.Testsuite.Properties;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.Reference;
+import org.jboss.qa.tool.saatr.domain.DocumentWithID;
+import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
+import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite.Properties;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,28 +23,30 @@ import lombok.NoArgsConstructor;
  * @author dsimko@redhat.com
  *
  */
-@Entity
 @Data
+@Document(collection=BuildDocument.COLLECTION_NAME)
 @SuppressWarnings("serial")
-public class Build implements PersistableWithProperties {
+public class BuildDocument implements DocumentWithProperties<ObjectId>, DocumentWithID<ObjectId> {
 
+	public static final String COLLECTION_NAME = "builds";
+	
     public static enum Status {
         Success, SuccessWithFlakyFailure, SuccessWithFlakyError, Failed
     }
 
     @Id
     private ObjectId id;
+    @Indexed
     private String jobName;
     private Long buildNumber;
     private Long timestamp;
+    @Indexed
     private Status status;
     private Long duration;
     private final Set<PropertyData> systemProperties = new TreeSet<>();
     private final Set<PropertyData> variables = new TreeSet<>();
     private final Set<PropertyData> properties = new TreeSet<>();
-
-    @Reference(idOnly = true)
-    private final List<TestsuiteData> testsuites = new ArrayList<>();
+    private final List<TestsuiteDocument> testsuites = new ArrayList<>();
 
     @Data
     @NoArgsConstructor
@@ -96,9 +100,9 @@ public class Build implements PersistableWithProperties {
         }
     }
 
-    public static Status determineStatus(List<TestsuiteData> testsuites) {
+    public static Status determineStatus(List<TestsuiteDocument> testsuites) {
         Status status = Status.Success;
-        for (TestsuiteData testsuiteData : testsuites) {
+        for (TestsuiteDocument testsuiteData : testsuites) {
             switch (testsuiteData.getStatus()) {
             case Failure:
             case Error:
@@ -133,7 +137,7 @@ public class Build implements PersistableWithProperties {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Build other = (Build) obj;
+        BuildDocument other = (BuildDocument) obj;
         if (id == null) {
             if (other.id != null)
                 return false;

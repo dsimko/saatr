@@ -17,16 +17,17 @@ import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.jboss.qa.tool.saatr.entity.ConfigData;
-import org.jboss.qa.tool.saatr.entity.jaxb.config.Config;
-import org.jboss.qa.tool.saatr.service.ConfigService;
-import org.jboss.qa.tool.saatr.web.comp.EntityModel;
+import org.jboss.qa.tool.saatr.domain.config.ConfigDocument;
+import org.jboss.qa.tool.saatr.jaxb.config.Config;
+import org.jboss.qa.tool.saatr.repo.config.ConfigRepository;
+import org.jboss.qa.tool.saatr.util.IOUtils;
+import org.jboss.qa.tool.saatr.web.comp.DocumentModel;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapFeedbackPanel;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapTable;
 import org.jboss.qa.tool.saatr.web.comp.config.ConfigProvider;
 import org.jboss.qa.tool.saatr.web.comp.config.ConfigProvider.ConfigFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Form page for basic configuration.
@@ -34,26 +35,25 @@ import org.slf4j.LoggerFactory;
  * @author dsimko@redhat.com
  *
  */
+@Slf4j
 @SuppressWarnings("serial")
-public class ConfigPage extends BasePage<ConfigData> {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ConfigPage.class);
+public class ConfigPage extends BasePage<ConfigDocument> {
 
     private IModel<ConfigFilter> filter = Model.of(new ConfigFilter());
 
     @Inject
-    private ConfigService configService;
+    private ConfigRepository configRepository;
 
     public ConfigPage() {
-        super(new EntityModel<ConfigData>(ConfigData.class, null));
+        super(new DocumentModel<ConfigDocument>(ConfigDocument.class, null));
         setOutputMarkupId(true);
-        List<IColumn<ConfigData, String>> columns = new ArrayList<IColumn<ConfigData, String>>();
-        columns.add(new PropertyColumn<ConfigData, String>(new Model<String>("Name"), "name"));
-        BootstrapTable<ConfigData, String> dataTable = new BootstrapTable<ConfigData, String>("table", columns, new ConfigProvider(filter),
+        List<IColumn<ConfigDocument, String>> columns = new ArrayList<IColumn<ConfigDocument, String>>();
+        columns.add(new PropertyColumn<ConfigDocument, String>(new Model<String>("Name"), "name"));
+        BootstrapTable<ConfigDocument, String> dataTable = new BootstrapTable<ConfigDocument, String>("table", columns, new ConfigProvider(filter),
                 10, getModel()) {
 
             @Override
-            protected void selectRow(ConfigData configData) {
+            protected void selectRow(ConfigDocument configData) {
                 setModelObject(configData);
             }
         };
@@ -71,13 +71,13 @@ public class ConfigPage extends BasePage<ConfigData> {
                     if (upload != null) {
                         Config config;
                         try (InputStream inputStream = upload.getInputStream()) {
-                            config = configService.unmarshal(inputStream);
+                            config = IOUtils.unmarshal(inputStream, Config.class);
                         }
-                        ConfigData configData = ConfigData.create(config, upload.getClientFileName());
-                        configService.save(configData);
+                        ConfigDocument configData = ConfigDocument.create(config, upload.getClientFileName());
+                        configRepository.save(configData);
                     }
                 } catch (Exception e) {
-                    LOG.warn(e.getMessage(), e);
+                    log.warn(e.getMessage(), e);
                     error(e.getMessage());
                 }
             }
@@ -86,7 +86,7 @@ public class ConfigPage extends BasePage<ConfigData> {
         add(new Label("content", new AbstractReadOnlyModel<String>() {
             @Override
             public String getObject() {
-                return configService.marshal(Config.create(getModelObject()));
+                return IOUtils.marshal(Config.create(getModelObject()), Config.class);
             }
         }) {
             @Override

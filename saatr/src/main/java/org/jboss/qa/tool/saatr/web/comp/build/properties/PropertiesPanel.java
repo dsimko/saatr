@@ -8,7 +8,7 @@ import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.IModel;
-import org.jboss.qa.tool.saatr.entity.PersistableWithProperties;
+import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
 
 import lombok.Data;
 
@@ -17,7 +17,7 @@ import lombok.Data;
  *
  */
 @SuppressWarnings("serial")
-public class PropertiesPanel<T extends PersistableWithProperties> extends GenericPanel<T> {
+public class PropertiesPanel<T extends DocumentWithProperties<?>> extends GenericPanel<T> {
 
     private WebMarkupContainer panel;
 

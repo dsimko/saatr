@@ -1,7 +1,7 @@
 package org.jboss.qa.tool.saatr.web.comp.build.testsuite.testcase;
 
 import org.apache.wicket.markup.html.panel.GenericPanel;
-import org.jboss.qa.tool.saatr.entity.TestcaseData.FailureData;
+import org.jboss.qa.tool.saatr.domain.build.TestcaseDocument.FailureData;
 import org.jboss.qa.tool.saatr.web.comp.HideableLabel;
 
 /**

@@ -1,4 +1,4 @@
-package org.jboss.qa.tool.saatr.entity.jaxb.config;
+package org.jboss.qa.tool.saatr.jaxb.config;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.jboss.qa.tool.saatr.entity.ConfigData;
+import org.jboss.qa.tool.saatr.domain.config.ConfigDocument;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -70,7 +70,7 @@ public class Config implements Serializable {
         }
     }
 
-    public static Config create(ConfigData configData) {
+    public static Config create(ConfigDocument configData) {
         Config config = new Config();
         configData.getProperties().forEach(p -> config.properties.add(new Property(p.getName(), p.getValue(), p.getOptions())));
         return config;

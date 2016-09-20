@@ -10,7 +10,7 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RefreshingView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.jboss.qa.tool.saatr.entity.TestcaseData.FailureData;
+import org.jboss.qa.tool.saatr.domain.build.TestcaseDocument.FailureData;
 import org.jboss.qa.tool.saatr.web.comp.HideableLabel;
 
 /**

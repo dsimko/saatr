@@ -6,21 +6,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bson.Document;
-import org.bson.conversions.Bson;
-import org.jboss.qa.tool.saatr.entity.Build;
-import org.jboss.qa.tool.saatr.entity.TestcaseData;
-import org.jboss.qa.tool.saatr.entity.TestsuiteData;
+import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
+import org.jboss.qa.tool.saatr.domain.build.TestcaseDocument;
+import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument;
 import org.jboss.qa.tool.saatr.web.page.AggregationPage.CollectionType;
 import org.jboss.qa.tool.saatr.web.page.AggregationPage.PredefinedPipelines;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
 
+import com.mongodb.AggregationOutput;
 import com.mongodb.BasicDBList;
-import com.mongodb.Block;
-import com.mongodb.client.AggregateIterable;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
 /**
@@ -29,25 +27,28 @@ import com.mongodb.util.JSON;
 @Component
 public class AggregationService {
 
+    // @Autowired
+    // private MongoDatabase mongoDatabase;
+
     @Autowired
-    private MongoDatabase mongoDatabase;
+    private MongoTemplate operations;
 
     // TODO move to mongo ------------------
-    public static final List<CollectionType> COLLECTIONS = Arrays.asList(new CollectionType("Build", Build.class),
-            new CollectionType("Testsuite", TestsuiteData.class), new CollectionType("Testcase", TestcaseData.class));
+    public static final List<CollectionType> COLLECTIONS = Arrays.asList(new CollectionType("Build", BuildDocument.class),
+            new CollectionType("Testsuite", TestsuiteDocument.class), new CollectionType("Testcase", TestcaseDocument.class));
     public static final Map<Class<?>, List<PredefinedPipelines>> PREDEFINED_PIPELINES = new HashMap<>();
 
     static {
         List<PredefinedPipelines> buildQueries = new ArrayList<>();
         buildQueries.add(new PredefinedPipelines("The most failing job", createMostFailingJobPipelines()));
         buildQueries.add(new PredefinedPipelines("Find jobs which contains certain Testcase", createFindJobsWithTestcasePipelines()));
-        PREDEFINED_PIPELINES.put(Build.class, buildQueries);
+        PREDEFINED_PIPELINES.put(BuildDocument.class, buildQueries);
         List<PredefinedPipelines> testsuiteQueries = new ArrayList<>();
         testsuiteQueries.add(new PredefinedPipelines("The most failing testsuite", createMostFailingTestsuitePipelines()));
-        PREDEFINED_PIPELINES.put(TestsuiteData.class, testsuiteQueries);
+        PREDEFINED_PIPELINES.put(TestsuiteDocument.class, testsuiteQueries);
         List<PredefinedPipelines> testcaseQueries = new ArrayList<>();
         testcaseQueries.add(new PredefinedPipelines("The most failing testcase", createMostFailingTestcasePipelines()));
-        PREDEFINED_PIPELINES.put(TestcaseData.class, testcaseQueries);
+        PREDEFINED_PIPELINES.put(TestcaseDocument.class, testcaseQueries);
     }
 
     private static String createMostFailingJobPipelines() {
@@ -107,18 +108,36 @@ public class AggregationService {
     // ------move-to-mongo---------------------
 
     public String aggregate(String query, CollectionType database) {
+
+        // Aggregation agg = newAggregation(Aggregation.unwind("testsuites"),
+        // Aggregation.lookup("testsuiteData", "testsuites._id", "_id", "ts"),
+        // match(Criteria.where("ts.name")
+        // .is("org.jboss.as.test.jbossts.crashrec.higherload.test.TxInconsistentWhenHigherLoadTestCase(jta)")),
+        // group("jobName").count().as("total"));
+        //
+        // AggregationResults<Build> builds = operations.aggregate(agg, "build",
+        // Build.class);
+        // return builds.getRawResults().toString();
+
+        // AggregationResults<HostingCount> groupResults =
+        // mongoTemplate.aggregate(agg, Domain.class, HostingCount.class);
+        // List<HostingCount> result = groupResults.getMappedResults();
+
         Object json = JSON.parse(query);
         StringBuilder result = new StringBuilder();
         if (json instanceof BasicDBList) {
-            MongoCollection<Document> suites = mongoDatabase.getCollection(database.getType().getSimpleName());
+            DBCollection suites = operations.getCollection("build");
             @SuppressWarnings("unchecked")
-            AggregateIterable<Document> suitesIt = suites.aggregate((List<? extends Bson>) json);
-            suitesIt.forEach(new Block<Document>() {
-                @Override
-                public void apply(final Document document) {
-                    result.append(document.toJson() + "\n");
-                }
+            AggregationOutput suitesIt = suites.aggregate((List<? extends DBObject>) json);
+            suitesIt.results().forEach(c -> {
+                result.append(c.toString() + "\n");
             });
+            // suitesIt.results().forEach(new Block<Document>() {
+            // @Override
+            // public void apply(final Document document) {
+            // result.append(document.toJson() + "\n");
+            // }
+            // });
         }
         return result.toString();
     }

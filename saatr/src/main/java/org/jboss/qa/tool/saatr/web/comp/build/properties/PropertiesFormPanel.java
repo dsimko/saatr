@@ -10,9 +10,9 @@ import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.jboss.qa.tool.saatr.entity.ConfigData;
-import org.jboss.qa.tool.saatr.entity.ConfigData.ConfigProperty;
-import org.jboss.qa.tool.saatr.entity.jaxb.config.Config;
+import org.jboss.qa.tool.saatr.domain.config.ConfigDocument;
+import org.jboss.qa.tool.saatr.domain.config.ConfigDocument.ConfigProperty;
+import org.jboss.qa.tool.saatr.jaxb.config.Config;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapFeedbackPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.properties.PropertiesEditPanel.AddInfoSubmitEvent;
 import org.jboss.qa.tool.saatr.web.comp.build.properties.PropertiesEditPanel.ResetPanelEvent;
@@ -22,9 +22,9 @@ import org.jboss.qa.tool.saatr.web.comp.build.properties.PropertiesEditPanel.Res
  *
  */
 @SuppressWarnings("serial")
-class PropertiesFormPanel extends GenericPanel<ConfigData> {
+class PropertiesFormPanel extends GenericPanel<ConfigDocument> {
 
-    public PropertiesFormPanel(String id, final IModel<ConfigData> model) {
+    public PropertiesFormPanel(String id, final IModel<ConfigDocument> model) {
         super(id, model);
         Form<Config> form = new StatelessForm<Config>("form");
         form.add(new BootstrapFeedbackPanel("feedback"));

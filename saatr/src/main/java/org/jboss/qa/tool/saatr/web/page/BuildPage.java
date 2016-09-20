@@ -26,36 +26,35 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.WebApplication;
-import org.jboss.qa.tool.saatr.entity.Build;
-import org.jboss.qa.tool.saatr.entity.Build.Status;
-import org.jboss.qa.tool.saatr.service.BuildService;
-import org.jboss.qa.tool.saatr.web.comp.EntityModel;
+import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
+import org.jboss.qa.tool.saatr.domain.build.BuildDocument.Status;
+import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
+import org.jboss.qa.tool.saatr.web.comp.DocumentModel;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapTabbedPanel;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapTable;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildJsonPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildProvider;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildProvider.BuildFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author dsimko@redhat.com
  */
 @SuppressWarnings("serial")
-public class BuildPage extends BasePage<Build> {
-
-    private static final Logger LOG = LoggerFactory.getLogger(BuildPage.class);
+@Slf4j
+public class BuildPage extends BasePage<BuildDocument> {
 
     private IModel<BuildFilter> filter = Model.of(new BuildFilter());
     private List<String> variableNames = new ArrayList<>();
     private List<String> variableValues = new ArrayList<>();
 
     @Inject
-    private BuildService buildService;
+    private BuildRepository buildRepository;
 
     public BuildPage() {
-        super(new EntityModel<Build>(Build.class, null));
+        super(new DocumentModel<BuildDocument>(BuildDocument.class, null));
         initVariables();
         Form<BuildFilter> form = new Form<>("form", new CompoundPropertyModel<BuildFilter>(filter));
         form.add(new TextField<>("jobName"));
@@ -88,13 +87,13 @@ public class BuildPage extends BasePage<Build> {
             }
         });
         add(form);
-        List<IColumn<Build, String>> columns = new ArrayList<IColumn<Build, String>>();
-        columns.add(new PropertyColumn<Build, String>(new Model<String>("Job Name"), "jobName"));
-        columns.add(new PropertyColumn<Build, String>(new Model<String>("Build Number"), "buildNumber"));
-        columns.add(new PropertyColumn<Build, String>(new Model<String>("Status"), "status") {
+        List<IColumn<BuildDocument, String>> columns = new ArrayList<IColumn<BuildDocument, String>>();
+        columns.add(new PropertyColumn<BuildDocument, String>(new Model<String>("Job Name"), "jobName"));
+        columns.add(new PropertyColumn<BuildDocument, String>(new Model<String>("Build Number"), "buildNumber"));
+        columns.add(new PropertyColumn<BuildDocument, String>(new Model<String>("Status"), "status") {
 
             @Override
-            public void populateItem(final Item<ICellPopulator<Build>> item, final String componentId, final IModel<Build> rowModel) {
+            public void populateItem(final Item<ICellPopulator<BuildDocument>> item, final String componentId, final IModel<BuildDocument> rowModel) {
                 item.add(new Label(componentId, new AbstractReadOnlyModel<String>() {
                     @Override
                     public String getObject() {
@@ -104,11 +103,11 @@ public class BuildPage extends BasePage<Build> {
             }
         });
 
-        BootstrapTable<Build, String> dataTable = new BootstrapTable<Build, String>("table", columns, new BuildProvider(filter), 10,
+        BootstrapTable<BuildDocument, String> dataTable = new BootstrapTable<BuildDocument, String>("table", columns, new BuildProvider(filter), 10,
                 getModel()) {
 
             @Override
-            protected void selectRow(Build build) {
+            protected void selectRow(BuildDocument build) {
                 setModelObject(build);
             }
         };
@@ -142,12 +141,12 @@ public class BuildPage extends BasePage<Build> {
 
     private void initVariables() {
         long start = System.currentTimeMillis();
-        buildService.getDistinctVariableNames().forEach(name -> variableNames.add(name));
-        buildService.getDistinctVariableValues().forEach(val -> variableValues.add(val));
-        LOG.debug("Loading variables filter took {} ms.", System.currentTimeMillis() - start);
+        buildRepository.findDistinctVariableNames().forEach(name -> variableNames.add(name));
+        buildRepository.findDistinctVariableValues().forEach(val -> variableValues.add(val));
+        log.debug("Loading variables filter took {} ms.", System.currentTimeMillis() - start);
     }
 
-    public static String getStatusHtml(Build build) {
+    public static String getStatusHtml(BuildDocument build) {
         StringBuilder builder = new StringBuilder();
         builder.append("<img src=\"");
         builder.append(WebApplication.get().getServletContext().getContextPath());

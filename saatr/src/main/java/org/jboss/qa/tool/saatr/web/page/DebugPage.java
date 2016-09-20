@@ -3,8 +3,8 @@ package org.jboss.qa.tool.saatr.web.page;
 import javax.inject.Inject;
 
 import org.apache.wicket.markup.html.link.Link;
-import org.jboss.qa.tool.saatr.service.BuildService;
-import org.jboss.qa.tool.saatr.service.ConfigService;
+import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
+import org.jboss.qa.tool.saatr.repo.config.ConfigRepository;
 
 /**
  * @author dsimko@redhat.com
@@ -13,21 +13,21 @@ import org.jboss.qa.tool.saatr.service.ConfigService;
 public class DebugPage extends BasePage<Void> {
 
     @Inject
-    private BuildService buildService;
+    private BuildRepository buildRepository;
     @Inject
-    private ConfigService configService;
+    private ConfigRepository configRepository;
 
     public DebugPage() {
         add(new Link<Void>("deleteAllBuilds") {
             @Override
             public void onClick() {
-                buildService.deleteAll();
+                buildRepository.deleteAll();
             }
         });
         add(new Link<Void>("deleteAllConfigs") {
             @Override
             public void onClick() {
-                configService.deleteAll();
+                configRepository.deleteAll();
             }
         });
 

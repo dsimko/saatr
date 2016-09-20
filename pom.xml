@@ -8,6 +8,13 @@
 	<packaging>pom</packaging>
 	<name>Simple tool for storing and analyzing tests results</name>
 
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.4.0.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
 	<modules>
 		<module>saatr</module>
 		<module>saatr-uploader</module>
@@ -16,6 +23,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
 
 		<maven.compiler.optimize>true</maven.compiler.optimize>
 		<maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
@@ -24,31 +32,10 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 
 		<version.wicket>7.4.0</version.wicket>
-		<version.spring>4.3.2.RELEASE</version.spring>
-		<version.mongo>3.2.2</version.mongo>
-		<version.mongodb.morphia>1.2.1</version.mongodb.morphia>
-		<version.lombok>1.16.10</version.lombok>
-		<version.jackson>2.7.5</version.jackson>
-		<version.log4j>2.5</version.log4j>
-		<version.junit>4.12</version.junit>
-		<version.javax.servlet>3.1.0</version.javax.servlet>
-		<version.jetty9>9.2.13.v20150730</version.jetty9>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
-
-			<dependency>
-				<groupId>org.jboss.qa</groupId>
-				<artifactId>saatr-jenkins</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.jboss.qa</groupId>
-				<artifactId>saatr-spi</artifactId>
-				<version>${project.version}</version>
-			</dependency>
 
 			<!-- WICKET DEPENDENCIES -->
 			<dependency>
@@ -68,94 +55,8 @@
 				<artifactId>wicket-spring</artifactId>
 				<version>${version.wicket}</version>
 			</dependency>
-
-			<!-- OTHER DEPENDENCIES -->
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-core</artifactId>
-				<version>${version.spring}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-web</artifactId>
-				<version>${version.spring}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-test</artifactId>
-				<version>${version.spring}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.mongodb</groupId>
-				<artifactId>mongo-java-driver</artifactId>
-				<version>${version.mongo}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.mongodb.morphia</groupId>
-				<artifactId>morphia</artifactId>
-				<version>${version.mongodb.morphia}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.projectlombok</groupId>
-				<artifactId>lombok</artifactId>
-				<version>${version.lombok}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.fasterxml.jackson.core</groupId>
-				<artifactId>jackson-databind</artifactId>
-				<version>${version.jackson}</version>
-			</dependency>
-			<dependency>
-				<groupId>javax.servlet</groupId>
-				<artifactId>javax.servlet-api</artifactId>
-				<version>${version.javax.servlet}</version>
-			</dependency>
-			<!-- LOGGING DEPENDENCIES - LOG4J -->
-			<dependency>
-				<groupId>org.apache.logging.log4j</groupId>
-				<artifactId>log4j-slf4j-impl</artifactId>
-				<version>${version.log4j}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.logging.log4j</groupId>
-				<artifactId>log4j-core</artifactId>
-				<version>${version.log4j}</version>
-			</dependency>
-
-			<!-- JUNIT DEPENDENCY FOR TESTING -->
-			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>${version.junit}</version>
-				<scope>test</scope>
-			</dependency>
-
-			<!-- JETTY DEPENDENCIES FOR TESTING -->
-			<dependency>
-				<groupId>org.eclipse.jetty.aggregate</groupId>
-				<artifactId>jetty-all</artifactId>
-				<version>${version.jetty9}</version>
-				<scope>test</scope>
-			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
-	<dependencies>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j-impl</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
 
 	<build>
 		<resources>
@@ -190,20 +91,5 @@
 				</excludes>
 			</testResource>
 		</testResources>
-		<plugins>
-			<plugin>
-				<inherited>true</inherited>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.5.1</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-					<encoding>UTF-8</encoding>
-					<showWarnings>true</showWarnings>
-					<showDeprecation>true</showDeprecation>
-				</configuration>
-			</plugin>
-		</plugins>
 	</build>
 </project>

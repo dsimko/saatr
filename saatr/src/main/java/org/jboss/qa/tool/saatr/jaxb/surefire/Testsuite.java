@@ -5,7 +5,7 @@
 // Generated on: 2016.08.11 at 06:48:12 PM CEST 
 //
 
-package org.jboss.qa.tool.saatr.entity.jaxb.surefire;
+package org.jboss.qa.tool.saatr.jaxb.surefire;
 
 import java.util.ArrayList;
 import java.util.List;
