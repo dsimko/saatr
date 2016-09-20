@@ -36,16 +36,15 @@ import org.jboss.qa.tool.saatr.web.comp.build.BuildJsonPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildProvider;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildProvider.BuildFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author dsimko@redhat.com
  */
 @SuppressWarnings("serial")
+@Slf4j
 public class BuildPage extends BasePage<BuildDocument> {
-
-    private static final Logger LOG = LoggerFactory.getLogger(BuildPage.class);
 
     private IModel<BuildFilter> filter = Model.of(new BuildFilter());
     private List<String> variableNames = new ArrayList<>();
@@ -144,7 +143,7 @@ public class BuildPage extends BasePage<BuildDocument> {
         long start = System.currentTimeMillis();
         buildRepository.findDistinctVariableNames().forEach(name -> variableNames.add(name));
         buildRepository.findDistinctVariableValues().forEach(val -> variableValues.add(val));
-        LOG.debug("Loading variables filter took {} ms.", System.currentTimeMillis() - start);
+        log.debug("Loading variables filter took {} ms.", System.currentTimeMillis() - start);
     }
 
     public static String getStatusHtml(BuildDocument build) {

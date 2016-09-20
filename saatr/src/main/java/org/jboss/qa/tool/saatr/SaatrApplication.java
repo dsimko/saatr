@@ -13,8 +13,10 @@ import org.jboss.qa.tool.saatr.web.page.AggregationPage;
 import org.jboss.qa.tool.saatr.web.page.BuildPage;
 import org.jboss.qa.tool.saatr.web.page.ConfigPage;
 import org.jboss.qa.tool.saatr.web.page.DebugPage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 
 /**
  * @author dsimko@redhat.com
@@ -23,6 +25,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class SaatrApplication extends WebApplication {
 
+	@Autowired
+	private ApplicationContext applicationContext;
+	
 	public static void main(String[] args) {
 		SpringApplication.run(SaatrApplication.class, args);
 	}
@@ -43,7 +48,7 @@ public class SaatrApplication extends WebApplication {
 		getMarkupSettings().setStripWicketTags(true);
 		getMarkupSettings().setDefaultMarkupEncoding(CharEncoding.UTF_8);
 
-		getComponentInstantiationListeners().add(new SpringComponentInjector(this));
+		getComponentInstantiationListeners().add(new SpringComponentInjector(this, applicationContext));
 	}
 
 	@Override

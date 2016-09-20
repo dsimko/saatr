@@ -26,8 +26,8 @@ import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapFeedbackPanel;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapTable;
 import org.jboss.qa.tool.saatr.web.comp.config.ConfigProvider;
 import org.jboss.qa.tool.saatr.web.comp.config.ConfigProvider.ConfigFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Form page for basic configuration.
@@ -35,10 +35,9 @@ import org.slf4j.LoggerFactory;
  * @author dsimko@redhat.com
  *
  */
+@Slf4j
 @SuppressWarnings("serial")
 public class ConfigPage extends BasePage<ConfigDocument> {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ConfigPage.class);
 
     private IModel<ConfigFilter> filter = Model.of(new ConfigFilter());
 
@@ -78,7 +77,7 @@ public class ConfigPage extends BasePage<ConfigDocument> {
                         configRepository.save(configData);
                     }
                 } catch (Exception e) {
-                    LOG.warn(e.getMessage(), e);
+                    log.warn(e.getMessage(), e);
                     error(e.getMessage());
                 }
             }

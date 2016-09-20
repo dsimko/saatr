@@ -1,5 +1,8 @@
 package org.jboss.qa.tool.saatr.web.page;
 
+import static org.jboss.qa.tool.saatr.service.AggregationService.COLLECTIONS;
+import static org.jboss.qa.tool.saatr.service.AggregationService.PREDEFINED_PIPELINES;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
@@ -19,21 +22,17 @@ import org.apache.wicket.model.Model;
 import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
 import org.jboss.qa.tool.saatr.service.AggregationService;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapFeedbackPanel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import static org.jboss.qa.tool.saatr.service.AggregationService.*;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author dsimko@redhat.com
  */
+@Slf4j
 @SuppressWarnings("serial")
 public class AggregationPage extends BasePage<Void> {
-
-    private static final Logger LOG = LoggerFactory.getLogger(AggregationPage.class);
 
     @Inject
     private AggregationService service;
@@ -50,7 +49,7 @@ public class AggregationPage extends BasePage<Void> {
                     resultModel.setObject(service.aggregate(pipelinesModel.getObject(), collectionModel.getObject()));
                 } catch (Exception e) {
                     error(e.getMessage());
-                    LOG.info(e.getMessage(), e);
+                    log.info(e.getMessage(), e);
                 }
             }
         };
