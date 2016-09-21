@@ -15,6 +15,11 @@ import org.jboss.qa.tool.saatr.domain.config.ConfigDocument.ConfigProperty;
 import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildProvider.BuildFilter;
 
+/**
+ * The interface for repository functionality that will be implemented manually.
+ * 
+ * @author dsimko@redhat.com
+ */
 interface BuildRepositoryCustom {
 
     Iterator<BuildDocument> query(long first, long count, BuildFilter filter);
@@ -34,4 +39,6 @@ interface BuildRepositoryCustom {
     TestsuiteDocument findTestsuiteById(UUID id);
 
     TestcaseDocument findTestcaseById(UUID id, int index);
+    
+    String aggregate(String query);
 }

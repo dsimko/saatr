@@ -19,9 +19,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
+import com.mongodb.MongoClient;
+
 /**
+ * Application configuration to connect to a MongoDB and using a {@link MongoClient}. Also
+ * enables Spring Data repositories for MongoDB.
+ * 
  * @author dsimko@redhat.com
- *
  */
 @SpringBootApplication
 public class SaatrApplication extends WebApplication {

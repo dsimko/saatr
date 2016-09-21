@@ -20,9 +20,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * An entity representing an {@link BuildDocument}.
  * 
  * @author dsimko@redhat.com
- *
  */
 @Data
 @Document(collection = BuildDocument.COLLECTION_NAME)

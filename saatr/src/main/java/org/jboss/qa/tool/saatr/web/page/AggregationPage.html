@@ -10,22 +10,46 @@
 				<form wicket:id="form">
 					<div wicket:id="feedback"></div>
 					<div class="form-group">
-						<label>Collection</label>
+						<label>Category</label>
 						<select wicket:id="collection" class="form-control"></select>
 					</div>
 					<div class="form-group">
-						<label>Predefined pipelines</label>
+						<label>Name</label>
 						<select wicket:id="predefinedPipelines" class="form-control"></select>
 					</div>
 					<div class="form-group">
-						<label>Pipelines</label>
+						<label>Query</label>
 						<textarea wicket:id="pipelines" class="form-control" rows="8"></textarea>
 					</div>
-					<button type="submit" class="btn btn-default">Submit</button>
+					<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search</button>
+					<a wicket:id="saveAs" class="btn btn-default"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save Query As</a>
 				</form>
 			</div>
 		</div>
+		<div wicket:id="modal"></div>
 		<pre wicket:id="result"></pre>
+		<wicket:fragment wicket:id="frag1">
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<form wicket:id="form">
+						<div wicket:id="feedback"></div>
+						<div class="form-group">
+							<label>Category</label>
+							<input type="text" wicket:id="category" class="form-control"/>
+						</div>
+						<div class="form-group">
+							<label>Name</label>
+							<input type="text" wicket:id="name" class="form-control"/>
+						</div>
+						<div class="form-group">
+							<label>Query</label>
+							<textarea wicket:id="query" class="form-control" rows="8"></textarea>
+						</div>
+						<a wicket:id="save" class="btn btn-default"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save</a>
+					</form>
+				</div>
+			</div>
+		</wicket:fragment>
 	</wicket:extend>
 </body>
 </html>
