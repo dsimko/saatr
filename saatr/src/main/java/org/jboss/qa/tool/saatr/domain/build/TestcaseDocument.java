@@ -16,6 +16,11 @@ import org.springframework.data.mongodb.core.index.Indexed;
 
 import lombok.Data;
 
+/**
+ * An embedded document representing an {@link TestcaseDocument}.
+ * 
+ * @author dsimko@redhat.com
+ */
 @Data
 @SuppressWarnings("serial")
 public class TestcaseDocument implements DocumentWithProperties<UUID> {

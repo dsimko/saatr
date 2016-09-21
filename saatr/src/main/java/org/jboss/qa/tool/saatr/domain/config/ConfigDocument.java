@@ -18,6 +18,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * An entity representing an {@link ConfigDocument}.
+ * 
  * @author dsimko@redhat.com
  */
 @Data

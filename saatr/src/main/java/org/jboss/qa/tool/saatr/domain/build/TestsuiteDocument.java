@@ -23,6 +23,11 @@ import org.w3c.dom.Element;
 
 import lombok.Data;
 
+/**
+ * An embedded document representing an {@link TestsuiteDocument}.
+ * 
+ * @author dsimko@redhat.com
+ */
 @Data
 @SuppressWarnings("serial")
 public class TestsuiteDocument implements DocumentWithProperties<UUID>, Comparable<TestsuiteDocument> {

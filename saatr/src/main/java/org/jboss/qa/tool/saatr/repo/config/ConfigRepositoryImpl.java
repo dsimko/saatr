@@ -15,6 +15,9 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 /**
+ * The manual implementation parts for {@link ConfigRepository}. This will automatically be picked up by the Spring Data
+ * infrastructure as we follow the naming convention of extending the core repository interface's name with {@code Impl}.
+ * 
  * @author dsimko@redhat.com
  */
 @Component

@@ -1,8 +1,10 @@
 
 package org.jboss.qa.tool.saatr.repo.config;
 
+import java.util.List;
+
 import org.bson.types.ObjectId;
-import org.jboss.qa.tool.saatr.domain.config.ConfigDocument;
+import org.jboss.qa.tool.saatr.domain.config.QueryDocument;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
@@ -11,6 +13,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * 
  * @author dsimko@redhat.com
  */
-public interface ConfigRepository extends MongoRepository<ConfigDocument, ObjectId>, ConfigRepositoryCustom {
+public interface QueryRepository extends MongoRepository<QueryDocument, ObjectId>, QueryRepositoryCustom {
+
+    List<QueryDocument> findByCategory(String category);
 
 }

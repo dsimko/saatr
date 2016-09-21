@@ -24,8 +24,20 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
+import com.mongodb.AggregationOutput;
+import com.mongodb.BasicDBList;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
+import com.mongodb.util.JSON;
+
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * The manual implementation parts for {@link BuildRepository}. This will automatically be picked up by the Spring Data
+ * infrastructure as we follow the naming convention of extending the core repository interface's name with {@code Impl}.
+ * 
+ * @author dsimko@redhat.com
+ */
 @Component
 @Slf4j
 class BuildRepositoryImpl implements BuildRepositoryCustom {
@@ -122,6 +134,21 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
     @SuppressWarnings("unchecked")
     public Iterable<String> findDistinctVariableValues() {
         return template.getCollection(BuildDocument.COLLECTION_NAME).distinct("variables.value");
+    }
+
+    @Override
+    public String aggregate(String query) {
+        Object json = JSON.parse(query);
+        StringBuilder result = new StringBuilder();
+        if (json instanceof BasicDBList) {
+            DBCollection suites = template.getCollection(BuildDocument.COLLECTION_NAME);
+            @SuppressWarnings("unchecked")
+            AggregationOutput suitesIt = suites.aggregate((List<? extends DBObject>) json);
+            suitesIt.results().forEach(c -> {
+                result.append(c.toString() + "\n");
+            });
+        }
+        return result.toString();
     }
 
     private Query createQueryAndApplyFilter(BuildFilter filter) {
