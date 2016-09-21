@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<body>
+	<wicket:extend>
+		<div class="page-header">
+			<h2>Admin Page</h2>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading">Builds</div>
+			<div class="panel-body">
+				<p>
+					<a class="btn btn-info" wicket:id="showBuildsIndexes">Show Indexes</a>
+					<a class="btn btn-info" wicket:id="showBuildsStats">Show Stats</a>
+					<a class="btn btn-danger" wicket:id="deleteAllBuilds"><i class="glyphicon glyphicon-trash"></i> Delete All</a>
+				</p>
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading">Configs</div>
+			<div class="panel-body">
+				<p>
+					<a class="btn btn-info" wicket:id="showConfigsIndexes">Show Indexes</a>
+					<a class="btn btn-info" wicket:id="showConfigsStats">Show Stats</a>
+					<a class="btn btn-danger" wicket:id="deleteAllConfigs"><i class="glyphicon glyphicon-trash"></i> Delete All</a>
+				</p>
+			</div>
+		</div>
+
+		<pre class="text-muted pre-scrollable" wicket:id="results"></pre>
+	</wicket:extend>
+</body>
+</html>

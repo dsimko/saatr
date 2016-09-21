@@ -12,7 +12,7 @@ import org.jboss.qa.tool.saatr.web.comp.URLConverter;
 import org.jboss.qa.tool.saatr.web.page.AggregationPage;
 import org.jboss.qa.tool.saatr.web.page.BuildPage;
 import org.jboss.qa.tool.saatr.web.page.ConfigPage;
-import org.jboss.qa.tool.saatr.web.page.DebugPage;
+import org.jboss.qa.tool.saatr.web.page.AdminPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -42,7 +42,7 @@ public class SaatrApplication extends WebApplication {
 		super.init();
 
 		mountPage("config", ConfigPage.class);
-		mountPage("debug", DebugPage.class);
+		mountPage("admin", AdminPage.class);
 		mountPage("aggregation", AggregationPage.class);
 
 		getMarkupSettings().setStripWicketTags(true);

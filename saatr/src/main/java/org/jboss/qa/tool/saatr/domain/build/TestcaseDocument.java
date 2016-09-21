@@ -11,6 +11,7 @@ import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
 import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite.Testcase;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import lombok.Data;
 
@@ -31,11 +32,14 @@ public class TestcaseDocument implements DocumentWithProperties<UUID> {
     FailureData error;
     String systemOut;
     String systemErr;
+    @Indexed
     String name;
     String classname;
     String group;
     Double time;
+    @Indexed
     Status status;
+    @Indexed
     final UUID id = UUID.randomUUID();
     @Transient
     private Integer index;

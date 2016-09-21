@@ -20,9 +20,11 @@ import lombok.NoArgsConstructor;
  * @author dsimko@redhat.com
  */
 @Data
-@Document
+@Document(collection = ConfigDocument.COLLECTION_NAME)
 @SuppressWarnings("serial")
 public class ConfigDocument implements DocumentWithID<ObjectId> {
+
+    public static final String COLLECTION_NAME = "configs";
 
     @Id
     private ObjectId id;

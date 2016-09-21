@@ -17,6 +17,7 @@ import org.jboss.qa.tool.saatr.domain.build.TestcaseDocument.FailureData;
 import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite;
 import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite.Testcase;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.w3c.dom.Element;
 
 import lombok.Data;
@@ -31,6 +32,7 @@ public class TestsuiteDocument implements DocumentWithProperties<UUID>, Comparab
 
     private final Set<PropertyData> properties = new TreeSet<>();
     private final List<TestcaseDocument> testcases = new ArrayList<>();
+    @Indexed
     private String name;
     private Double time;
     private Integer tests;
@@ -38,7 +40,9 @@ public class TestsuiteDocument implements DocumentWithProperties<UUID>, Comparab
     private Integer skipped;
     private Integer failures;
     private String group;
+    @Indexed
     private Status status;
+    @Indexed
     private final UUID id = UUID.randomUUID();
     @Transient
     private boolean dirty;
