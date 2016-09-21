@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.web.comp.build.testsuite.testcase;
 
 import org.apache.wicket.markup.ComponentTag;
@@ -22,30 +23,32 @@ public class TestcasePanel extends GenericPanel<TestcaseDocument> {
     public TestcasePanel(String id, final IModel<TestcaseDocument> model) {
         super(id, new CompoundPropertyModel<>(model));
         WebMarkupContainer panel = new WebMarkupContainer("panel") {
+
             @Override
             protected void onComponentTag(ComponentTag tag) {
                 super.onComponentTag(tag);
                 switch (getModelObject().getStatus()) {
-                case Error:
-                case Failure:
-                    tag.append("class", "panel-danger", " ");
-                    break;
-                case FlakyFailure:
-                case FlakyError:
-                    tag.append("class", "panel-warning", " ");
-                    break;
-                case Skipped:
-                    tag.append("class", "panel-info", " ");
-                    break;
-                case Success:
-                    tag.append("class", "panel-success", " ");
-                    break;
+                    case Error:
+                    case Failure:
+                        tag.append("class", "panel-danger", " ");
+                        break;
+                    case FlakyFailure:
+                    case FlakyError:
+                        tag.append("class", "panel-warning", " ");
+                        break;
+                    case Skipped:
+                        tag.append("class", "panel-info", " ");
+                        break;
+                    case Success:
+                        tag.append("class", "panel-success", " ");
+                        break;
                 }
             }
         };
         add(panel);
         panel.add(new Label("name"));
         panel.add(new Label("time") {
+
             @Override
             protected void onConfigure() {
                 super.onConfigure();

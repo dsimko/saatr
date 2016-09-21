@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.web.comp.build.properties;
 
 import java.io.Serializable;
@@ -24,6 +25,7 @@ public class PropertiesPanel<T extends DocumentWithProperties<?>> extends Generi
     public PropertiesPanel(String id, final IModel<T> model) {
         super(id, model);
         panel = new WebMarkupContainer("panel") {
+
             @Override
             protected void onComponentTag(ComponentTag tag) {
                 super.onComponentTag(tag);
@@ -34,6 +36,7 @@ public class PropertiesPanel<T extends DocumentWithProperties<?>> extends Generi
         };
         panel.setOutputMarkupId(true);
         WebMarkupContainer panelBody = new WebMarkupContainer("panel-body") {
+
             @Override
             protected void onComponentTag(ComponentTag tag) {
                 super.onComponentTag(tag);

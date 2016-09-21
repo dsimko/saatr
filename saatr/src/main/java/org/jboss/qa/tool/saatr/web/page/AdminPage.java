@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.web.page;
 
 import javax.inject.Inject;
@@ -19,8 +20,10 @@ public class AdminPage extends BasePage<Void> {
 
     @Inject
     private BuildRepository buildRepository;
+
     @Inject
     private ConfigRepository configRepository;
+
     @Inject
     private MongoOperations mongoOperations;
 
@@ -29,6 +32,7 @@ public class AdminPage extends BasePage<Void> {
 
     public AdminPage() {
         add(new Link<Void>("deleteAllBuilds") {
+
             @Override
             public void onClick() {
                 buildRepository.deleteAll();
@@ -36,18 +40,21 @@ public class AdminPage extends BasePage<Void> {
             }
         });
         add(new Link<Void>("showBuildsIndexes") {
+
             @Override
             public void onClick() {
                 showAllIndexes(BuildDocument.COLLECTION_NAME);
             }
         });
         add(new Link<Void>("showBuildsStats") {
+
             @Override
             public void onClick() {
                 showStats(BuildDocument.COLLECTION_NAME);
             }
         });
         add(new Link<Void>("deleteAllConfigs") {
+
             @Override
             public void onClick() {
                 configRepository.deleteAll();
@@ -55,12 +62,14 @@ public class AdminPage extends BasePage<Void> {
             }
         });
         add(new Link<Void>("showConfigsIndexes") {
+
             @Override
             public void onClick() {
                 showAllIndexes(ConfigDocument.COLLECTION_NAME);
             }
         });
         add(new Link<Void>("showConfigsStats") {
+
             @Override
             public void onClick() {
                 showStats(ConfigDocument.COLLECTION_NAME);

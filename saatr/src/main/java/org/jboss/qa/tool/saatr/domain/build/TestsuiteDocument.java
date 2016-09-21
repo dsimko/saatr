@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.domain.build;
 
 import java.text.NumberFormat;
@@ -31,19 +32,30 @@ public class TestsuiteDocument implements DocumentWithProperties<UUID>, Comparab
     }
 
     private final Set<PropertyData> properties = new TreeSet<>();
+
     private final List<TestcaseDocument> testcases = new ArrayList<>();
+
     @Indexed
     private String name;
+
     private Double time;
+
     private Integer tests;
+
     private Integer errors;
+
     private Integer skipped;
+
     private Integer failures;
+
     private String group;
+
     @Indexed
     private Status status;
+
     @Indexed
     private final UUID id = UUID.randomUUID();
+
     @Transient
     private boolean dirty;
 
@@ -122,21 +134,21 @@ public class TestsuiteDocument implements DocumentWithProperties<UUID>, Comparab
         Status status = Status.Success;
         for (TestcaseDocument testcaseData : testcases) {
             switch (testcaseData.getStatus()) {
-            case Failure:
-                return Status.Failure;
-            case Error:
-                status = Status.Error;
-                break;
-            case FlakyFailure:
-                if (status != Status.Error)
-                    status = Status.FlakyFailure;
-                break;
-            case FlakyError:
-                if (status != Status.Error && status != Status.FlakyFailure)
-                    status = Status.FlakyError;
-                break;
-            case Skipped:
-            case Success:
+                case Failure:
+                    return Status.Failure;
+                case Error:
+                    status = Status.Error;
+                    break;
+                case FlakyFailure:
+                    if (status != Status.Error)
+                        status = Status.FlakyFailure;
+                    break;
+                case FlakyError:
+                    if (status != Status.Error && status != Status.FlakyFailure)
+                        status = Status.FlakyError;
+                    break;
+                case Skipped:
+                case Success:
             }
         }
         return status;

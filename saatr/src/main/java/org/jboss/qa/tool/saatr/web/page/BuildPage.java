@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.web.page;
 
 import java.util.ArrayList;
@@ -47,7 +48,9 @@ import lombok.extern.slf4j.Slf4j;
 public class BuildPage extends BasePage<BuildDocument> {
 
     private IModel<BuildFilter> filter = Model.of(new BuildFilter());
+
     private List<String> variableNames = new ArrayList<>();
+
     private List<String> variableValues = new ArrayList<>();
 
     @Inject
@@ -81,6 +84,7 @@ public class BuildPage extends BasePage<BuildDocument> {
         });
 
         form.add(new Link<Void>("clear") {
+
             @Override
             public void onClick() {
                 filter.setObject(new BuildFilter());
@@ -95,6 +99,7 @@ public class BuildPage extends BasePage<BuildDocument> {
             @Override
             public void populateItem(final Item<ICellPopulator<BuildDocument>> item, final String componentId, final IModel<BuildDocument> rowModel) {
                 item.add(new Label(componentId, new AbstractReadOnlyModel<String>() {
+
                     @Override
                     public String getObject() {
                         return getStatusHtml(getModelObject());
@@ -114,11 +119,13 @@ public class BuildPage extends BasePage<BuildDocument> {
         add(dataTable);
         List<ITab> tabs = new ArrayList<ITab>();
         tabs.add(new AbstractTab(new AbstractReadOnlyModel<String>() {
+
             @Override
             public String getObject() {
                 return "<span class=\"glyphicon glyphicon-th-list\"></span> Tables";
             }
         }) {
+
             @Override
             public WebMarkupContainer getPanel(String panelId) {
                 return new BuildPanel(panelId, getModel());
@@ -126,11 +133,13 @@ public class BuildPage extends BasePage<BuildDocument> {
         });
 
         tabs.add(new AbstractTab(new AbstractReadOnlyModel<String>() {
+
             @Override
             public String getObject() {
                 return "<span class=\"glyphicon glyphicon-paste\"></span> JSON";
             }
         }) {
+
             @Override
             public WebMarkupContainer getPanel(String panelId) {
                 return new BuildJsonPanel(panelId, getModel());

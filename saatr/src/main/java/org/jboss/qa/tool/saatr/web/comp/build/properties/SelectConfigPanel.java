@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.web.comp.build.properties;
 
 import javax.inject.Inject;
@@ -28,6 +29,7 @@ class SelectConfigPanel<T extends DocumentWithProperties<?>> extends GenericPane
     private ConfigRepository configRepository;
 
     private Panel propertiesFormPanel;
+
     private boolean dropDownChoiceVisible = true;
 
     public SelectConfigPanel(String id, final IModel<T> model) {
@@ -37,11 +39,13 @@ class SelectConfigPanel<T extends DocumentWithProperties<?>> extends GenericPane
         wmc.setOutputMarkupId(true);
         final IModel<ConfigDocument> configModel = new Model<>();
         wmc.add(new DropDownChoice<ConfigDocument>("config", configModel, configRepository.findAll(), new ChoiceRenderer<>("name")) {
+
             @Override
             public boolean isVisible() {
                 return dropDownChoiceVisible;
             }
         }.add(new OnChangeAjaxBehavior() {
+
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 configRepository.prefillValues(configModel.getObject(), getModelObject());

@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.web.comp;
 
 import javax.inject.Inject;
@@ -15,6 +16,7 @@ public class DocumentModel<T extends DocumentWithID<ObjectId>> implements IModel
     private MongoOperations operations;
 
     private ObjectId id;
+
     private Class<T> type;
 
     private transient T entity;

@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.web.page;
 
 import java.io.InputStream;
@@ -49,8 +50,8 @@ public class ConfigPage extends BasePage<ConfigDocument> {
         setOutputMarkupId(true);
         List<IColumn<ConfigDocument, String>> columns = new ArrayList<IColumn<ConfigDocument, String>>();
         columns.add(new PropertyColumn<ConfigDocument, String>(new Model<String>("Name"), "name"));
-        BootstrapTable<ConfigDocument, String> dataTable = new BootstrapTable<ConfigDocument, String>("table", columns, new ConfigProvider(filter),
-                10, getModel()) {
+        BootstrapTable<ConfigDocument, String> dataTable = new BootstrapTable<ConfigDocument, String>("table", columns, new ConfigProvider(filter), 10,
+                getModel()) {
 
             @Override
             protected void selectRow(ConfigDocument configData) {
@@ -64,6 +65,7 @@ public class ConfigPage extends BasePage<ConfigDocument> {
         form.add(fileUploadField.setRequired(true));
         form.add(new BootstrapFeedbackPanel("feedback"));
         form.add(new Button("submit") {
+
             @Override
             public void onSubmit() {
                 try {
@@ -84,11 +86,13 @@ public class ConfigPage extends BasePage<ConfigDocument> {
         });
         add(form);
         add(new Label("content", new AbstractReadOnlyModel<String>() {
+
             @Override
             public String getObject() {
                 return IOUtils.marshal(Config.create(getModelObject()), Config.class);
             }
         }) {
+
             @Override
             public boolean isVisible() {
                 return getModelObject() != null;

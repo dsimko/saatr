@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.domain;
 
 import java.io.Serializable;

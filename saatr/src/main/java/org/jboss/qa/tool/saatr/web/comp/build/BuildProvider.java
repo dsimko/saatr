@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.web.comp.build;
 
 import java.io.Serializable;
@@ -45,10 +46,15 @@ public class BuildProvider extends SortableDataProvider<BuildDocument, String> {
 
     @Data
     public static class BuildFilter implements Serializable {
+
         private Long buildNumber;
+
         private String jobName;
+
         private Status status;
+
         private String variableName;
+
         private String variableValue;
     }
 }

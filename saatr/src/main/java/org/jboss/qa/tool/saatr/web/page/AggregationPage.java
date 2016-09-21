@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.web.page;
 
 import static org.jboss.qa.tool.saatr.service.AggregationService.COLLECTIONS;
@@ -43,6 +44,7 @@ public class AggregationPage extends BasePage<Void> {
         IModel<CollectionType> collectionModel = new Model<>();
         IModel<String> resultModel = new Model<>();
         Form<Void> form = new Form<Void>("form") {
+
             @Override
             protected void onSubmit() {
                 try {
@@ -57,6 +59,7 @@ public class AggregationPage extends BasePage<Void> {
         form.add(new BootstrapFeedbackPanel("feedback"));
         form.add(new DropDownChoice<CollectionType>("collection", collectionModel, COLLECTIONS, new ChoiceRenderer<>("name")) {
         }.add(new OnChangeAjaxBehavior() {
+
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 target.add(form);
@@ -64,6 +67,7 @@ public class AggregationPage extends BasePage<Void> {
         }));
         form.add(new DropDownChoice<PredefinedPipelines>("predefinedPipelines", predefinedPipelinesModel,
                 new AbstractReadOnlyModel<List<PredefinedPipelines>>() {
+
                     @Override
                     public List<PredefinedPipelines> getObject() {
                         if (collectionModel.getObject() != null) {
@@ -73,6 +77,7 @@ public class AggregationPage extends BasePage<Void> {
                     }
                 }, new ChoiceRenderer<>("name")) {
         }.setNullValid(true).add(new OnChangeAjaxBehavior() {
+
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 pipelinesModel.setObject(predefinedPipelinesModel.getObject().getPipelines());
@@ -86,14 +91,18 @@ public class AggregationPage extends BasePage<Void> {
     @Data
     @AllArgsConstructor
     public static class CollectionType implements Serializable {
+
         private String name;
+
         private Class<? extends DocumentWithProperties<?>> type;
     }
 
     @Data
     @AllArgsConstructor
     public static class PredefinedPipelines implements Serializable {
+
         private String name;
+
         private String pipelines;
     }
 }

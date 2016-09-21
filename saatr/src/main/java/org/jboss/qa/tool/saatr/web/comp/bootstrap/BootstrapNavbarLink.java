@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.web.comp.bootstrap;
 
 import org.apache.wicket.Component;
@@ -23,16 +24,13 @@ public class BootstrapNavbarLink extends Panel {
         this(id, pageClass, label, cssClass, null);
     }
 
-    public <C extends Page> BootstrapNavbarLink(String id, Class<C> pageClass, IModel<?> label, String cssClassBeforeLabel,
-            String cssClassAfterLabel) {
+    public <C extends Page> BootstrapNavbarLink(String id, Class<C> pageClass, IModel<?> label, String cssClassBeforeLabel, String cssClassAfterLabel) {
         super(id, label);
         this.pageClass = pageClass;
         BookmarkablePageLink<Void> link = new BookmarkablePageLink<Void>("link", pageClass);
         link.add(newLabel(label));
-        link.add(new WebComponent("iconBeforeLabel").add(AttributeAppender.append("class", cssClassBeforeLabel))
-                .setVisible(cssClassBeforeLabel != null));
-        link.add(new WebComponent("iconAfterLabel").add(AttributeAppender.append("class", cssClassAfterLabel))
-                .setVisible(cssClassAfterLabel != null));
+        link.add(new WebComponent("iconBeforeLabel").add(AttributeAppender.append("class", cssClassBeforeLabel)).setVisible(cssClassBeforeLabel != null));
+        link.add(new WebComponent("iconAfterLabel").add(AttributeAppender.append("class", cssClassAfterLabel)).setVisible(cssClassAfterLabel != null));
         add(link);
     }
 

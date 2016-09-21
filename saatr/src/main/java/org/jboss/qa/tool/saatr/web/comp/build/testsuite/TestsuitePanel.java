@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.web.comp.build.testsuite;
 
 import org.apache.wicket.Component;
@@ -27,21 +28,22 @@ public class TestsuitePanel extends GenericPanel<TestsuiteDocument> {
     public TestsuitePanel(String id, final IModel<TestsuiteDocument> model) {
         super(id, new CompoundPropertyModel<>(model));
         final WebMarkupContainer panel = new WebMarkupContainer("panel") {
+
             @Override
             protected void onComponentTag(ComponentTag tag) {
                 super.onComponentTag(tag);
                 switch (getModelObject().getStatus()) {
-                case Failure:
-                case Error:
-                    tag.append("class", "panel-danger", " ");
-                    break;
-                case FlakyFailure:
-                case FlakyError:
-                    tag.append("class", "panel-warning", " ");
-                    break;
-                case Success:
-                    tag.append("class", "panel-success", " ");
-                    break;
+                    case Failure:
+                    case Error:
+                        tag.append("class", "panel-danger", " ");
+                        break;
+                    case FlakyFailure:
+                    case FlakyError:
+                        tag.append("class", "panel-warning", " ");
+                        break;
+                    case Success:
+                        tag.append("class", "panel-success", " ");
+                        break;
                 }
             }
         };
@@ -54,6 +56,7 @@ public class TestsuitePanel extends GenericPanel<TestsuiteDocument> {
         panel.add(new Label("name"));
         panel.add(body);
         panel.add(new AjaxLink<Void>("collapse") {
+
             @Override
             public void onClick(AjaxRequestTarget target) {
                 replaceBodyPanel(new EmptyPanel(body.getId()));
@@ -66,6 +69,7 @@ public class TestsuitePanel extends GenericPanel<TestsuiteDocument> {
             }
         });
         panel.add(new AjaxLink<Void>("expand") {
+
             @Override
             public void onClick(AjaxRequestTarget target) {
                 replaceBodyPanel(new BodyPanel(body.getId(), model));

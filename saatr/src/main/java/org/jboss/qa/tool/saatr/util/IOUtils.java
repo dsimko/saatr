@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.util;
 
 import java.io.BufferedOutputStream;
@@ -65,15 +66,14 @@ public class IOUtils {
     }
 
     /**
-     * Unmarshal XML data from the specified file and return the resulting
-     * object.
+     * Unmarshal XML data from the specified file and return the resulting object.
      * 
      * @param xml
      * @return
      * @throws JAXBException
      */
     @SuppressWarnings("unchecked")
-	public static <T> T unmarshal(InputStream inputStream, Class<T> entityClass) throws JAXBException {
+    public static <T> T unmarshal(InputStream inputStream, Class<T> entityClass) throws JAXBException {
         JAXBContext jaxbContext = JAXBContext.newInstance(entityClass);
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
         T document = (T) jaxbUnmarshaller.unmarshal(inputStream);

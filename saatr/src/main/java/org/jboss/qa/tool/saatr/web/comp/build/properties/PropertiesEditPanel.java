@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.web.comp.build.properties;
 
 import java.io.Serializable;
@@ -31,7 +32,9 @@ class PropertiesEditPanel<T extends DocumentWithProperties<?>> extends GenericPa
     private BuildRepository buildRepository;
 
     private Panel formPanel;
+
     private final WebMarkupContainer wmc;
+
     private boolean addInfoButtonVisible = true;
 
     public PropertiesEditPanel(String id, final IModel<T> model) {
@@ -91,6 +94,7 @@ class PropertiesEditPanel<T extends DocumentWithProperties<?>> extends GenericPa
     static class AddInfoSubmitEvent implements Serializable {
 
         private final ConfigDocument config;
+
         private final AjaxRequestTarget target;
     }
 

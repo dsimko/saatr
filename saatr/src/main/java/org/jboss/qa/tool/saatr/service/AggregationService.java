@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.service;
 
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ public class AggregationService {
     // TODO move to mongo ------------------
     public static final List<CollectionType> COLLECTIONS = Arrays.asList(new CollectionType("Build", BuildDocument.class),
             new CollectionType("Testsuite", TestsuiteDocument.class), new CollectionType("Testcase", TestcaseDocument.class));
+
     public static final Map<Class<?>, List<PredefinedPipelines>> PREDEFINED_PIPELINES = new HashMap<>();
 
     static {

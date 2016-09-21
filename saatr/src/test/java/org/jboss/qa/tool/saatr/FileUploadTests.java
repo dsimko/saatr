@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,19 +22,18 @@ import org.springframework.util.Base64Utils;
 @SpringBootTest({ "spring.data.mongodb.port=0" })
 public class FileUploadTests {
 
-	@Autowired
-	private MockMvc mvc;
+    @Autowired
+    private MockMvc mvc;
 
-	@Autowired
-	private BuildRepository buildRepository;
+    @Autowired
+    private BuildRepository buildRepository;
 
-	@Test
-	public void shouldSaveUploadedFile() throws Exception {
-		MockMultipartFile multipartFile = new MockMultipartFile("testsuite", "test.txt", "text/plain",
-				"Spring Framework".getBytes());
-		this.mvc.perform(fileUpload("/UploadServlet").file(multipartFile).header(HttpHeaders.AUTHORIZATION,
-				"Basic " + Base64Utils.encodeToString("saatr:S44TR!".getBytes()))).andExpect(status().isOk());
-		//then(this.buildRepository).should().save(new BuildDocument());
-		assertThat(buildRepository.count()).isEqualTo(1);
-	}
+    @Test
+    public void shouldSaveUploadedFile() throws Exception {
+        MockMultipartFile multipartFile = new MockMultipartFile("testsuite", "test.txt", "text/plain", "Spring Framework".getBytes());
+        this.mvc.perform(fileUpload("/UploadServlet").file(multipartFile).header(HttpHeaders.AUTHORIZATION,
+                "Basic " + Base64Utils.encodeToString("saatr:S44TR!".getBytes()))).andExpect(status().isOk());
+        // then(this.buildRepository).should().save(new BuildDocument());
+        assertThat(buildRepository.count()).isEqualTo(1);
+    }
 }

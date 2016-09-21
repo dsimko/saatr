@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.repo.build;
 
 import java.util.Iterator;
@@ -25,12 +26,12 @@ interface BuildRepositoryCustom {
     void addIfAbsent(PropertyData property, Set<PropertyData> properties);
 
     <T extends DocumentWithProperties<?>> void addOrUpdateProperties(T persistable, Set<ConfigProperty> configProperties);
- 
+
     Iterable<String> findDistinctVariableNames();
-	
+
     Iterable<String> findDistinctVariableValues();
 
     TestsuiteDocument findTestsuiteById(UUID id);
-    
+
     TestcaseDocument findTestcaseById(UUID id, int index);
 }

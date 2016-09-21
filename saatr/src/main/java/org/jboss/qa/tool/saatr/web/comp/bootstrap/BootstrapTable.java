@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.web.comp.bootstrap;
 
 import java.util.List;
@@ -25,11 +26,13 @@ import org.jboss.qa.tool.saatr.web.comp.bootstrap.paging.ajax.BootstrapAjaxPagin
 public abstract class BootstrapTable<T, S> extends DataTable<T, S> {
 
     private final IModel<T> pageModel;
+
     private boolean selectRowClicked = false;
+
     private final ISortableDataProvider<T, S> dataProvider;
 
-    public BootstrapTable(final String id, final List<? extends IColumn<T, S>> columns, final ISortableDataProvider<T, S> dataProvider,
-            final int rowsPerPage, IModel<T> pageModel) {
+    public BootstrapTable(final String id, final List<? extends IColumn<T, S>> columns, final ISortableDataProvider<T, S> dataProvider, final int rowsPerPage,
+            IModel<T> pageModel) {
         super(id, columns, dataProvider, rowsPerPage);
         setOutputMarkupId(true);
         this.pageModel = pageModel;
@@ -81,6 +84,7 @@ public abstract class BootstrapTable<T, S> extends DataTable<T, S> {
 
     protected void initToolbars() {
         addTopToolbar(new AjaxNavigationToolbar(this) {
+
             @Override
             protected PagingNavigator newPagingNavigator(String navigatorId, final DataTable<?, ?> table) {
                 return new BootstrapAjaxPagingNavigator(navigatorId, table);

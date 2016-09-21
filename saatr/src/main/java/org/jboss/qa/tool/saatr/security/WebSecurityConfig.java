@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,20 +12,20 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-	
-	@Value("${security.user.name}")
-	private String name;
-	@Value("${security.user.password}")
-	private String password;
-	
-	
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable().authorizeRequests().anyRequest().authenticated().and().httpBasic();
-	}
 
-	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication().withUser(name).password(password).roles("USER");
-	}
+    @Value("${security.user.name}")
+    private String name;
+
+    @Value("${security.user.password}")
+    private String password;
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable().authorizeRequests().anyRequest().authenticated().and().httpBasic();
+    }
+
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.inMemoryAuthentication().withUser(name).password(password).roles("USER");
+    }
 }

@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.domain.config;
 
 import java.io.Serializable;
@@ -28,7 +29,9 @@ public class ConfigDocument implements DocumentWithID<ObjectId> {
 
     @Id
     private ObjectId id;
+
     private String name;
+
     private final Set<ConfigProperty> properties = new TreeSet<>();
 
     public static ConfigDocument create(Config config, String name) {
@@ -44,8 +47,11 @@ public class ConfigDocument implements DocumentWithID<ObjectId> {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class ConfigProperty implements Serializable, Comparable<ConfigProperty> {
+
         private String name;
+
         private String value;
+
         private List<String> options = new ArrayList<>();
 
         @Override
