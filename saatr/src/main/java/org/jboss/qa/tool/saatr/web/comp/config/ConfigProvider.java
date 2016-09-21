@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.web.comp.config;
 
 import java.io.Serializable;
@@ -44,6 +45,7 @@ public class ConfigProvider extends SortableDataProvider<ConfigDocument, String>
 
     @Data
     public static class ConfigFilter implements Serializable {
+
         private String name;
     }
 }

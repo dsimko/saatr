@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.domain.build;
 
 import java.io.Serializable;
@@ -11,6 +12,7 @@ import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
 import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite.Testcase;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import lombok.Data;
 
@@ -23,22 +25,41 @@ public class TestcaseDocument implements DocumentWithProperties<UUID> {
     }
 
     final Set<PropertyData> properties = new TreeSet<>();
+
     final List<FailureData> failure = new ArrayList<>();
+
     final List<FailureData> flakyErrors = new ArrayList<>();
+
     final List<FailureData> flakyFailures = new ArrayList<>();
+
     final List<FailureData> rerunFailure = new ArrayList<>();
+
     FailureData skipped;
+
     FailureData error;
+
     String systemOut;
+
     String systemErr;
+
+    @Indexed
     String name;
+
     String classname;
+
     String group;
+
     Double time;
+
+    @Indexed
     Status status;
+
+    @Indexed
     final UUID id = UUID.randomUUID();
+
     @Transient
     private Integer index;
+
     @Transient
     private boolean dirty;
 
@@ -46,8 +67,11 @@ public class TestcaseDocument implements DocumentWithProperties<UUID> {
     public static class FailureData implements Serializable {
 
         String value;
+
         String message;
+
         String type;
+
         Double time;
 
     }

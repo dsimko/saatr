@@ -25,8 +25,8 @@ import javax.xml.bind.annotation.XmlValue;
  * Java class for anonymous complex type.
  * 
  * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * The following schema fragment specifies the expected content contained within this
+ * class.
  * 
  * <pre>
  * &lt;complexType>
@@ -155,19 +155,27 @@ import javax.xml.bind.annotation.XmlValue;
 public class Testsuite {
 
     protected List<Testsuite.Properties> properties;
+
     protected List<Testsuite.Testcase> testcase;
+
     @XmlAttribute(name = "name", required = true)
     protected String name;
+
     @XmlAttribute(name = "time")
     protected String time;
+
     @XmlAttribute(name = "tests", required = true)
     protected String tests;
+
     @XmlAttribute(name = "errors", required = true)
     protected String errors;
+
     @XmlAttribute(name = "skipped", required = true)
     protected String skipped;
+
     @XmlAttribute(name = "failures", required = true)
     protected String failures;
+
     @XmlAttribute(name = "group")
     protected String group;
 
@@ -175,10 +183,10 @@ public class Testsuite {
      * Gets the value of the properties property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list, not a
-     * snapshot. Therefore any modification you make to the returned list will
-     * be present inside the JAXB object. This is why there is not a
-     * <CODE>set</CODE> method for the properties property.
+     * This accessor method returns a reference to the live list, not a snapshot.
+     * Therefore any modification you make to the returned list will be present inside the
+     * JAXB object. This is why there is not a <CODE>set</CODE> method for the properties
+     * property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
@@ -205,10 +213,10 @@ public class Testsuite {
      * Gets the value of the testcase property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list, not a
-     * snapshot. Therefore any modification you make to the returned list will
-     * be present inside the JAXB object. This is why there is not a
-     * <CODE>set</CODE> method for the testcase property.
+     * This accessor method returns a reference to the live list, not a snapshot.
+     * Therefore any modification you make to the returned list will be present inside the
+     * JAXB object. This is why there is not a <CODE>set</CODE> method for the testcase
+     * property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
@@ -244,8 +252,7 @@ public class Testsuite {
     /**
      * Sets the value of the name property.
      * 
-     * @param value
-     *            allowed object is {@link String }
+     * @param value allowed object is {@link String }
      * 
      */
     public void setName(String value) {
@@ -265,8 +272,7 @@ public class Testsuite {
     /**
      * Sets the value of the time property.
      * 
-     * @param value
-     *            allowed object is {@link String }
+     * @param value allowed object is {@link String }
      * 
      */
     public void setTime(String value) {
@@ -286,8 +292,7 @@ public class Testsuite {
     /**
      * Sets the value of the tests property.
      * 
-     * @param value
-     *            allowed object is {@link String }
+     * @param value allowed object is {@link String }
      * 
      */
     public void setTests(String value) {
@@ -307,8 +312,7 @@ public class Testsuite {
     /**
      * Sets the value of the errors property.
      * 
-     * @param value
-     *            allowed object is {@link String }
+     * @param value allowed object is {@link String }
      * 
      */
     public void setErrors(String value) {
@@ -328,8 +332,7 @@ public class Testsuite {
     /**
      * Sets the value of the skipped property.
      * 
-     * @param value
-     *            allowed object is {@link String }
+     * @param value allowed object is {@link String }
      * 
      */
     public void setSkipped(String value) {
@@ -349,8 +352,7 @@ public class Testsuite {
     /**
      * Sets the value of the failures property.
      * 
-     * @param value
-     *            allowed object is {@link String }
+     * @param value allowed object is {@link String }
      * 
      */
     public void setFailures(String value) {
@@ -370,8 +372,7 @@ public class Testsuite {
     /**
      * Sets the value of the group property.
      * 
-     * @param value
-     *            allowed object is {@link String }
+     * @param value allowed object is {@link String }
      * 
      */
     public void setGroup(String value) {
@@ -383,8 +384,8 @@ public class Testsuite {
      * Java class for anonymous complex type.
      * 
      * <p>
-     * The following schema fragment specifies the expected content contained
-     * within this class.
+     * The following schema fragment specifies the expected content contained within this
+     * class.
      * 
      * <pre>
      * &lt;complexType>
@@ -419,10 +420,10 @@ public class Testsuite {
          * Gets the value of the property property.
          * 
          * <p>
-         * This accessor method returns a reference to the live list, not a
-         * snapshot. Therefore any modification you make to the returned list
-         * will be present inside the JAXB object. This is why there is not a
-         * <CODE>set</CODE> method for the property property.
+         * This accessor method returns a reference to the live list, not a snapshot.
+         * Therefore any modification you make to the returned list will be present inside
+         * the JAXB object. This is why there is not a <CODE>set</CODE> method for the
+         * property property.
          * 
          * <p>
          * For example, to add a new item, do as follows:
@@ -450,8 +451,8 @@ public class Testsuite {
          * Java class for anonymous complex type.
          * 
          * <p>
-         * The following schema fragment specifies the expected content
-         * contained within this class.
+         * The following schema fragment specifies the expected content contained within
+         * this class.
          * 
          * <pre>
          * &lt;complexType>
@@ -472,6 +473,7 @@ public class Testsuite {
 
             @XmlAttribute(name = "name", required = true)
             protected String name;
+
             @XmlAttribute(name = "value", required = true)
             protected String value;
 
@@ -488,8 +490,7 @@ public class Testsuite {
             /**
              * Sets the value of the name property.
              * 
-             * @param value
-             *            allowed object is {@link String }
+             * @param value allowed object is {@link String }
              * 
              */
             public void setName(String value) {
@@ -509,8 +510,7 @@ public class Testsuite {
             /**
              * Sets the value of the value property.
              * 
-             * @param value
-             *            allowed object is {@link String }
+             * @param value allowed object is {@link String }
              * 
              */
             public void setValue(String value) {
@@ -526,8 +526,8 @@ public class Testsuite {
      * Java class for anonymous complex type.
      * 
      * <p>
-     * The following schema fragment specifies the expected content contained
-     * within this class.
+     * The following schema fragment specifies the expected content contained within this
+     * class.
      * 
      * <pre>
      * &lt;complexType>
@@ -608,32 +608,42 @@ public class Testsuite {
      * 
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = { "failure", "flakyError", "flakyFailure", "rerunFailure", "skipped", "error", "systemOut",
-            "systemErr" })
+    @XmlType(name = "", propOrder = { "failure", "flakyError", "flakyFailure", "rerunFailure", "skipped", "error", "systemOut", "systemErr" })
     public static class Testcase {
 
         @XmlElement(nillable = true)
         protected List<Testsuite.Testcase.Failure> failure;
+
         @XmlElement(nillable = true)
         protected List<Testsuite.Testcase.FlakyError> flakyError;
+
         @XmlElement(nillable = true)
         protected List<Testsuite.Testcase.FlakyFailure> flakyFailure;
+
         @XmlElement(nillable = true)
         protected List<Testsuite.Testcase.RerunFailure> rerunFailure;
+
         @XmlElementRef(name = "skipped", type = JAXBElement.class, required = false)
         protected JAXBElement<Testsuite.Testcase.Skipped> skipped;
+
         @XmlElementRef(name = "error", type = JAXBElement.class, required = false)
         protected JAXBElement<Testsuite.Testcase.Error> error;
+
         @XmlElementRef(name = "system-out", type = JAXBElement.class, required = false)
         protected JAXBElement<Object> systemOut;
+
         @XmlElementRef(name = "system-err", type = JAXBElement.class, required = false)
         protected JAXBElement<Object> systemErr;
+
         @XmlAttribute(name = "name", required = true)
         protected String name;
+
         @XmlAttribute(name = "classname")
         protected String classname;
+
         @XmlAttribute(name = "group")
         protected String group;
+
         @XmlAttribute(name = "time", required = true)
         protected String time;
 
@@ -641,10 +651,10 @@ public class Testsuite {
          * Gets the value of the failure property.
          * 
          * <p>
-         * This accessor method returns a reference to the live list, not a
-         * snapshot. Therefore any modification you make to the returned list
-         * will be present inside the JAXB object. This is why there is not a
-         * <CODE>set</CODE> method for the failure property.
+         * This accessor method returns a reference to the live list, not a snapshot.
+         * Therefore any modification you make to the returned list will be present inside
+         * the JAXB object. This is why there is not a <CODE>set</CODE> method for the
+         * failure property.
          * 
          * <p>
          * For example, to add a new item, do as follows:
@@ -685,10 +695,10 @@ public class Testsuite {
          * Gets the value of the rerunFailure property.
          * 
          * <p>
-         * This accessor method returns a reference to the live list, not a
-         * snapshot. Therefore any modification you make to the returned list
-         * will be present inside the JAXB object. This is why there is not a
-         * <CODE>set</CODE> method for the rerunFailure property.
+         * This accessor method returns a reference to the live list, not a snapshot.
+         * Therefore any modification you make to the returned list will be present inside
+         * the JAXB object. This is why there is not a <CODE>set</CODE> method for the
+         * rerunFailure property.
          * 
          * <p>
          * For example, to add a new item, do as follows:
@@ -725,9 +735,8 @@ public class Testsuite {
         /**
          * Sets the value of the skipped property.
          * 
-         * @param value
-         *            allowed object is {@link JAXBElement }{@code <}
-         *            {@link Testsuite.Testcase.Skipped }{@code >}
+         * @param value allowed object is {@link JAXBElement }{@code <}
+         *        {@link Testsuite.Testcase.Skipped }{@code >}
          * 
          */
         public void setSkipped(JAXBElement<Testsuite.Testcase.Skipped> value) {
@@ -748,9 +757,8 @@ public class Testsuite {
         /**
          * Sets the value of the error property.
          * 
-         * @param value
-         *            allowed object is {@link JAXBElement }{@code <}
-         *            {@link Testsuite.Testcase.Error }{@code >}
+         * @param value allowed object is {@link JAXBElement }{@code <}
+         *        {@link Testsuite.Testcase.Error }{@code >}
          * 
          */
         public void setError(JAXBElement<Testsuite.Testcase.Error> value) {
@@ -771,9 +779,8 @@ public class Testsuite {
         /**
          * Sets the value of the systemOut property.
          * 
-         * @param value
-         *            allowed object is {@link JAXBElement }{@code <}
-         *            {@link Object }{@code >}
+         * @param value allowed object is {@link JAXBElement }{@code <} {@link Object
+         *        }{@code >}
          * 
          */
         public void setSystemOut(JAXBElement<Object> value) {
@@ -794,9 +801,8 @@ public class Testsuite {
         /**
          * Sets the value of the systemErr property.
          * 
-         * @param value
-         *            allowed object is {@link JAXBElement }{@code <}
-         *            {@link Object }{@code >}
+         * @param value allowed object is {@link JAXBElement }{@code <} {@link Object
+         *        }{@code >}
          * 
          */
         public void setSystemErr(JAXBElement<Object> value) {
@@ -816,8 +822,7 @@ public class Testsuite {
         /**
          * Sets the value of the name property.
          * 
-         * @param value
-         *            allowed object is {@link String }
+         * @param value allowed object is {@link String }
          * 
          */
         public void setName(String value) {
@@ -837,8 +842,7 @@ public class Testsuite {
         /**
          * Sets the value of the classname property.
          * 
-         * @param value
-         *            allowed object is {@link String }
+         * @param value allowed object is {@link String }
          * 
          */
         public void setClassname(String value) {
@@ -858,8 +862,7 @@ public class Testsuite {
         /**
          * Sets the value of the group property.
          * 
-         * @param value
-         *            allowed object is {@link String }
+         * @param value allowed object is {@link String }
          * 
          */
         public void setGroup(String value) {
@@ -879,8 +882,7 @@ public class Testsuite {
         /**
          * Sets the value of the time property.
          * 
-         * @param value
-         *            allowed object is {@link String }
+         * @param value allowed object is {@link String }
          * 
          */
         public void setTime(String value) {
@@ -892,8 +894,8 @@ public class Testsuite {
          * Java class for anonymous complex type.
          * 
          * <p>
-         * The following schema fragment specifies the expected content
-         * contained within this class.
+         * The following schema fragment specifies the expected content contained within
+         * this class.
          * 
          * <pre>
          * &lt;complexType>
@@ -914,8 +916,10 @@ public class Testsuite {
 
             @XmlValue
             protected String value;
+
             @XmlAttribute(name = "message")
             protected String message;
+
             @XmlAttribute(name = "type", required = true)
             protected String type;
 
@@ -932,8 +936,7 @@ public class Testsuite {
             /**
              * Sets the value of the value property.
              * 
-             * @param value
-             *            allowed object is {@link String }
+             * @param value allowed object is {@link String }
              * 
              */
             public void setValue(String value) {
@@ -953,8 +956,7 @@ public class Testsuite {
             /**
              * Sets the value of the message property.
              * 
-             * @param value
-             *            allowed object is {@link String }
+             * @param value allowed object is {@link String }
              * 
              */
             public void setMessage(String value) {
@@ -974,8 +976,7 @@ public class Testsuite {
             /**
              * Sets the value of the type property.
              * 
-             * @param value
-             *            allowed object is {@link String }
+             * @param value allowed object is {@link String }
              * 
              */
             public void setType(String value) {
@@ -989,8 +990,8 @@ public class Testsuite {
          * Java class for anonymous complex type.
          * 
          * <p>
-         * The following schema fragment specifies the expected content
-         * contained within this class.
+         * The following schema fragment specifies the expected content contained within
+         * this class.
          * 
          * <pre>
          * &lt;complexType>
@@ -1018,10 +1019,13 @@ public class Testsuite {
 
             @XmlValue
             protected String value;
+
             @XmlAttribute(name = "message")
             protected String message;
+
             @XmlAttribute(name = "type", required = true)
             protected String type;
+
             @XmlAttribute(name = "time")
             protected String time;
 
@@ -1038,8 +1042,7 @@ public class Testsuite {
             /**
              * Sets the value of the value property.
              * 
-             * @param value
-             *            allowed object is {@link String }
+             * @param value allowed object is {@link String }
              * 
              */
             public void setValue(String value) {
@@ -1059,8 +1062,7 @@ public class Testsuite {
             /**
              * Sets the value of the message property.
              * 
-             * @param value
-             *            allowed object is {@link String }
+             * @param value allowed object is {@link String }
              * 
              */
             public void setMessage(String value) {
@@ -1080,8 +1082,7 @@ public class Testsuite {
             /**
              * Sets the value of the type property.
              * 
-             * @param value
-             *            allowed object is {@link String }
+             * @param value allowed object is {@link String }
              * 
              */
             public void setType(String value) {
@@ -1101,8 +1102,7 @@ public class Testsuite {
             /**
              * Sets the value of the time property.
              * 
-             * @param value
-             *            allowed object is {@link String }
+             * @param value allowed object is {@link String }
              * 
              */
             public void setTime(String value) {
@@ -1117,10 +1117,13 @@ public class Testsuite {
 
             @XmlValue
             protected String value;
+
             @XmlAttribute(name = "message")
             protected String message;
+
             @XmlAttribute(name = "type", required = true)
             protected String type;
+
             @XmlAttribute(name = "time")
             protected String time;
 
@@ -1137,8 +1140,7 @@ public class Testsuite {
             /**
              * Sets the value of the value property.
              * 
-             * @param value
-             *            allowed object is {@link String }
+             * @param value allowed object is {@link String }
              * 
              */
             public void setValue(String value) {
@@ -1158,8 +1160,7 @@ public class Testsuite {
             /**
              * Sets the value of the message property.
              * 
-             * @param value
-             *            allowed object is {@link String }
+             * @param value allowed object is {@link String }
              * 
              */
             public void setMessage(String value) {
@@ -1179,8 +1180,7 @@ public class Testsuite {
             /**
              * Sets the value of the type property.
              * 
-             * @param value
-             *            allowed object is {@link String }
+             * @param value allowed object is {@link String }
              * 
              */
             public void setType(String value) {
@@ -1200,8 +1200,7 @@ public class Testsuite {
             /**
              * Sets the value of the time property.
              * 
-             * @param value
-             *            allowed object is {@link String }
+             * @param value allowed object is {@link String }
              * 
              */
             public void setTime(String value) {
@@ -1216,10 +1215,13 @@ public class Testsuite {
 
             @XmlValue
             protected String value;
+
             @XmlAttribute(name = "message")
             protected String message;
+
             @XmlAttribute(name = "type", required = true)
             protected String type;
+
             @XmlAttribute(name = "time")
             protected String time;
 
@@ -1236,8 +1238,7 @@ public class Testsuite {
             /**
              * Sets the value of the value property.
              * 
-             * @param value
-             *            allowed object is {@link String }
+             * @param value allowed object is {@link String }
              * 
              */
             public void setValue(String value) {
@@ -1257,8 +1258,7 @@ public class Testsuite {
             /**
              * Sets the value of the message property.
              * 
-             * @param value
-             *            allowed object is {@link String }
+             * @param value allowed object is {@link String }
              * 
              */
             public void setMessage(String value) {
@@ -1278,8 +1278,7 @@ public class Testsuite {
             /**
              * Sets the value of the type property.
              * 
-             * @param value
-             *            allowed object is {@link String }
+             * @param value allowed object is {@link String }
              * 
              */
             public void setType(String value) {
@@ -1299,8 +1298,7 @@ public class Testsuite {
             /**
              * Sets the value of the time property.
              * 
-             * @param value
-             *            allowed object is {@link String }
+             * @param value allowed object is {@link String }
              * 
              */
             public void setTime(String value) {
@@ -1314,8 +1312,8 @@ public class Testsuite {
          * Java class for anonymous complex type.
          * 
          * <p>
-         * The following schema fragment specifies the expected content
-         * contained within this class.
+         * The following schema fragment specifies the expected content contained within
+         * this class.
          * 
          * <pre>
          * &lt;complexType>
@@ -1343,10 +1341,13 @@ public class Testsuite {
 
             @XmlValue
             protected String value;
+
             @XmlAttribute(name = "message")
             protected String message;
+
             @XmlAttribute(name = "type", required = true)
             protected String type;
+
             @XmlAttribute(name = "time")
             protected String time;
             // @XmlElementRef(name = "system-out", type = JAXBElement.class,
@@ -1366,8 +1367,7 @@ public class Testsuite {
             /**
              * Sets the value of the value property.
              * 
-             * @param value
-             *            allowed object is {@link String }
+             * @param value allowed object is {@link String }
              * 
              */
             public void setValue(String value) {
@@ -1387,8 +1387,7 @@ public class Testsuite {
             /**
              * Sets the value of the message property.
              * 
-             * @param value
-             *            allowed object is {@link String }
+             * @param value allowed object is {@link String }
              * 
              */
             public void setMessage(String value) {
@@ -1408,8 +1407,7 @@ public class Testsuite {
             /**
              * Sets the value of the type property.
              * 
-             * @param value
-             *            allowed object is {@link String }
+             * @param value allowed object is {@link String }
              * 
              */
             public void setType(String value) {
@@ -1429,8 +1427,7 @@ public class Testsuite {
             /**
              * Sets the value of the time property.
              * 
-             * @param value
-             *            allowed object is {@link String }
+             * @param value allowed object is {@link String }
              * 
              */
             public void setTime(String value) {
@@ -1452,8 +1449,8 @@ public class Testsuite {
          * Java class for anonymous complex type.
          * 
          * <p>
-         * The following schema fragment specifies the expected content
-         * contained within this class.
+         * The following schema fragment specifies the expected content contained within
+         * this class.
          * 
          * <pre>
          * &lt;complexType>
@@ -1473,6 +1470,7 @@ public class Testsuite {
 
             @XmlValue
             protected String value;
+
             @XmlAttribute(name = "message")
             protected String message;
 
@@ -1489,8 +1487,7 @@ public class Testsuite {
             /**
              * Sets the value of the value property.
              * 
-             * @param value
-             *            allowed object is {@link String }
+             * @param value allowed object is {@link String }
              * 
              */
             public void setValue(String value) {
@@ -1510,8 +1507,7 @@ public class Testsuite {
             /**
              * Sets the value of the message property.
              * 
-             * @param value
-             *            allowed object is {@link String }
+             * @param value allowed object is {@link String }
              * 
              */
             public void setMessage(String value) {

@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.util;
 
 import static org.junit.Assert.assertEquals;
@@ -17,12 +18,12 @@ import org.junit.Test;
 public class IOUtilsTest {
 
     private static List<Testsuite> testsuites;
+
     private static TestsuiteDocument testsuiteData;
 
     @BeforeClass
     public static void init() throws Exception {
-        testsuites = IOUtils.unzipAndUnmarshalTestsuite(
-                new FileInputStream(new File(IOUtilsTest.class.getResource("TEST-surefire-report.xml.zip").getPath())));
+        testsuites = IOUtils.unzipAndUnmarshalTestsuite(new FileInputStream(new File(IOUtilsTest.class.getResource("TEST-surefire-report.xml.zip").getPath())));
         testsuiteData = TestsuiteDocument.create(testsuites.get(0));
     }
 

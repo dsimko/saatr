@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.web.comp.build;
 
 import java.text.SimpleDateFormat;
@@ -41,12 +42,14 @@ public class BuildPanel extends GenericPanel<BuildDocument> {
         add(new Label("jobName"));
         add(new Label("buildNumber"));
         add(new Label("status", new AbstractReadOnlyModel<String>() {
+
             @Override
             public String getObject() {
                 return BuildPage.getStatusHtml(getModelObject());
             }
         }).setEscapeModelStrings(false));
         add(new Label("timestamp") {
+
             @Override
             public <C> IConverter<C> getConverter(Class<C> type) {
                 return new IConverter<C>() {
@@ -74,10 +77,10 @@ public class BuildPanel extends GenericPanel<BuildDocument> {
             }
         });
         add(new RefreshingView<PropertyData>("systemProperties") {
+
             @Override
             protected Iterator<IModel<PropertyData>> getItemModels() {
-                return getModelObject().getSystemProperties().stream().sorted()
-                        .map(p -> (IModel<PropertyData>) new CompoundPropertyModel<>(p)).iterator();
+                return getModelObject().getSystemProperties().stream().sorted().map(p -> (IModel<PropertyData>) new CompoundPropertyModel<>(p)).iterator();
             }
 
             @Override
@@ -87,16 +90,17 @@ public class BuildPanel extends GenericPanel<BuildDocument> {
             }
         });
         add(new RefreshingView<PropertyData>("variables") {
+
             @Override
             protected Iterator<IModel<PropertyData>> getItemModels() {
-                return getModelObject().getVariables().stream().sorted().map(p -> (IModel<PropertyData>) new CompoundPropertyModel<>(p))
-                        .iterator();
+                return getModelObject().getVariables().stream().sorted().map(p -> (IModel<PropertyData>) new CompoundPropertyModel<>(p)).iterator();
             }
 
             @Override
             protected void populateItem(Item<PropertyData> item) {
                 item.add(new Label("name"));
                 item.add(new SmartLinkLabel("value") {
+
                     @Override
                     protected ILinkParser getLinkParser() {
                         return new SmartLinkParser();
@@ -107,6 +111,7 @@ public class BuildPanel extends GenericPanel<BuildDocument> {
 
         add(new PropertiesPanel<>("properties", model));
         add(new RefreshingView<TestsuiteDocument>("testsuites") {
+
             @Override
             protected Iterator<IModel<TestsuiteDocument>> getItemModels() {
                 List<IModel<TestsuiteDocument>> models = new ArrayList<>();

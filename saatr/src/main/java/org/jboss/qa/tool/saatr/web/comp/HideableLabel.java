@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.web.comp;
 
 import java.io.Serializable;
@@ -22,8 +23,7 @@ public class HideableLabel extends Label {
     /**
      * Constructor
      * 
-     * @param id
-     *            See Component
+     * @param id See Component
      */
     public HideableLabel(final String id) {
         super(id);
@@ -32,11 +32,9 @@ public class HideableLabel extends Label {
     /**
      * Convenience constructor. Same as Label(String, Model.of(Serializable))
      * 
-     * @param id
-     *            See Component
-     * @param label
-     *            The label text or object, converted to a string via the
-     *            {@link org.apache.wicket.util.convert.IConverter}.
+     * @param id See Component
+     * @param label The label text or object, converted to a string via the
+     *        {@link org.apache.wicket.util.convert.IConverter}.
      * 
      * @see org.apache.wicket.Component#Component(String, IModel)
      */

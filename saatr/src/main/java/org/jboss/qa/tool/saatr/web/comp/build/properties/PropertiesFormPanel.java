@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.web.comp.build.properties;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;

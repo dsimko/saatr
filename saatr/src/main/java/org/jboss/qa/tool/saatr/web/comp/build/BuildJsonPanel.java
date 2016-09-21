@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.web.comp.build;
 
 import org.apache.wicket.markup.html.basic.Label;
@@ -18,6 +19,7 @@ public class BuildJsonPanel extends GenericPanel<BuildDocument> {
     public BuildJsonPanel(String id, final IModel<BuildDocument> model) {
         super(id, new CompoundPropertyModel<>(model));
         add(new Label("json", new AbstractReadOnlyModel<String>() {
+
             @Override
             public String getObject() {
                 return IOUtils.toJson(model.getObject());

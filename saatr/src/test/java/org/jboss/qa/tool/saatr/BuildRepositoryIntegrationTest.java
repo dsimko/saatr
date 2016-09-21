@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr;
 
 import static org.hamcrest.Matchers.is;
@@ -21,27 +22,28 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest({ "spring.data.mongodb.port=0" })
 public class BuildRepositoryIntegrationTest {
 
-	@Autowired
-	BuildRepository repository;
-	@Autowired
-	MongoOperations operations;
+    @Autowired
+    BuildRepository repository;
 
-	BuildDocument build;
+    @Autowired
+    MongoOperations operations;
 
-	@Before
-	public void setUp() {
-		repository.deleteAll();
-		build = repository.save(new BuildDocument());
-	}
+    BuildDocument build;
 
-	/**
-	 * Test case to show that automatically generated ids are assigned to the
-	 * domain objects.
-	 */
-	@Test
-	public void setsIdOnSave() {
+    @Before
+    public void setUp() {
+        repository.deleteAll();
+        build = repository.save(new BuildDocument());
+    }
 
-		BuildDocument dave = repository.save(new BuildDocument());
-		assertThat(dave.getId(), is(notNullValue()));
-	}
+    /**
+     * Test case to show that automatically generated ids are assigned to the domain
+     * objects.
+     */
+    @Test
+    public void setsIdOnSave() {
+
+        BuildDocument dave = repository.save(new BuildDocument());
+        assertThat(dave.getId(), is(notNullValue()));
+    }
 }

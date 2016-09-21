@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr;
 
 import java.net.URL;
@@ -12,7 +13,7 @@ import org.jboss.qa.tool.saatr.web.comp.URLConverter;
 import org.jboss.qa.tool.saatr.web.page.AggregationPage;
 import org.jboss.qa.tool.saatr.web.page.BuildPage;
 import org.jboss.qa.tool.saatr.web.page.ConfigPage;
-import org.jboss.qa.tool.saatr.web.page.DebugPage;
+import org.jboss.qa.tool.saatr.web.page.AdminPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,41 +26,41 @@ import org.springframework.context.ApplicationContext;
 @SpringBootApplication
 public class SaatrApplication extends WebApplication {
 
-	@Autowired
-	private ApplicationContext applicationContext;
-	
-	public static void main(String[] args) {
-		SpringApplication.run(SaatrApplication.class, args);
-	}
+    @Autowired
+    private ApplicationContext applicationContext;
 
-	@Override
-	public Class<? extends Page> getHomePage() {
-		return BuildPage.class;
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(SaatrApplication.class, args);
+    }
 
-	@Override
-	protected void init() {
-		super.init();
+    @Override
+    public Class<? extends Page> getHomePage() {
+        return BuildPage.class;
+    }
 
-		mountPage("config", ConfigPage.class);
-		mountPage("debug", DebugPage.class);
-		mountPage("aggregation", AggregationPage.class);
+    @Override
+    protected void init() {
+        super.init();
 
-		getMarkupSettings().setStripWicketTags(true);
-		getMarkupSettings().setDefaultMarkupEncoding(CharEncoding.UTF_8);
+        mountPage("config", ConfigPage.class);
+        mountPage("admin", AdminPage.class);
+        mountPage("aggregation", AggregationPage.class);
 
-		getComponentInstantiationListeners().add(new SpringComponentInjector(this, applicationContext));
-	}
+        getMarkupSettings().setStripWicketTags(true);
+        getMarkupSettings().setDefaultMarkupEncoding(CharEncoding.UTF_8);
 
-	@Override
-	protected IConverterLocator newConverterLocator() {
-		ConverterLocator defaultLocator = new ConverterLocator();
-		defaultLocator.set(URL.class, new URLConverter());
-		return defaultLocator;
-	}
+        getComponentInstantiationListeners().add(new SpringComponentInjector(this, applicationContext));
+    }
 
-	public static SaatrApplication get() {
-		return (SaatrApplication) WebApplication.get();
-	}
+    @Override
+    protected IConverterLocator newConverterLocator() {
+        ConverterLocator defaultLocator = new ConverterLocator();
+        defaultLocator.set(URL.class, new URLConverter());
+        return defaultLocator;
+    }
+
+    public static SaatrApplication get() {
+        return (SaatrApplication) WebApplication.get();
+    }
 
 }

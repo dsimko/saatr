@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.domain.build;
 
 import java.io.Serializable;
@@ -24,28 +25,37 @@ import lombok.NoArgsConstructor;
  *
  */
 @Data
-@Document(collection=BuildDocument.COLLECTION_NAME)
+@Document(collection = BuildDocument.COLLECTION_NAME)
 @SuppressWarnings("serial")
 public class BuildDocument implements DocumentWithProperties<ObjectId>, DocumentWithID<ObjectId> {
 
-	public static final String COLLECTION_NAME = "builds";
-	
+    public static final String COLLECTION_NAME = "builds";
+
     public static enum Status {
         Success, SuccessWithFlakyFailure, SuccessWithFlakyError, Failed
     }
 
     @Id
     private ObjectId id;
+
     @Indexed
     private String jobName;
+
     private Long buildNumber;
+
     private Long timestamp;
+
     @Indexed
     private Status status;
+
     private Long duration;
+
     private final Set<PropertyData> systemProperties = new TreeSet<>();
+
     private final Set<PropertyData> variables = new TreeSet<>();
+
     private final Set<PropertyData> properties = new TreeSet<>();
+
     private final List<TestsuiteDocument> testsuites = new ArrayList<>();
 
     @Data
@@ -54,6 +64,7 @@ public class BuildDocument implements DocumentWithProperties<ObjectId>, Document
     public static class PropertyData implements Serializable, Comparable<PropertyData> {
 
         private String name;
+
         private String value;
 
         public static List<PropertyData> create(List<Properties> properties) {
@@ -104,18 +115,18 @@ public class BuildDocument implements DocumentWithProperties<ObjectId>, Document
         Status status = Status.Success;
         for (TestsuiteDocument testsuiteData : testsuites) {
             switch (testsuiteData.getStatus()) {
-            case Failure:
-            case Error:
-                return Status.Failed;
-            case FlakyFailure:
-                status = Status.SuccessWithFlakyFailure;
-                break;
-            case FlakyError:
-                if (status != Status.SuccessWithFlakyFailure)
-                    status = Status.SuccessWithFlakyError;
-                break;
-            case Success:
-                break;
+                case Failure:
+                case Error:
+                    return Status.Failed;
+                case FlakyFailure:
+                    status = Status.SuccessWithFlakyFailure;
+                    break;
+                case FlakyError:
+                    if (status != Status.SuccessWithFlakyFailure)
+                        status = Status.SuccessWithFlakyError;
+                    break;
+                case Success:
+                    break;
             }
         }
         return status;

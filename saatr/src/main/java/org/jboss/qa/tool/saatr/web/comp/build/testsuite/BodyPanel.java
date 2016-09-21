@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.web.comp.build.testsuite;
 
 import java.util.ArrayList;
@@ -33,13 +34,14 @@ class BodyPanel extends GenericPanel<TestsuiteDocument> {
         add(new Label("failures"));
         add(new PropertiesPanel<>("properties", model));
         add(new RefreshingView<TestcaseDocument>("testcases") {
+
             @Override
             protected Iterator<IModel<TestcaseDocument>> getItemModels() {
                 List<IModel<TestcaseDocument>> models = new ArrayList<>();
                 int index = 0;
                 for (TestcaseDocument testcaseData : getModelObject().getTestcases()) {
                     testcaseData.setIndex(index++);
-                	models.add(new TestcaseModel(testcaseData));
+                    models.add(new TestcaseModel(testcaseData));
                     // FIXME
                     // models.add(new EntityModel<>(testcaseData));
                 }

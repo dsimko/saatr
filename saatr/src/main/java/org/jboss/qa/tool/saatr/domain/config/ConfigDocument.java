@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.domain.config;
 
 import java.io.Serializable;
@@ -20,13 +21,17 @@ import lombok.NoArgsConstructor;
  * @author dsimko@redhat.com
  */
 @Data
-@Document
+@Document(collection = ConfigDocument.COLLECTION_NAME)
 @SuppressWarnings("serial")
 public class ConfigDocument implements DocumentWithID<ObjectId> {
 
+    public static final String COLLECTION_NAME = "configs";
+
     @Id
     private ObjectId id;
+
     private String name;
+
     private final Set<ConfigProperty> properties = new TreeSet<>();
 
     public static ConfigDocument create(Config config, String name) {
@@ -42,8 +47,11 @@ public class ConfigDocument implements DocumentWithID<ObjectId> {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class ConfigProperty implements Serializable, Comparable<ConfigProperty> {
+
         private String name;
+
         private String value;
+
         private List<String> options = new ArrayList<>();
 
         @Override

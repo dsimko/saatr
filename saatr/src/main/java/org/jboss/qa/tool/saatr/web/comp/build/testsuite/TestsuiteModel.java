@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.web.comp.build.testsuite;
 
 import java.util.UUID;
@@ -14,6 +15,7 @@ public class TestsuiteModel implements IModel<TestsuiteDocument> {
 
     @Inject
     private BuildRepository buildRepository;
+
     private UUID id;
 
     private transient TestsuiteDocument entity;

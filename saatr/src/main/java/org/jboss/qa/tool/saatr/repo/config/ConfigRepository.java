@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.repo.config;
 
 import org.bson.types.ObjectId;

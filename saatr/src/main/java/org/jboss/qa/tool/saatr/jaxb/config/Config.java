@@ -1,3 +1,4 @@
+
 package org.jboss.qa.tool.saatr.jaxb.config;
 
 import java.io.Serializable;
@@ -38,8 +39,10 @@ public class Config implements Serializable {
 
         @XmlAttribute(name = "name", required = true)
         private String name;
+
         @XmlAttribute(name = "value", required = true)
         private String value;
+
         @XmlElement(name = "option")
         @XmlElementWrapper(name = "options")
         private List<String> options = new ArrayList<>();
