@@ -10,8 +10,10 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow.CloseButtonCallback;
 import org.apache.wicket.feedback.ContainerFeedbackMessageFilter;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -34,7 +36,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @SuppressWarnings("serial")
-public class AggregationPage extends BasePage<Void> {
+public class AggregationPage extends BasePage<QueryDocument> {
 
     @Inject
     private BuildRepository buildRepository;
@@ -42,14 +44,13 @@ public class AggregationPage extends BasePage<Void> {
     @Inject
     private QueryRepository queryRepository;
 
-    private QueryDocument query = new QueryDocument();
-
     public AggregationPage() {
+        super(Model.of(new QueryDocument()));
         IModel<String> resultModel = new Model<>();
         Form<Void> form = new Form<Void>("form");
         add(form.setOutputMarkupId(true));
         form.add(new BootstrapFeedbackPanel("feedback", new ContainerFeedbackMessageFilter(form)));
-        form.add(new DropDownChoice<String>("category", new PropertyModel<>(this, "query.category"), queryRepository.findDistinctCategories()).add(
+        form.add(new DropDownChoice<String>("category", new PropertyModel<>(getModel(), "category"), queryRepository.findDistinctCategories()).add(
                 new OnChangeAjaxBehavior() {
 
                     @Override
@@ -57,29 +58,29 @@ public class AggregationPage extends BasePage<Void> {
                         target.add(form);
                     }
                 }));
-        form.add(new DropDownChoice<QueryDocument>("name", new PropertyModel<>(this, "query"), new AbstractReadOnlyModel<List<QueryDocument>>() {
+        form.add(new DropDownChoice<QueryDocument>("name", getModel(), new AbstractReadOnlyModel<List<QueryDocument>>() {
 
             @Override
             public List<QueryDocument> getObject() {
-                if (query != null && query.getCategory() != null) {
-                    return queryRepository.findByCategory(query.getCategory());
+                if (getModelObject() != null && getModelObject().getCategory() != null) {
+                    return queryRepository.findByCategory(getModelObject().getCategory());
                 }
                 return Collections.emptyList();
             }
-        }, new ChoiceRenderer<>("name")).setNullValid(true).add(new OnChangeAjaxBehavior() {
+        }, new ChoiceRenderer<>("name", "id")).setNullValid(true).add(new OnChangeAjaxBehavior() {
 
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 target.add(form);
             }
         }));
-        form.add(new TextArea<>("query", new PropertyModel<>(this, "query.query")));
-        form.add(new AjaxButton("search") {
+        form.add(new TextArea<>("query", new PropertyModel<>(getModel(), "query")));
+        form.add(new Button("search") {
 
             @Override
-            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+            public void onSubmit() {
                 try {
-                    resultModel.setObject(buildRepository.aggregate(query.getQuery()));
+                    resultModel.setObject(buildRepository.aggregate(AggregationPage.this.getModelObject().getQuery()));
                 } catch (Exception e) {
                     error(e);
                     log.debug(e.getMessage(), e);
@@ -91,8 +92,8 @@ public class AggregationPage extends BasePage<Void> {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 try {
-                    queryRepository.delete(query);
-                    query = new QueryDocument();
+                    queryRepository.delete(AggregationPage.this.getModelObject());
+                    AggregationPage.this.setModelObject(new QueryDocument());
                 } catch (Exception e) {
                     log.debug(e.getMessage(), e);
                     form.error(e);
@@ -107,6 +108,14 @@ public class AggregationPage extends BasePage<Void> {
         modalWindow.setCssClassName(ModalWindow.CSS_CLASS_GRAY);
         modalWindow.setInitialHeight(450);
         modalWindow.setTitle("Save Query as..");
+        modalWindow.setCloseButtonCallback(new CloseButtonCallback() {
+
+            @Override
+            public boolean onCloseButtonClicked(AjaxRequestTarget target) {
+                target.add(form);
+                return true;
+            }
+        });
         add(modalWindow);
         form.add(new AjaxButton("saveAs") {
 
@@ -124,15 +133,16 @@ public class AggregationPage extends BasePage<Void> {
             Form<Void> form = new Form<Void>("form");
             add(form.setOutputMarkupId(true));
             form.add(new BootstrapFeedbackPanel("feedback", new ContainerFeedbackMessageFilter(form)));
-            form.add(new TextField<>("category", new PropertyModel<>(AggregationPage.this, "query.category")).setRequired(true));
-            form.add(new TextField<>("name", new PropertyModel<>(AggregationPage.this, "query.name")).setRequired(true));
-            form.add(new TextArea<>("query", new PropertyModel<>(AggregationPage.this, "query.query")).setRequired(true));
+            form.add(new TextField<>("category", new PropertyModel<>(AggregationPage.this.getModel(), "category")).setRequired(true));
+            form.add(new TextField<>("name", new PropertyModel<>(AggregationPage.this.getModel(), "name")).setRequired(true));
+            form.add(new TextArea<>("query", new PropertyModel<>(AggregationPage.this.getModel(), "query")).setRequired(true));
             form.add(new AjaxButton("save") {
 
                 @Override
                 protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                    QueryDocument query = AggregationPage.this.getModelObject();
                     query.setId(null);
-                    query = queryRepository.save(query);
+                    queryRepository.save(query);
                     info("Successfully saved.");
                     target.add(form);
                 }
@@ -143,7 +153,6 @@ public class AggregationPage extends BasePage<Void> {
                 }
             });
         }
-
     }
 
 }

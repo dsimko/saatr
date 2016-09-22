@@ -9,15 +9,19 @@ import org.apache.wicket.Page;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.crypt.CharEncoding;
+import org.jboss.qa.tool.saatr.domain.config.QueryDocument;
+import org.jboss.qa.tool.saatr.repo.config.QueryRepository;
 import org.jboss.qa.tool.saatr.web.comp.URLConverter;
+import org.jboss.qa.tool.saatr.web.page.AdminPage;
 import org.jboss.qa.tool.saatr.web.page.AggregationPage;
 import org.jboss.qa.tool.saatr.web.page.BuildPage;
 import org.jboss.qa.tool.saatr.web.page.ConfigPage;
-import org.jboss.qa.tool.saatr.web.page.AdminPage;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 
 import com.mongodb.MongoClient;
 
@@ -65,6 +69,16 @@ public class SaatrApplication extends WebApplication {
 
     public static SaatrApplication get() {
         return (SaatrApplication) WebApplication.get();
+    }
+
+    @Bean
+    InitializingBean populateTestData(QueryRepository repository) {
+        return () -> {
+            if (repository.count() == 0L) {
+                repository.save(QueryDocument.DataInitializer.createInitalData());
+                repository.findAll().forEach(System.out::println);
+            }
+        };
     }
 
 }
