@@ -9,8 +9,9 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
 
 /**
- * The manual implementation parts for {@link QueryRepository}. This will automatically be picked up by the Spring Data
- * infrastructure as we follow the naming convention of extending the core repository interface's name with {@code Impl}.
+ * The manual implementation parts for {@link QueryRepository}. This will automatically be
+ * picked up by the Spring Data infrastructure as we follow the naming convention of
+ * extending the core repository interface's name with {@code Impl}.
  * 
  * @author dsimko@redhat.com
  */
@@ -29,6 +30,5 @@ class QueryRepositoryImpl implements QueryRepositoryCustom {
     public List<String> findDistinctCategories() {
         return template.getCollection(QueryDocument.COLLECTION_NAME).distinct("category");
     }
-
 
 }

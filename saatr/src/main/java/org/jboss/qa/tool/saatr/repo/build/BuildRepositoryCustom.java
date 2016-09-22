@@ -39,6 +39,6 @@ interface BuildRepositoryCustom {
     TestsuiteDocument findTestsuiteById(UUID id);
 
     TestcaseDocument findTestcaseById(UUID id, int index);
-    
+
     String aggregate(String query);
 }

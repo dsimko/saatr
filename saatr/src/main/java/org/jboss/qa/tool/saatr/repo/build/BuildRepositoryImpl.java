@@ -33,8 +33,9 @@ import com.mongodb.util.JSON;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * The manual implementation parts for {@link BuildRepository}. This will automatically be picked up by the Spring Data
- * infrastructure as we follow the naming convention of extending the core repository interface's name with {@code Impl}.
+ * The manual implementation parts for {@link BuildRepository}. This will automatically be
+ * picked up by the Spring Data infrastructure as we follow the naming convention of
+ * extending the core repository interface's name with {@code Impl}.
  * 
  * @author dsimko@redhat.com
  */

@@ -12,5 +12,5 @@ import java.util.List;
 public interface QueryRepositoryCustom {
 
     List<String> findDistinctCategories();
-    
+
 }

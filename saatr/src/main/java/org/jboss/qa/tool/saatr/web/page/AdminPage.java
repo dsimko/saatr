@@ -37,7 +37,8 @@ public class AdminPage extends BasePage<Void> {
 
             @Override
             protected Iterator<IModel<String>> getItemModels() {
-                List<IModel<String>> models = Arrays.asList(Model.of(BuildDocument.COLLECTION_NAME), Model.of(ConfigDocument.COLLECTION_NAME), Model.of(QueryDocument.COLLECTION_NAME));
+                List<IModel<String>> models = Arrays.asList(Model.of(BuildDocument.COLLECTION_NAME), Model.of(ConfigDocument.COLLECTION_NAME),
+                        Model.of(QueryDocument.COLLECTION_NAME));
                 return models.iterator();
             }
 
@@ -48,7 +49,7 @@ public class AdminPage extends BasePage<Void> {
 
                     @Override
                     public void onClick() {
-                        mongoOperations.getCollection(item.getModelObject()).drop();;
+                        mongoOperations.getCollection(item.getModelObject()).drop();
                         results = MessageFormat.format("All {0} deleted.", item.getModelObject());
                     }
                 });
