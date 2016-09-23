@@ -22,6 +22,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.mongodb.MongoClient;
 
@@ -32,6 +33,7 @@ import com.mongodb.MongoClient;
  * @author dsimko@redhat.com
  */
 @SpringBootApplication
+@EnableScheduling
 public class SaatrApplication extends WebApplication {
 
     @Autowired

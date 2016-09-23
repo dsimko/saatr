@@ -10,8 +10,10 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
+import org.jboss.qa.tool.saatr.domain.build.AdditionalInfoDocument;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
+import org.jboss.qa.tool.saatr.domain.build.BuildDocument.Status;
 import org.jboss.qa.tool.saatr.domain.build.TestcaseDocument;
 import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument;
 import org.jboss.qa.tool.saatr.domain.config.ConfigDocument.ConfigProperty;
@@ -150,6 +152,19 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
             });
         }
         return result.toString();
+    }
+
+    @Override
+    public List<BuildDocument> findFailedWithoutAdditionalInfo() {
+        Query query = Query.query(where("additionalInfo").is(null).andOperator(where("status").is(Status.Failed)));
+        return template.find(query, BuildDocument.class);
+    }
+
+    @Override
+    public void addConsoleText(BuildDocument buildDocument, String response) {
+        AdditionalInfoDocument addInfo = new AdditionalInfoDocument(null, response);
+        template.save(addInfo);
+        template.updateFirst(Query.query(where("id").is(buildDocument.getId())), Update.update("additionalInfo", addInfo), BuildDocument.class);
     }
 
     private Query createQueryAndApplyFilter(BuildFilter filter) {

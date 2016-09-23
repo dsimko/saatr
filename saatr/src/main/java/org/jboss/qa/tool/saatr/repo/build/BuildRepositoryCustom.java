@@ -41,4 +41,9 @@ interface BuildRepositoryCustom {
     TestcaseDocument findTestcaseById(UUID id, int index);
 
     String aggregate(String query);
+
+    List<BuildDocument> findFailedWithoutAdditionalInfo();
+
+    void addConsoleText(BuildDocument buildDocument, String response);
+
 }
