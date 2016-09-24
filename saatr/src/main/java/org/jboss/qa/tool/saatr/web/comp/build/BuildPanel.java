@@ -22,13 +22,14 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.convert.ConversionException;
 import org.apache.wicket.util.convert.IConverter;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
-import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
+import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument;
 import org.jboss.qa.tool.saatr.web.comp.SmartLinkParser;
 import org.jboss.qa.tool.saatr.web.comp.build.properties.PropertiesPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.testsuite.TestsuiteModel;
 import org.jboss.qa.tool.saatr.web.comp.build.testsuite.TestsuitePanel;
 import org.jboss.qa.tool.saatr.web.page.BuildPage;
+import org.springframework.util.StringUtils;
 
 /**
  * @author dsimko@redhat.com
@@ -80,7 +81,8 @@ public class BuildPanel extends GenericPanel<BuildDocument> {
 
             @Override
             protected Iterator<IModel<PropertyData>> getItemModels() {
-                return getModelObject().getSystemProperties().stream().sorted().map(p -> (IModel<PropertyData>) new CompoundPropertyModel<>(p)).iterator();
+                return getModelObject().getSystemProperties().stream().filter(p -> !StringUtils.isEmpty(p.getValue())).sorted().map(
+                        p -> (IModel<PropertyData>) new CompoundPropertyModel<>(p)).iterator();
             }
 
             @Override
@@ -93,7 +95,8 @@ public class BuildPanel extends GenericPanel<BuildDocument> {
 
             @Override
             protected Iterator<IModel<PropertyData>> getItemModels() {
-                return getModelObject().getVariables().stream().sorted().map(p -> (IModel<PropertyData>) new CompoundPropertyModel<>(p)).iterator();
+                return getModelObject().getVariables().stream().filter(p -> !StringUtils.isEmpty(p.getValue())).sorted().map(
+                        p -> (IModel<PropertyData>) new CompoundPropertyModel<>(p)).iterator();
             }
 
             @Override
@@ -118,8 +121,6 @@ public class BuildPanel extends GenericPanel<BuildDocument> {
                 List<TestsuiteDocument> testsuites = getModelObject().getTestsuites();
                 Collections.sort(testsuites);
                 for (TestsuiteDocument testsuiteData : testsuites) {
-                    // models.add(new EntityModel<>(testsuiteData));
-                    // FIXME
                     models.add(new TestsuiteModel(testsuiteData));
                 }
                 return models.iterator();
