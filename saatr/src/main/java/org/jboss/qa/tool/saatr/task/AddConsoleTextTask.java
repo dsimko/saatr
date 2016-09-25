@@ -17,8 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-@ConditionalOnProperty(prefix="asking_for_additional_info", value="enable")
-public class AddAdditionalInfoTask {
+@ConditionalOnProperty(prefix = "download.consoleText", value = "enable")
+public class AddConsoleTextTask {
 
     private static final String BUILD_URL = "BUILD_URL";
 
@@ -29,15 +29,15 @@ public class AddAdditionalInfoTask {
     private final RestTemplate restTemplate;
 
     @Autowired
-    public AddAdditionalInfoTask(BuildRepository buildRepository, @Value("${asking_for_additional_info.jenkins.user}") String user,
-            @Value("${asking_for_additional_info.jenkins.password}") String pass) {
+    public AddConsoleTextTask(BuildRepository buildRepository, @Value("${download.consoleText.jenkins.user}") String user,
+            @Value("${download.consoleText.jenkins.password}") String pass) {
         this.buildRepository = buildRepository;
         restTemplate = new RestTemplate();
         restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(user, pass));
     }
 
     @Scheduled(fixedRate = 1000 * 60 * 10) // every 10 minutes
-    public void addAdditionalInfo() {
+    public void addConsoleText() {
         log.info("Loading additional info started");
         for (BuildDocument buildDocument : buildRepository.findFailedWithoutAdditionalInfo()) {
             buildDocument.getVariables().stream().filter(p -> BUILD_URL.equals(p.getName())).findFirst().ifPresent(p -> {

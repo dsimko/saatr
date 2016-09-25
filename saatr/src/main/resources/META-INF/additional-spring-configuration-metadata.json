@@ -1,16 +1,16 @@
 {"properties": [
-    {
-    "name": "asking_for_additional_info.enable",
+  {
+    "name": "download.consoleText.enable",
     "type": "java.lang.String",
-    "description": "Whether is enabled to call jenkins API in order to get additional info."
+    "description": "Whether is enabled to call jenkins API in order to get console text."
   },
   {
-    "name": "asking_for_additional_info.jenkins.user",
+    "name": "download.consoleText.jenkins.user",
     "type": "java.lang.String",
     "description": "BASIC authorization user name for calling jenkins REST API"
   },
   {
-    "name": "asking_for_additional_info.jenkins.password",
+    "name": "download.consoleText.jenkins.password",
     "type": "java.lang.String",
     "description": "BASIC authorization password for calling jenkins REST API'"
   }

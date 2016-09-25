@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
-import org.jboss.qa.tool.saatr.domain.build.AdditionalInfoDocument;
+import org.jboss.qa.tool.saatr.domain.build.ConsoleTextDocument;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.Status;
@@ -156,15 +156,16 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
 
     @Override
     public List<BuildDocument> findFailedWithoutAdditionalInfo() {
-        Query query = Query.query(where("additionalInfo").is(null).andOperator(where("status").is(Status.Failed)));
+        Query query = Query.query(where("consoleTextId").is(null).andOperator(where("status").is(Status.Failed)));
         return template.find(query, BuildDocument.class);
     }
 
     @Override
-    public void addConsoleText(BuildDocument buildDocument, String response) {
-        AdditionalInfoDocument addInfo = new AdditionalInfoDocument(null, response);
-        template.save(addInfo);
-        template.updateFirst(Query.query(where("id").is(buildDocument.getId())), Update.update("additionalInfo", addInfo), BuildDocument.class);
+    public void addConsoleText(BuildDocument buildDocument, String consoleText) {
+        ConsoleTextDocument consoleTextDocument = new ConsoleTextDocument(null, consoleText);
+        template.save(consoleTextDocument);
+        template.updateFirst(Query.query(where("id").is(buildDocument.getId())), Update.update("consoleTextId", consoleTextDocument.getId()),
+                BuildDocument.class);
     }
 
     private Query createQueryAndApplyFilter(BuildFilter filter) {

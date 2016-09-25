@@ -11,17 +11,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Document(collection = AdditionalInfoDocument.COLLECTION_NAME)
+@Document(collection = ConsoleTextDocument.COLLECTION_NAME)
 @SuppressWarnings("serial")
 @AllArgsConstructor
 @NoArgsConstructor
-public class AdditionalInfoDocument implements DocumentWithID<ObjectId> {
+public class ConsoleTextDocument implements DocumentWithID<ObjectId> {
 
-    public static final String COLLECTION_NAME = "additionalInfo";
+    public static final String COLLECTION_NAME = "consoleTexts";
 
     @Id
     private ObjectId id;
 
-    private String consoleText;
+    private String content;
 
 }

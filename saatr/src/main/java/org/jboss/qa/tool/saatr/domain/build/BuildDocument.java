@@ -13,7 +13,6 @@ import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
 import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite.Properties;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
@@ -51,8 +50,7 @@ public class BuildDocument implements DocumentWithProperties<ObjectId>, Document
 
     private Long duration;
 
-    @DBRef(lazy = true)
-    private AdditionalInfoDocument additionalInfo;
+    private ObjectId consoleTextId;
 
     private final Set<PropertyData> systemProperties = new TreeSet<>();
 

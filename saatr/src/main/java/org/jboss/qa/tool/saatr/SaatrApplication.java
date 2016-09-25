@@ -10,8 +10,10 @@ import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.crypt.CharEncoding;
 import org.jboss.qa.tool.saatr.domain.config.QueryDocument;
+import org.jboss.qa.tool.saatr.repo.build.ConsoleTextRepository;
 import org.jboss.qa.tool.saatr.repo.config.QueryRepository;
 import org.jboss.qa.tool.saatr.web.comp.URLConverter;
+import org.jboss.qa.tool.saatr.web.comp.build.ConsoleTextResource;
 import org.jboss.qa.tool.saatr.web.page.AdminPage;
 import org.jboss.qa.tool.saatr.web.page.AggregationPage;
 import org.jboss.qa.tool.saatr.web.page.BuildPage;
@@ -39,6 +41,9 @@ public class SaatrApplication extends WebApplication {
     @Autowired
     private ApplicationContext applicationContext;
 
+    @Autowired
+    private ConsoleTextRepository consoleTextrepository;
+
     public static void main(String[] args) {
         SpringApplication.run(SaatrApplication.class, args);
     }
@@ -55,6 +60,7 @@ public class SaatrApplication extends WebApplication {
         mountPage("config", ConfigPage.class);
         mountPage("admin", AdminPage.class);
         mountPage("aggregation", AggregationPage.class);
+        mountResource(ConsoleTextResource.PATH + "${" + ConsoleTextResource.ID + "}", new ConsoleTextResource(consoleTextrepository));
 
         getMarkupSettings().setStripWicketTags(true);
         getMarkupSettings().setDefaultMarkupEncoding(CharEncoding.UTF_8);

@@ -13,6 +13,7 @@ import java.util.TimeZone;
 import org.apache.wicket.extensions.markup.html.basic.ILinkParser;
 import org.apache.wicket.extensions.markup.html.basic.SmartLinkLabel;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RefreshingView;
@@ -75,6 +76,22 @@ public class BuildPanel extends GenericPanel<BuildDocument> {
                         return String.valueOf(value);
                     }
                 };
+            }
+        });
+        add(new ExternalLink("consoleTextLink", new AbstractReadOnlyModel<String>() {
+
+            @Override
+            public String getObject() {
+                if (getModelObject() != null && getModelObject().getConsoleTextId() != null) {
+                    return ConsoleTextResource.PATH + getModelObject().getConsoleTextId().toHexString();
+                }
+                return null;
+            }
+        }) {
+
+            @Override
+            public boolean isVisible() {
+                return getModelObject() != null && getModelObject().getConsoleTextId() != null;
             }
         });
         add(new RefreshingView<PropertyData>("systemProperties") {
