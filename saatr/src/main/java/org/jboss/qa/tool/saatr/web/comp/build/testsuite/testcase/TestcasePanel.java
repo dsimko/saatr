@@ -7,9 +7,10 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.util.string.Strings;
 import org.jboss.qa.tool.saatr.domain.build.TestcaseDocument;
-import org.jboss.qa.tool.saatr.web.comp.HideableLabel;
+import org.jboss.qa.tool.saatr.web.comp.LongTextLabel;
 import org.jboss.qa.tool.saatr.web.comp.build.properties.PropertiesPanel;
 
 /**
@@ -64,8 +65,8 @@ public class TestcasePanel extends GenericPanel<TestcaseDocument> {
         panel.add(new FailuresPanel("flakyErrors", "Flaky Errors"));
         panel.add(new FailuresPanel("flakyFailures", "Flaky Failures"));
         panel.add(new FailuresPanel("rerunFailure", "Rerun Failure"));
-        panel.add(new HideableLabel("systemOut"));
-        panel.add(new HideableLabel("systemErr"));
+        panel.add(new LongTextLabel("systemOut", new PropertyModel<>(model, "systemOut")));
+        panel.add(new LongTextLabel("systemErr", new PropertyModel<>(model, "systemErr")));
         panel.add(new PropertiesPanel<>("properties", model));
 
     }

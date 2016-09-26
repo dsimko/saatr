@@ -11,7 +11,7 @@ import org.jboss.qa.tool.saatr.repo.build.ConsoleTextRepository;
 @SuppressWarnings("serial")
 public class ConsoleTextResource extends ResourceReference {
 
-    private static final String CONTENT_TYPE = "text/plain"; 
+    public static final String CONTENT_TYPE = "text/plain"; 
     public static final String PATH = "/build/consoleText/"; 
     public static final String ID = "id";
     
