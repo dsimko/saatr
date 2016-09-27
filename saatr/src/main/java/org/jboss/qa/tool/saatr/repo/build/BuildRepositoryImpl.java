@@ -1,6 +1,11 @@
 
 package org.jboss.qa.tool.saatr.repo.build;
 
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.project;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 import java.util.Iterator;
@@ -10,11 +15,10 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
-import org.jboss.qa.tool.saatr.domain.build.ConsoleTextDocument;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.Status;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocumentDto;
+import org.jboss.qa.tool.saatr.domain.build.ConsoleTextDocument;
 import org.jboss.qa.tool.saatr.domain.build.TestcaseDocument;
 import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument;
 import org.jboss.qa.tool.saatr.domain.config.ConfigDocument.ConfigProperty;
@@ -38,7 +42,6 @@ import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
 import lombok.extern.slf4j.Slf4j;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 /**
  * The manual implementation parts for {@link BuildRepository}. This will automatically be
@@ -175,22 +178,24 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
     }
 
     @Override
-    public Iterator<BuildDocumentDto> getRoots() {
+    public Iterator<BuildDocument> getRoots() {
         Aggregation agg = newAggregation(group("jobCategory").count().as("numberOfChildren").sum("jobStatus").as("jobStatus"),
-                sort(Direction.ASC, "_id"), project("jobStatus", "numberOfChildren").and("jobCategory").as("jobName"));
-        AggregationResults<BuildDocumentDto> results = template.aggregate(agg, BuildDocument.COLLECTION_NAME, BuildDocumentDto.class);
-        List<BuildDocumentDto> mappedResult = results.getMappedResults();
+                sort(Direction.ASC, "_id"), project("jobStatus", "numberOfChildren").and("_id").as("jobName").andExclude("_id"));
+        AggregationResults<BuildDocument> results = template.aggregate(agg, BuildDocument.COLLECTION_NAME, BuildDocument.class);
+        List<BuildDocument> mappedResult = results.getMappedResults();
         return mappedResult.iterator();
     }
 
-    public Iterator<BuildDocumentDto> getChildren(BuildDocumentDto parent) {
-        if (parent.getId().toString().contains("/") && parent.getNumberOfChildren() > 0) {
-            Query query = Query.query(where("jobName").is(parent.getId()));
-            return template.find(query, BuildDocument.class).stream().map(b -> new BuildDocumentDto(b, 0)).iterator();
+    public Iterator<BuildDocument> getChildren(BuildDocument parent) {
+        if (parent.getJobName().contains("/") && parent.getNumberOfChildren() != null && parent.getNumberOfChildren() > 0) {
+            Query query = Query.query(where("jobName").is(parent.getJobName()));
+            return template.find(query, BuildDocument.class).iterator();
         } else {
-            Aggregation agg = newAggregation(match(Criteria.where("jobCategory").is(parent.getId())), group("jobName"));
-            AggregationResults<BuildDocumentDto> results = template.aggregate(agg, BuildDocument.COLLECTION_NAME, BuildDocumentDto.class);
-            List<BuildDocumentDto> mappedResult = results.getMappedResults();
+            Aggregation agg = newAggregation(match(Criteria.where("jobCategory").is(parent.getJobName())),
+                    group("jobName").count().as("numberOfChildren").sum("jobStatus").as("jobStatus"),
+                    sort(Direction.ASC, "_id"), project("jobStatus", "numberOfChildren").and("_id").as("jobName").andExclude("_id"));
+            AggregationResults<BuildDocument> results = template.aggregate(agg, BuildDocument.COLLECTION_NAME, BuildDocument.class);
+            List<BuildDocument> mappedResult = results.getMappedResults();
             return mappedResult.iterator();
         }
     }

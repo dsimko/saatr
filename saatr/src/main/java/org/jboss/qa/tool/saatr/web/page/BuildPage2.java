@@ -42,8 +42,8 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.Status;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocumentDto;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapTabbedPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildProvider.BuildFilter;
@@ -55,7 +55,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @SuppressWarnings("serial")
 @Slf4j
-public class BuildPage2 extends BasePage<BuildDocumentDto> {
+public class BuildPage2 extends BasePage<BuildDocument> {
 
     private IModel<BuildFilter> filter = Model.of(new BuildFilter());
 
@@ -63,14 +63,13 @@ public class BuildPage2 extends BasePage<BuildDocumentDto> {
 
     private List<String> variableValues = new ArrayList<>();
 
-    private AbstractTree<BuildDocumentDto> tree;
-
+    private AbstractTree<BuildDocument> tree;
 
     @Inject
     private BuildRepository buildRepository;
 
     public BuildPage2() {
-        super(new Model<BuildDocumentDto>());
+        super(new Model<BuildDocument>());
         initVariables();
         Form<BuildFilter> form = new Form<>("form", new CompoundPropertyModel<BuildFilter>(filter));
         form.add(new TextField<>("jobName"));
@@ -107,24 +106,22 @@ public class BuildPage2 extends BasePage<BuildDocumentDto> {
 
         final Behavior theme = new HumanTheme();
         tree = createTree(new FooProvider(), new FooExpansionModel());
-        tree.add(new Behavior()
-        {
+        tree.add(new Behavior() {
+
             private static final long serialVersionUID = 1L;
 
             @Override
-            public void onComponentTag(Component component, ComponentTag tag)
-            {
+            public void onComponentTag(Component component, ComponentTag tag) {
                 theme.onComponentTag(component, tag);
             }
 
             @Override
-            public void renderHead(Component component, IHeaderResponse response)
-            {
+            public void renderHead(Component component, IHeaderResponse response) {
                 theme.renderHead(component, response);
             }
         });
         add(tree);
-        
+
         List<ITab> tabs = new ArrayList<ITab>();
         tabs.add(new AbstractTab(new AbstractReadOnlyModel<String>() {
 
@@ -154,27 +151,37 @@ public class BuildPage2 extends BasePage<BuildDocumentDto> {
             }
         });
         add(new BootstrapTabbedPanel<>("tabs", tabs));
-    }
-
-    protected AbstractTree<BuildDocumentDto> createTree(FooProvider provider, IModel<Set<BuildDocumentDto>> state)
-    {
-        List<IColumn<BuildDocumentDto, String>> columns = createColumns();
-
-        final TableTree<BuildDocumentDto, String> tree = new TableTree<BuildDocumentDto, String>("tree", columns, provider, Integer.MAX_VALUE, state)
-        {
-            private static final long serialVersionUID = 1L;
-    
+        add(new Link<Void>("expandAll") {
 
             @Override
-            protected Component newContentComponent(String id, IModel<BuildDocumentDto> model)
-            {
+            public void onClick() {
+                FooExpansion.get().expandAll();
+            }
+        });
+
+        add(new Link<Void>("collapseAll") {
+
+            @Override
+            public void onClick() {
+                FooExpansion.get().collapseAll();
+            }
+        });
+    }
+
+    protected AbstractTree<BuildDocument> createTree(FooProvider provider, IModel<Set<BuildDocument>> state) {
+        List<IColumn<BuildDocument, String>> columns = createColumns();
+
+        final TableTree<BuildDocument, String> tree = new TableTree<BuildDocument, String>("tree", columns, provider, Integer.MAX_VALUE, state) {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected Component newContentComponent(String id, IModel<BuildDocument> model) {
                 return BuildPage2.this.newContentComponent(id, model);
             }
 
-            
             @Override
-            protected Item<BuildDocumentDto> newRowItem(String id, int index, IModel<BuildDocumentDto> model)
-            {
+            protected Item<BuildDocument> newRowItem(String id, int index, IModel<BuildDocument> model) {
                 return new OddEvenItem<>(id, index, model);
             }
         };
@@ -183,14 +190,14 @@ public class BuildPage2 extends BasePage<BuildDocumentDto> {
         return tree;
     }
 
-    private List<IColumn<BuildDocumentDto, String>> createColumns()
-    {
-        List<IColumn<BuildDocumentDto, String>> columns = new ArrayList<>();
+    private List<IColumn<BuildDocument, String>> createColumns() {
+        List<IColumn<BuildDocument, String>> columns = new ArrayList<>();
 
-   //     columns.add(new PropertyColumn<BuildDocumentDto, String>(Model.of("ID"), "id"));
+        // columns.add(new PropertyColumn<BuildDocumentDto, String>(Model.of("ID"),
+        // "id"));
 
-        columns.add(new TreeColumn<BuildDocumentDto, String>(Model.of("Tree")));
-        columns.add(new PropertyColumn<BuildDocumentDto, String>(Model.of("JobStatus"), "jobStatus"));
+        columns.add(new TreeColumn<BuildDocument, String>(Model.of("Tree")));
+        columns.add(new PropertyColumn<BuildDocument, String>(Model.of("JobStatus"), "jobStatus"));
 
         return columns;
     }
@@ -202,7 +209,7 @@ public class BuildPage2 extends BasePage<BuildDocumentDto> {
         log.debug("Loading variables filter took {} ms.", System.currentTimeMillis() - start);
     }
 
-    public static String getStatusHtml(BuildDocumentDto build) {
+    public static String getStatusHtml(BuildDocument build) {
         StringBuilder builder = new StringBuilder();
         builder.append("<img src=\"");
         builder.append(WebApplication.get().getServletContext().getContextPath());
@@ -223,64 +230,66 @@ public class BuildPage2 extends BasePage<BuildDocumentDto> {
         }
     }
 
-    protected Component newContentComponent(String id, IModel<BuildDocumentDto> model)
-    {
+    protected Component newContentComponent(String id, IModel<BuildDocument> model) {
         return new Label(id, model);
     }
 
-    private class FooExpansionModel implements IModel<Set<BuildDocumentDto>>
-    {
+    private class FooExpansionModel implements IModel<Set<BuildDocument>> {
+
         @Override
-        public Set<BuildDocumentDto> getObject()
-        {
+        public Set<BuildDocument> getObject() {
             return FooExpansion.get();
         }
-        
+
         @Override
-        public void setObject(Set<BuildDocumentDto> object) {
-            
+        public void setObject(Set<BuildDocument> object) {
+
         }
+
         @Override
         public void detach() {
-            
+
         }
     }
 
-    private static class FooProvider implements ITreeProvider<BuildDocumentDto> {
+    private static class FooProvider implements ITreeProvider<BuildDocument> {
 
         @SpringBean
         private BuildRepository buildRepository;
-        
+
         public FooProvider() {
             Injector.get().inject(this);
         }
-        
+
         @Override
         public void detach() {
             // TODO Auto-generated method stub
-            
+
         }
 
         @Override
-        public Iterator<? extends BuildDocumentDto> getRoots() {
+        public Iterator<? extends BuildDocument> getRoots() {
             return buildRepository.getRoots();
         }
 
         @Override
-        public boolean hasChildren(BuildDocumentDto node) {
+        public boolean hasChildren(BuildDocument node) {
+            if (node.getJobName().contains("/")) {
+                return node.getNumberOfChildren() != null && node.getNumberOfChildren() > 1;
+            }
             return node.getNumberOfChildren() > 0;
         }
 
         @Override
-        public Iterator<? extends BuildDocumentDto> getChildren(BuildDocumentDto node) {
+        public Iterator<? extends BuildDocument> getChildren(BuildDocument node) {
             return buildRepository.getChildren(node);
         }
 
         @Override
-        public IModel<BuildDocumentDto> model(BuildDocumentDto object) {
+        public IModel<BuildDocument> model(BuildDocument object) {
             // TODO Auto-generated method stub
             return Model.of(object);
         }
-        
+
     }
 }

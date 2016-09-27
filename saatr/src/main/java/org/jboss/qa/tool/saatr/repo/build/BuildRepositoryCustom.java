@@ -8,7 +8,6 @@ import java.util.UUID;
 
 import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocumentDto;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
 import org.jboss.qa.tool.saatr.domain.build.TestcaseDocument;
 import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument;
@@ -47,9 +46,9 @@ interface BuildRepositoryCustom {
 
     void addConsoleText(BuildDocument buildDocument, String response);
 
-    Iterator<BuildDocumentDto> getRoots();
+    Iterator<BuildDocument> getRoots();
     
-    Iterator<? extends BuildDocumentDto> getChildren(BuildDocumentDto parent);
+    Iterator<? extends BuildDocument> getChildren(BuildDocument parent);
 
 
 }

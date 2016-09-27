@@ -56,6 +56,8 @@ public class BuildDocument implements DocumentWithProperties<ObjectId>, Document
     @Indexed
     private Integer jobStatus;
 
+    private Integer numberOfChildren;
+
     @Indexed
     private String jobName;
 

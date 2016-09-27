@@ -25,9 +25,9 @@ import java.util.Set;
 
 import org.apache.wicket.MetaDataKey;
 import org.apache.wicket.Session;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocumentDto;
+import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
 
-public class FooExpansion implements Set<BuildDocumentDto>, Serializable {
+public class FooExpansion implements Set<BuildDocument>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -53,33 +53,33 @@ public class FooExpansion implements Set<BuildDocumentDto>, Serializable {
     }
 
     @Override
-    public boolean add(BuildDocumentDto foo) {
+    public boolean add(BuildDocument foo) {
         if (inverse) {
-            return ids.remove(foo.getId());
+            return ids.remove(foo.getJobName());
         } else {
-            return ids.add(foo.getId());
+            return ids.add(foo.getJobName());
         }
     }
 
     @Override
     public boolean remove(Object o) {
-        BuildDocumentDto foo = (BuildDocumentDto) o;
+        BuildDocument foo = (BuildDocument) o;
 
         if (inverse) {
-            return ids.add(foo.getId());
+            return ids.add(foo.getJobName());
         } else {
-            return ids.remove(foo.getId());
+            return ids.remove(foo.getJobName());
         }
     }
 
     @Override
     public boolean contains(Object o) {
-        BuildDocumentDto foo = (BuildDocumentDto) o;
+        BuildDocument foo = (BuildDocument) o;
 
         if (inverse) {
-            return !ids.contains(foo.getId());
+            return !ids.contains(foo.getJobName());
         } else {
-            return ids.contains(foo.getId());
+            return ids.contains(foo.getJobName());
         }
     }
 
@@ -104,7 +104,7 @@ public class FooExpansion implements Set<BuildDocumentDto>, Serializable {
     }
 
     @Override
-    public Iterator<BuildDocumentDto> iterator() {
+    public Iterator<BuildDocument> iterator() {
         throw new UnsupportedOperationException();
     }
 
@@ -119,7 +119,7 @@ public class FooExpansion implements Set<BuildDocumentDto>, Serializable {
     }
 
     @Override
-    public boolean addAll(Collection<? extends BuildDocumentDto> c) {
+    public boolean addAll(Collection<? extends BuildDocument> c) {
         throw new UnsupportedOperationException();
     }
 
