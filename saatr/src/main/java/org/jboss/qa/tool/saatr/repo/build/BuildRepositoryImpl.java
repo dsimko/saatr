@@ -14,6 +14,7 @@ import org.jboss.qa.tool.saatr.domain.build.ConsoleTextDocument;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.Status;
+import org.jboss.qa.tool.saatr.domain.build.BuildDocumentDto;
 import org.jboss.qa.tool.saatr.domain.build.TestcaseDocument;
 import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument;
 import org.jboss.qa.tool.saatr.domain.config.ConfigDocument.ConfigProperty;
@@ -21,7 +22,11 @@ import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildProvider.BuildFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
@@ -33,6 +38,7 @@ import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
 import lombok.extern.slf4j.Slf4j;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 /**
  * The manual implementation parts for {@link BuildRepository}. This will automatically be
@@ -166,6 +172,27 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
         template.save(consoleTextDocument);
         template.updateFirst(Query.query(where("id").is(buildDocument.getId())), Update.update("consoleTextId", consoleTextDocument.getId()),
                 BuildDocument.class);
+    }
+
+    @Override
+    public Iterator<BuildDocumentDto> getRoots() {
+        Aggregation agg = newAggregation(group("jobCategory").count().as("numberOfChildren").sum("jobStatus").as("jobStatus"),
+                sort(Direction.ASC, "_id"), project("jobStatus", "numberOfChildren").and("jobCategory").as("jobName"));
+        AggregationResults<BuildDocumentDto> results = template.aggregate(agg, BuildDocument.COLLECTION_NAME, BuildDocumentDto.class);
+        List<BuildDocumentDto> mappedResult = results.getMappedResults();
+        return mappedResult.iterator();
+    }
+
+    public Iterator<BuildDocumentDto> getChildren(BuildDocumentDto parent) {
+        if (parent.getId().toString().contains("/") && parent.getNumberOfChildren() > 0) {
+            Query query = Query.query(where("jobName").is(parent.getId()));
+            return template.find(query, BuildDocument.class).stream().map(b -> new BuildDocumentDto(b, 0)).iterator();
+        } else {
+            Aggregation agg = newAggregation(match(Criteria.where("jobCategory").is(parent.getId())), group("jobName"));
+            AggregationResults<BuildDocumentDto> results = template.aggregate(agg, BuildDocument.COLLECTION_NAME, BuildDocumentDto.class);
+            List<BuildDocumentDto> mappedResult = results.getMappedResults();
+            return mappedResult.iterator();
+        }
     }
 
     private Query createQueryAndApplyFilter(BuildFilter filter) {
