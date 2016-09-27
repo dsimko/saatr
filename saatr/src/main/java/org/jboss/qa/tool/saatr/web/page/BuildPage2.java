@@ -40,6 +40,7 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
@@ -193,10 +194,8 @@ public class BuildPage2 extends BasePage<BuildDocument> {
     private List<IColumn<BuildDocument, String>> createColumns() {
         List<IColumn<BuildDocument, String>> columns = new ArrayList<>();
 
-        // columns.add(new PropertyColumn<BuildDocumentDto, String>(Model.of("ID"),
-        // "id"));
-
         columns.add(new TreeColumn<BuildDocument, String>(Model.of("Tree")));
+        columns.add(new PropertyColumn<BuildDocument, String>(Model.of("BuildNumber"), "buildNumber"));
         columns.add(new PropertyColumn<BuildDocument, String>(Model.of("JobStatus"), "jobStatus"));
 
         return columns;
@@ -231,7 +230,7 @@ public class BuildPage2 extends BasePage<BuildDocument> {
     }
 
     protected Component newContentComponent(String id, IModel<BuildDocument> model) {
-        return new Label(id, model);
+        return new Label(id, new PropertyModel<>(model, "jobName"));
     }
 
     private class FooExpansionModel implements IModel<Set<BuildDocument>> {

@@ -179,8 +179,8 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
 
     @Override
     public Iterator<BuildDocument> getRoots() {
-        Aggregation agg = newAggregation(group("jobCategory").count().as("numberOfChildren").sum("jobStatus").as("jobStatus"),
-                sort(Direction.ASC, "_id"), project("jobStatus", "numberOfChildren").and("_id").as("jobName").andExclude("_id"));
+        Aggregation agg = newAggregation(group("jobCategory").count().as("numberOfChildren").sum("jobStatus").as("jobStatus"), sort(Direction.ASC, "_id"),
+                project("jobStatus", "numberOfChildren").and("_id").as("jobName").andExclude("_id"));
         AggregationResults<BuildDocument> results = template.aggregate(agg, BuildDocument.COLLECTION_NAME, BuildDocument.class);
         List<BuildDocument> mappedResult = results.getMappedResults();
         return mappedResult.iterator();
@@ -192,11 +192,16 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
             return template.find(query, BuildDocument.class).iterator();
         } else {
             Aggregation agg = newAggregation(match(Criteria.where("jobCategory").is(parent.getJobName())),
-                    group("jobName").count().as("numberOfChildren").sum("jobStatus").as("jobStatus"),
-                    sort(Direction.ASC, "_id"), project("jobStatus", "numberOfChildren").and("_id").as("jobName").andExclude("_id"));
+                    group("jobName").count().as("numberOfChildren").sum("jobStatus").as("jobStatus"), sort(Direction.ASC, "_id"),
+                    project("jobStatus", "numberOfChildren").and("_id").as("jobName").andExclude("_id"));
             AggregationResults<BuildDocument> results = template.aggregate(agg, BuildDocument.COLLECTION_NAME, BuildDocument.class);
-            List<BuildDocument> mappedResult = results.getMappedResults();
-            return mappedResult.iterator();
+            return results.getMappedResults().stream().map(b -> {
+                if(b.getNumberOfChildren() > 1){
+                    return b;    
+                }else{
+                    return template.findOne(Query.query(Criteria.where("jobName").is(b.getJobName())), BuildDocument.class);
+                }
+            }).iterator();
         }
     }
 
