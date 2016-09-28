@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.qa.tool.saatr.web.page;
+package org.jboss.qa.tool.saatr.web.comp.build;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -27,13 +27,11 @@ import org.apache.wicket.MetaDataKey;
 import org.apache.wicket.Session;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
 
-public class FooExpansion implements Set<BuildDocument>, Serializable {
+@SuppressWarnings("serial")
+public class BuildExpansion implements Set<BuildDocument>, Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static MetaDataKey<BuildExpansion> KEY = new MetaDataKey<BuildExpansion>() {
 
-    private static MetaDataKey<FooExpansion> KEY = new MetaDataKey<FooExpansion>() {
-
-        private static final long serialVersionUID = 1L;
     };
 
     private Set<Object> ids = new HashSet<>();
@@ -138,10 +136,10 @@ public class FooExpansion implements Set<BuildDocument>, Serializable {
      * 
      * @return expansion
      */
-    public static FooExpansion get() {
-        FooExpansion expansion = Session.get().getMetaData(KEY);
+    public static BuildExpansion get() {
+        BuildExpansion expansion = Session.get().getMetaData(KEY);
         if (expansion == null) {
-            expansion = new FooExpansion();
+            expansion = new BuildExpansion();
 
             Session.get().setMetaData(KEY, expansion);
         }

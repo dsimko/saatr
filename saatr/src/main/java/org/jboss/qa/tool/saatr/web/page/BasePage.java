@@ -31,7 +31,7 @@ public abstract class BasePage<T> extends GenericWebPage<T> {
     }
 
     private void initNavbar() {
-        add(new BootstrapNavbarLink("builds", BuildPage2.class, Model.of("Builds"), "glyphicon glyphicon-th-list"));
+        add(new BootstrapNavbarLink("builds", BuildPage.class, Model.of("Builds"), "glyphicon glyphicon-th-list"));
         add(new BootstrapNavbarLink("config", ConfigPage.class, Model.of("Config"), "glyphicon glyphicon-wrench"));
         add(new BootstrapNavbarLink("aggregation", AggregationPage.class, Model.of("Aggregation"), "glyphicon glyphicon-search"));
         add(new BootstrapNavbarLink("admin", AdminPage.class, Model.of("Admin"), "glyphicon glyphicon-cog"));

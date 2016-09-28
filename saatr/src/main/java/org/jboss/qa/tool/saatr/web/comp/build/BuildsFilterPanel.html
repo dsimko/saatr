@@ -1,33 +1,7 @@
-<!DOCTYPE html>
-<html xmlns:wicket="http://wicket.apache.org">
-<head>
-<wicket:head>
-	<style>
-table {
-	width: 100%;
-	border: 1px solid #DDDDDD;
-}
-
-tr.even {
-	background-color: #FFFFFF;
-}
-
-tr.odd {
-	background-color: #EEEEEE;
-}
-
-td.number {
-	text-align: right;
-	padding-right: 1em;
-}
-</style>
-</wicket:head>
-</head>
+<?xml version="1.0" encoding="UTF-8" ?>
+<html xmlns:wicket>
 <body>
-	<wicket:extend>
-		<div class="page-header">
-			<h2>Builds</h2>
-		</div>
+	<wicket:panel>
 		<div class="panel panel-default">
   			<div class="panel-body">
 				<form wicket:id="form" class="form-inline" role="form">
@@ -53,11 +27,6 @@ td.number {
 				</form>
 			</div>
 		</div>
-		<p>
-			<a wicket:id="collapseAll">collapse all</a> <a wicket:id="expandAll">expand	all</a>
-		</p>
-		<div wicket:id="tree"></div>
-		<wicket:container wicket:id="tabs"></wicket:container>
-	</wicket:extend>
+	</wicket:panel>
 </body>
 </html>
