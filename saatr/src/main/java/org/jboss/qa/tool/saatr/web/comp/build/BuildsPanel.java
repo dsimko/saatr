@@ -45,7 +45,7 @@ public class BuildsPanel extends GenericPanel<BuildDocument> {
 
             @Override
             public String getObject() {
-                return "<span class=\"glyphicon glyphicon-paste\"></span> Tree";
+                return "<span class=\"glyphicon glyphicon-tree-conifer\"></span> Tree";
             }
         }) {
 
