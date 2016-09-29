@@ -32,6 +32,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
+import org.jboss.qa.tool.saatr.web.comp.DocumentModel;
 
 /**
  * @author dsimko@redhat.com
@@ -41,10 +42,10 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
 
     private AbstractTree<BuildDocument> tree;
 
-    public BuildsTreeTablePanel(String id, IModel<BuildDocument> model) {
+    public BuildsTreeTablePanel(String id, IModel<BuildDocument> model, IModel<BuildFilter> filterModel) {
         super(id, model);
         final Behavior theme = new HumanTheme();
-        tree = createTree(new BuildsProvider(), new BuildsExpansionModel());
+        tree = createTree(new BuildsProvider(filterModel), new BuildsExpansionModel());
         tree.add(new Behavior() {
 
             @Override
@@ -156,22 +157,24 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
 
     private static class BuildsProvider implements ITreeProvider<BuildDocument> {
 
+        final IModel<BuildFilter> filter;
+        
         @SpringBean
-        private BuildRepository buildRepository;
+        BuildRepository buildRepository;
 
-        public BuildsProvider() {
+        BuildsProvider(IModel<BuildFilter> filter) {
+            this.filter = filter;
             Injector.get().inject(this);
         }
 
         @Override
         public void detach() {
-            // TODO Auto-generated method stub
-
+            filter.detach();
         }
 
         @Override
         public Iterator<? extends BuildDocument> getRoots() {
-            return buildRepository.getRoots();
+            return buildRepository.getRoots(filter.getObject());
         }
 
         @Override
@@ -184,13 +187,12 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
 
         @Override
         public Iterator<? extends BuildDocument> getChildren(BuildDocument node) {
-            return buildRepository.getChildren(node);
+            return buildRepository.getChildren(node, filter.getObject());
         }
 
         @Override
         public IModel<BuildDocument> model(BuildDocument object) {
-            // TODO Auto-generated method stub
-            return Model.of(object);
+            return new DocumentModel<>(object);
         }
 
     }

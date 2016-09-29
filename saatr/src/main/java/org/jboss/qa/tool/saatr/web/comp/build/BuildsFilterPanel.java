@@ -19,7 +19,6 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.Status;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
-import org.jboss.qa.tool.saatr.web.comp.build.BuildProvider.BuildFilter;
 
 import lombok.extern.slf4j.Slf4j;
 

@@ -13,7 +13,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapTabbedPanel;
-import org.jboss.qa.tool.saatr.web.comp.build.BuildProvider.BuildFilter;
 
 /**
  * @author dsimko@redhat.com
@@ -51,7 +50,7 @@ public class BuildsPanel extends GenericPanel<BuildDocument> {
 
             @Override
             public WebMarkupContainer getPanel(String panelId) {
-                return new BuildsTreeTablePanel(panelId, model);
+                return new BuildsTreeTablePanel(panelId, model, filter);
             }
         });
         add(new BootstrapTabbedPanel<>("tabs", tabs));

@@ -2,16 +2,22 @@
 package org.jboss.qa.tool.saatr.web.comp.build;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
+import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
+import org.apache.wicket.injection.Injector;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
+import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
+import org.jboss.qa.tool.saatr.web.comp.DocumentModel;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapTable;
-import org.jboss.qa.tool.saatr.web.comp.build.BuildProvider.BuildFilter;
 
 /**
  * @author dsimko@redhat.com
@@ -35,4 +41,33 @@ public class BuildsSimpleTablePanel extends GenericPanel<BuildDocument> {
         };
         add(dataTable);
     }
+    
+    private static class BuildProvider extends SortableDataProvider<BuildDocument, String> {
+
+        @Inject
+        private BuildRepository buildRepository;
+
+        private final IModel<BuildFilter> filter;
+
+        public BuildProvider(IModel<BuildFilter> filter) {
+            this.filter = filter;
+            Injector.get().inject(this);
+        }
+
+        @Override
+        public Iterator<BuildDocument> iterator(long first, long count) {
+            return buildRepository.query(first, count, filter.getObject());
+        }
+
+        @Override
+        public long size() {
+            return buildRepository.count(filter.getObject());
+        }
+
+        @Override
+        public IModel<BuildDocument> model(BuildDocument build) {
+            return new DocumentModel<BuildDocument>(build);
+        }
+    }
+
 }

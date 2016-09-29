@@ -8,12 +8,15 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.proj
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import org.bson.BsonDocument;
+import org.bson.BsonString;
 import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
@@ -23,7 +26,7 @@ import org.jboss.qa.tool.saatr.domain.build.TestcaseDocument;
 import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument;
 import org.jboss.qa.tool.saatr.domain.config.ConfigDocument.ConfigProperty;
 import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite;
-import org.jboss.qa.tool.saatr.web.comp.build.BuildProvider.BuildFilter;
+import org.jboss.qa.tool.saatr.web.comp.build.BuildFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -63,16 +66,17 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
 
     @Override
     public Iterator<BuildDocument> query(long first, long count, BuildFilter filter) {
-        final Query query = createQueryAndApplyFilter(filter);
+        final Query query = new Query();
         query.limit((int) count);
         query.skip((int) first);
         query.with(new Sort(Sort.Direction.DESC, "id"));
+        query.addCriteria(createCriteria(filter, false));
         return template.find(query, BuildDocument.class).iterator();
     }
 
     @Override
     public long count(BuildFilter filter) {
-        return template.count(createQueryAndApplyFilter(filter), BuildDocument.class);
+        return template.count(Query.query(createCriteria(filter, false)), BuildDocument.class);
     }
 
     @Override
@@ -178,48 +182,67 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
     }
 
     @Override
-    public Iterator<BuildDocument> getRoots() {
-        Aggregation agg = newAggregation(group("jobCategory").count().as("numberOfChildren").sum("jobStatus").as("jobStatus"), sort(Direction.ASC, "_id"),
-                project("jobStatus", "numberOfChildren").and("_id").as("jobName").andExclude("_id"));
+    public Iterator<BuildDocument> getRoots(BuildFilter filter) {
+        Aggregation agg = newAggregation(match(createCriteria(filter, true)), group("jobCategory").count().as("numberOfChildren").sum("jobStatus").as("jobStatus"),
+                sort(Direction.ASC, "_id"), project("jobStatus", "numberOfChildren").and("_id").as("jobName").andExclude("_id"));
         AggregationResults<BuildDocument> results = template.aggregate(agg, BuildDocument.COLLECTION_NAME, BuildDocument.class);
         List<BuildDocument> mappedResult = results.getMappedResults();
         return mappedResult.iterator();
     }
 
-    public Iterator<BuildDocument> getChildren(BuildDocument parent) {
+    public Iterator<BuildDocument> getChildren(BuildDocument parent, final BuildFilter filter) {
         if (parent.getJobName().contains("/") && parent.getNumberOfChildren() != null && parent.getNumberOfChildren() > 0) {
-            Query query = Query.query(where("jobName").is(parent.getJobName()));
-            return template.find(query, BuildDocument.class).iterator();
+            BuildFilter newfilter = filter.clone();
+            newfilter.setJobName(parent.getJobName());
+            return template.find(Query.query(createCriteria(newfilter, false)), BuildDocument.class).iterator();
         } else {
-            Aggregation agg = newAggregation(match(Criteria.where("jobCategory").is(parent.getJobName())),
-                    group("jobName").count().as("numberOfChildren").sum("jobStatus").as("jobStatus"), sort(Direction.ASC, "_id"),
-                    project("jobStatus", "numberOfChildren").and("_id").as("jobName").andExclude("_id"));
+            BuildFilter newfilter = filter.clone();
+            newfilter.setJobCategory(parent.getJobName());
+            Aggregation agg = newAggregation(match(createCriteria(newfilter, true)), group("jobName").count().as("numberOfChildren").sum("jobStatus").as("jobStatus"),
+                    sort(Direction.ASC, "_id"), project("jobStatus", "numberOfChildren").and("_id").as("jobName").andExclude("_id"));
             AggregationResults<BuildDocument> results = template.aggregate(agg, BuildDocument.COLLECTION_NAME, BuildDocument.class);
             return results.getMappedResults().stream().map(b -> {
-                if(b.getNumberOfChildren() > 1){
-                    return b;    
-                }else{
-                    return template.findOne(Query.query(Criteria.where("jobName").is(b.getJobName())), BuildDocument.class);
+                if (b.getNumberOfChildren() > 1) {
+                    return b;
+                } else {
+                    BuildFilter newfilter2 = filter.clone();
+                    newfilter2.setJobName(b.getJobName());
+                    return template.findOne(Query.query(createCriteria(newfilter2, false)), BuildDocument.class);
                 }
             }).iterator();
         }
     }
 
-    private Query createQueryAndApplyFilter(BuildFilter filter) {
-        Query query = new Query();
+    private Criteria createCriteria(BuildFilter filter, boolean convertoToBson) {
+        List<Criteria> criterias = new ArrayList<>();
         if (filter.getBuildNumber() != null) {
-            query.addCriteria(where("buildNumber").is(filter.getBuildNumber()));
+            criterias.add(where("buildNumber").is(filter.getBuildNumber()));
         }
         if (filter.getJobName() != null) {
-            query.addCriteria(where("jobName").regex(filter.getJobName() + ".*"));
+            criterias.add(where("jobName").regex(filter.getJobName() + ".*"));
+        }
+        if (filter.getJobCategory() != null) {
+            criterias.add(where("jobCategory").is(filter.getJobCategory()));
         }
         if (filter.getStatus() != null) {
-            query.addCriteria(where("status").is(filter.getStatus()));
+            criterias.add(where("status").is(filter.getStatus().name()));
         }
         if (filter.getVariableName() != null) {
-            query.addCriteria(where("variables").in(new PropertyData(filter.getVariableName(), filter.getVariableValue())));
+            Object o;
+            if (convertoToBson) {
+                o = new BsonDocument();
+                ((BsonDocument) o).put("name", new BsonString(filter.getVariableName()));
+                ((BsonDocument) o).put("value", new BsonString(filter.getVariableValue()));
+            }else{
+                o = new PropertyData(filter.getVariableName(), filter.getVariableValue());
+            }
+            criterias.add(where("variables").in(o));
         }
-        return query;
+        Criteria criteria = new Criteria();
+        if (!criterias.isEmpty()) {
+            criteria.andOperator(criterias.toArray(new Criteria[0]));
+        }
+        return criteria;
     }
 
 }
