@@ -29,7 +29,6 @@ import org.jboss.qa.tool.saatr.web.comp.SmartLinkParser;
 import org.jboss.qa.tool.saatr.web.comp.build.properties.PropertiesPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.testsuite.TestsuiteModel;
 import org.jboss.qa.tool.saatr.web.comp.build.testsuite.TestsuitePanel;
-import org.jboss.qa.tool.saatr.web.page.BuildPage;
 import org.springframework.util.StringUtils;
 
 /**
@@ -47,7 +46,7 @@ public class BuildPanel extends GenericPanel<BuildDocument> {
 
             @Override
             public String getObject() {
-                return BuildPage.getStatusHtml(getModelObject());
+                return StatusColumn.getStatusHtml(getModelObject());
             }
         }).setEscapeModelStrings(false));
         add(new Label("timestamp") {

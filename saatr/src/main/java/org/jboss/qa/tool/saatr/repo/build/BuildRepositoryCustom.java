@@ -13,7 +13,7 @@ import org.jboss.qa.tool.saatr.domain.build.TestcaseDocument;
 import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument;
 import org.jboss.qa.tool.saatr.domain.config.ConfigDocument.ConfigProperty;
 import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite;
-import org.jboss.qa.tool.saatr.web.comp.build.BuildProvider.BuildFilter;
+import org.jboss.qa.tool.saatr.web.comp.build.BuildFilter;
 
 /**
  * The interface for repository functionality that will be implemented manually.
@@ -45,5 +45,10 @@ interface BuildRepositoryCustom {
     List<BuildDocument> findFailedWithoutAdditionalInfo();
 
     void addConsoleText(BuildDocument buildDocument, String response);
+
+    Iterator<BuildDocument> getRoots(BuildFilter filter);
+    
+    Iterator<? extends BuildDocument> getChildren(BuildDocument parent, BuildFilter filter);
+
 
 }

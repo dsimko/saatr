@@ -32,11 +32,31 @@ public class BuildDocument implements DocumentWithProperties<ObjectId>, Document
     public static final String COLLECTION_NAME = "builds";
 
     public static enum Status {
-        Success, SuccessWithFlakyFailure, SuccessWithFlakyError, Failed
+
+        Success(0), SuccessWithFlakyFailure(0), SuccessWithFlakyError(0), Failed(1);
+
+        int status;
+
+        Status(int status) {
+            this.status = status;
+        }
+
+        public int getStatus() {
+            return status;
+        }
+
     }
 
     @Id
     private ObjectId id;
+
+    @Indexed
+    private String jobCategory;
+
+    @Indexed
+    private Integer jobStatus;
+
+    private Integer numberOfChildren;
 
     @Indexed
     private String jobName;

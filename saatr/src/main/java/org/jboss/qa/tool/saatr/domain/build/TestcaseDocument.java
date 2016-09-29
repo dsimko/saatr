@@ -23,10 +23,10 @@ import lombok.Data;
  */
 @Data
 @SuppressWarnings("serial")
-public class TestcaseDocument implements DocumentWithProperties<UUID> {
+public class TestcaseDocument implements DocumentWithProperties<UUID>, Comparable<TestcaseDocument> {
 
     public static enum Status {
-        Success, Skipped, FlakyFailure, Failure, FlakyError, Error
+        Success, Skipped, FlakyFailure, FlakyError, Error, Failure
     }
 
     final Set<PropertyData> properties = new TreeSet<>();
@@ -105,4 +105,14 @@ public class TestcaseDocument implements DocumentWithProperties<UUID> {
         return Status.Success;
     }
 
+    @Override
+    public int compareTo(TestcaseDocument o) {
+        if (this.equals(o) || status == null || status == o.status) {
+            return 0;
+        }
+        if (o.status == null) {
+            return 1;
+        }
+        return o.status.ordinal() - status.ordinal();
+    }
 }

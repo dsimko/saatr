@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<html xmlns:wicket>
+<body>
+	<wicket:panel>
+		<div class="panel panel-default">
+  			<div class="panel-body">
+				<form wicket:id="form" class="form-inline" role="form">
+					<div class="form-group form-group-sm">
+						<label>Job Name</label> 
+						<input type="text" class="form-control input-sm" wicket:id="jobName" placeholder="Job Name">
+					</div>
+					<div class="form-group form-group-sm">
+						<label>Build Number</label> 
+						<input type="text" class="form-control input-sm" wicket:id="buildNumber" placeholder="Build Number">
+					</div>
+					<div class="form-group form-group-sm">
+						<label>Status</label> 
+						<select wicket:id="status" class="form-control input-sm"></select>
+					</div>
+					<div class="form-group form-group-sm">
+						<label>Variable</label> 
+						<select wicket:id="variableName" class="form-control input-sm"></select>
+						<label>Value</label> 
+						<input wicket:id="variableValue" type="text" class="form-control input-sm" placeholder="Value">
+					</div>
+					<a wicket:id="clear" class="btn btn-default btn-sm">Clear</a> <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+				</form>
+			</div>
+		</div>
+	</wicket:panel>
+</body>
+</html>

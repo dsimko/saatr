@@ -1,6 +1,8 @@
 
 package org.jboss.qa.tool.saatr.web.page;
 
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -15,11 +17,14 @@ import org.apache.wicket.markup.repeater.RefreshingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.jboss.qa.tool.saatr.domain.build.ConsoleTextDocument;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
+import org.jboss.qa.tool.saatr.domain.build.ConsoleTextDocument;
 import org.jboss.qa.tool.saatr.domain.config.ConfigDocument;
 import org.jboss.qa.tool.saatr.domain.config.QueryDocument;
+import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 
 /**
  * @author dsimko@redhat.com
@@ -29,6 +34,9 @@ public class AdminPage extends BasePage<Void> {
 
     @Inject
     private MongoOperations mongoOperations;
+
+    @Inject
+    private BuildRepository buildRepository;
 
     @SuppressWarnings("unused")
     private String results;
@@ -78,6 +86,22 @@ public class AdminPage extends BasePage<Void> {
             }
         });
         add(new Label("results", new PropertyModel<>(this, "results")));
+        add(new Link<Void>("tmp") {
+
+            @Override
+            public void onClick() {
+                buildRepository.findAll().forEach(b -> {
+                    // String category = b.getJobName().substring(0,
+                    // b.getJobName().indexOf("/"));
+                    // mongoOperations.updateFirst(Query.query(where("id").is(b.getId())),
+                    // Update.update("jobCategory", category), BuildDocument.class);
+
+                    mongoOperations.updateFirst(Query.query(where("id").is(b.getId())), Update.update("jobStatus", b.getStatus().getStatus()),
+                            BuildDocument.class);
+
+                });
+            }
+        });
 
     }
 

@@ -2,6 +2,7 @@
 package org.jboss.qa.tool.saatr.web.comp.build.testsuite;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -39,11 +40,10 @@ class BodyPanel extends GenericPanel<TestsuiteDocument> {
             protected Iterator<IModel<TestcaseDocument>> getItemModels() {
                 List<IModel<TestcaseDocument>> models = new ArrayList<>();
                 int index = 0;
+                Collections.sort(getModelObject().getTestcases());
                 for (TestcaseDocument testcaseData : getModelObject().getTestcases()) {
                     testcaseData.setIndex(index++);
                     models.add(new TestcaseModel(testcaseData));
-                    // FIXME
-                    // models.add(new EntityModel<>(testcaseData));
                 }
                 return models.iterator();
             }
