@@ -27,8 +27,6 @@ public abstract class BootstrapTable<T, S> extends DataTable<T, S> {
 
     private final IModel<T> pageModel;
 
-    private boolean selectRowClicked = false;
-
     private final ISortableDataProvider<T, S> dataProvider;
 
     public BootstrapTable(final String id, final List<? extends IColumn<T, S>> columns, final ISortableDataProvider<T, S> dataProvider, final int rowsPerPage,
@@ -56,7 +54,6 @@ public abstract class BootstrapTable<T, S> extends DataTable<T, S> {
 
             @Override
             protected void onEvent(AjaxRequestTarget target) {
-                selectRowClicked = true;
                 onRowClicked(target, model.getObject());
             }
 
@@ -67,12 +64,6 @@ public abstract class BootstrapTable<T, S> extends DataTable<T, S> {
                 attributes.setPreventDefault(true);
             }
         });
-
-        // first row selected by default
-        if (index == 0 && !selectRowClicked) {
-            row.add(new AttributeAppender("class", Model.of("active"), " "));
-            selectRow(model.getObject());
-        }
 
         return row;
     }

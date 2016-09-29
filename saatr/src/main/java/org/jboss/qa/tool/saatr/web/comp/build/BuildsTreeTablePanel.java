@@ -125,6 +125,11 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
             }
 
             @Override
+            protected boolean isSelected() {
+                return BuildsTreeTablePanel.this.getModelObject() != null && BuildsTreeTablePanel.this.getModelObject().equals(getModelObject());
+            }
+
+            @Override
             protected IModel<?> newLabelModel(IModel<BuildDocument> model) {
                 return new PropertyModel<>(model, "jobName");
             }
