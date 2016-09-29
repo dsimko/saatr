@@ -1,15 +1,12 @@
 
 package org.jboss.qa.tool.saatr.web.comp.build;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
 
+import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.extensions.markup.html.basic.ILinkParser;
 import org.apache.wicket.extensions.markup.html.basic.SmartLinkLabel;
 import org.apache.wicket.markup.html.basic.Label;
@@ -20,8 +17,6 @@ import org.apache.wicket.markup.repeater.RefreshingView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.util.convert.ConversionException;
-import org.apache.wicket.util.convert.IConverter;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
 import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument;
@@ -49,34 +44,7 @@ public class BuildPanel extends GenericPanel<BuildDocument> {
                 return StatusColumn.getStatusHtml(getModelObject());
             }
         }).setEscapeModelStrings(false));
-        add(new Label("timestamp") {
-
-            @Override
-            public <C> IConverter<C> getConverter(Class<C> type) {
-                return new IConverter<C>() {
-
-                    @Override
-                    public C convertToObject(String value, Locale locale) throws ConversionException {
-                        throw new UnsupportedOperationException();
-                    }
-
-                    @Override
-                    public String convertToString(C value, Locale locale) {
-                        if (value instanceof Long) {
-                            StringBuilder builder = new StringBuilder();
-                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-                            builder.append(value);
-                            builder.append(" (");
-                            builder.append(dateFormat.format(new Date((Long) value * 1000L)));
-                            builder.append(" UTC)");
-                            return builder.toString();
-                        }
-                        return String.valueOf(value);
-                    }
-                };
-            }
-        });
+        add(DateLabel.forDatePattern("created", "yyyy-MM-dd' 'HH:mm:ss' 'Z"));
         add(new ExternalLink("consoleTextLink", new AbstractReadOnlyModel<String>() {
 
             @Override

@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AutoCompleteSettings;
 import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AutoCompleteTextField;
+import org.apache.wicket.extensions.yui.calendar.DateTimeField;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -44,6 +45,8 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
         form.add(new TextField<>("buildNumber"));
         form.add(new DropDownChoice<>("status", Arrays.asList(Status.values())).setNullValid(true));
         form.add(new DropDownChoice<>("variableName", variableNames).setNullValid(true));
+        form.add(new DateTimeField("createdFrom"));
+        form.add(new DateTimeField("createdTo"));
         AutoCompleteSettings settings = new AutoCompleteSettings();
         settings.setShowListOnEmptyInput(true);
         form.add(new AutoCompleteTextField<String>("variableValue", settings) {

@@ -2,6 +2,7 @@
 package org.jboss.qa.tool.saatr.web.comp.build;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.Status;
 
@@ -23,6 +24,10 @@ public class BuildFilter implements Serializable, Cloneable {
 
     private String variableValue;
     
+    private Date createdFrom;
+
+    private Date createdTo;
+
     @Override
     public BuildFilter clone() {
         try {
