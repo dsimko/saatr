@@ -8,20 +8,16 @@ import java.util.Set;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
-import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.HeadersToolbar;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.NoRecordsToolbar;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
-import org.apache.wicket.extensions.markup.html.repeater.tree.AbstractTree;
 import org.apache.wicket.extensions.markup.html.repeater.tree.ITreeProvider;
 import org.apache.wicket.extensions.markup.html.repeater.tree.TableTree;
 import org.apache.wicket.extensions.markup.html.repeater.tree.content.Folder;
 import org.apache.wicket.extensions.markup.html.repeater.tree.table.TreeColumn;
 import org.apache.wicket.extensions.markup.html.repeater.tree.theme.HumanTheme;
 import org.apache.wicket.injection.Injector;
-import org.apache.wicket.markup.ComponentTag;
-import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.markup.repeater.Item;
@@ -40,24 +36,59 @@ import org.jboss.qa.tool.saatr.web.comp.DocumentModel;
 @SuppressWarnings("serial")
 public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
 
-    private AbstractTree<BuildDocument> tree;
+    private TableTree<BuildDocument, String> tree;
 
     public BuildsTreeTablePanel(String id, IModel<BuildDocument> model, IModel<BuildFilter> filterModel) {
         super(id, model);
-        final Behavior theme = new HumanTheme();
-        tree = createTree(new BuildsProvider(filterModel), new BuildsExpansionModel());
-        tree.add(new Behavior() {
+
+        List<IColumn<BuildDocument, String>> columns = new ArrayList<>();
+        columns.add(new TreeColumn<BuildDocument, String>(Model.of("Job Name")));
+        columns.add(new PropertyColumn<BuildDocument, String>(Model.of("Build Number"), "buildNumber"));
+        columns.add(new StatusColumn());
+
+        tree = new TableTree<BuildDocument, String>("tree", columns, new BuildsProvider(filterModel), Integer.MAX_VALUE, new BuildsExpansionModel()) {
 
             @Override
-            public void onComponentTag(Component component, ComponentTag tag) {
-                theme.onComponentTag(component, tag);
+            protected Component newContentComponent(String id, IModel<BuildDocument> model) {
+                return new Folder<BuildDocument>(id, tree, model) {
+
+                    @Override
+                    protected MarkupContainer newLinkComponent(String id, IModel<BuildDocument> model) {
+                        BuildDocument foo = model.getObject();
+                        if (tree.getProvider().hasChildren(foo)) {
+                            return super.newLinkComponent(id, model);
+                        } else {
+                            return new Link<BuildDocument>(id, model) {
+
+                                public void onClick() {
+                                    BuildsTreeTablePanel.this.setModelObject(getModelObject());
+                                }
+                            };
+                        }
+                    }
+
+                    @Override
+                    protected boolean isSelected() {
+                        return BuildsTreeTablePanel.this.getModelObject() != null && BuildsTreeTablePanel.this.getModelObject().equals(getModelObject());
+                    }
+
+                    @Override
+                    protected IModel<?> newLabelModel(IModel<BuildDocument> model) {
+                        return new PropertyModel<>(model, "jobName");
+                    }
+                };
+
             }
 
             @Override
-            public void renderHead(Component component, IHeaderResponse response) {
-                theme.renderHead(component, response);
+            protected Item<BuildDocument> newRowItem(String id, int index, IModel<BuildDocument> model) {
+                return new OddEvenItem<>(id, index, model);
             }
-        });
+
+        };
+        tree.getTable().addTopToolbar(new HeadersToolbar<>(tree.getTable(), null));
+        tree.getTable().addBottomToolbar(new NoRecordsToolbar(tree.getTable()));
+        tree.add(new HumanTheme());
         add(tree);
         add(new Link<Void>("expandAll") {
 
@@ -74,67 +105,6 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
                 BuildExpansion.get().collapseAll();
             }
         });
-    }
-
-    protected AbstractTree<BuildDocument> createTree(BuildsProvider provider, IModel<Set<BuildDocument>> state) {
-        List<IColumn<BuildDocument, String>> columns = createColumns();
-
-        final TableTree<BuildDocument, String> tree = new TableTree<BuildDocument, String>("tree", columns, provider, Integer.MAX_VALUE, state) {
-
-            @Override
-            protected Component newContentComponent(String id, IModel<BuildDocument> model) {
-                return BuildsTreeTablePanel.this.newContentComponent(id, model);
-            }
-
-            @Override
-            protected Item<BuildDocument> newRowItem(String id, int index, IModel<BuildDocument> model) {
-                return new OddEvenItem<>(id, index, model);
-            }
-
-        };
-        tree.getTable().addTopToolbar(new HeadersToolbar<>(tree.getTable(), null));
-        tree.getTable().addBottomToolbar(new NoRecordsToolbar(tree.getTable()));
-        return tree;
-    }
-
-    private List<IColumn<BuildDocument, String>> createColumns() {
-        List<IColumn<BuildDocument, String>> columns = new ArrayList<>();
-
-        columns.add(new TreeColumn<BuildDocument, String>(Model.of("Job Name")));
-        columns.add(new PropertyColumn<BuildDocument, String>(Model.of("Build Number"), "buildNumber"));
-        columns.add(new StatusColumn());
-
-        return columns;
-    }
-
-    protected Component newContentComponent(String id, IModel<BuildDocument> model) {
-        return new Folder<BuildDocument>(id, tree, model) {
-
-            @Override
-            protected MarkupContainer newLinkComponent(String id, IModel<BuildDocument> model) {
-                BuildDocument foo = model.getObject();
-                if (tree.getProvider().hasChildren(foo)) {
-                    return super.newLinkComponent(id, model);
-                } else {
-                    return new Link<BuildDocument>(id, model) {
-
-                        public void onClick() {
-                            BuildsTreeTablePanel.this.setModelObject(getModelObject());
-                        }
-                    };
-                }
-            }
-
-            @Override
-            protected boolean isSelected() {
-                return BuildsTreeTablePanel.this.getModelObject() != null && BuildsTreeTablePanel.this.getModelObject().equals(getModelObject());
-            }
-
-            @Override
-            protected IModel<?> newLabelModel(IModel<BuildDocument> model) {
-                return new PropertyModel<>(model, "jobName");
-            }
-        };
     }
 
     private class BuildsExpansionModel implements IModel<Set<BuildDocument>> {
@@ -158,7 +128,7 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
     private static class BuildsProvider implements ITreeProvider<BuildDocument> {
 
         final IModel<BuildFilter> filter;
-        
+
         @SpringBean
         BuildRepository buildRepository;
 
@@ -194,6 +164,5 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
         public IModel<BuildDocument> model(BuildDocument object) {
             return new DocumentModel<>(object);
         }
-
     }
 }

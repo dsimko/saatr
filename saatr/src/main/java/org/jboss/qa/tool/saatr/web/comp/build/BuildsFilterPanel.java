@@ -18,6 +18,7 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.Status;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 
@@ -37,10 +38,16 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
     @Inject
     private BuildRepository buildRepository;
 
-    public BuildsFilterPanel(String id, IModel<BuildFilter> model) {
+    public BuildsFilterPanel(String id, IModel<BuildFilter> model, final IModel<BuildDocument> pageModel) {
         super(id, model);
         initVariables();
-        Form<BuildFilter> form = new Form<>("form", new CompoundPropertyModel<BuildFilter>(model));
+        Form<BuildFilter> form = new Form<BuildFilter>("form", new CompoundPropertyModel<BuildFilter>(model)) {
+
+            @Override
+            protected void onSubmit() {
+                onFilterChanged(pageModel);
+            }
+        };
         form.add(new TextField<>("jobName"));
         form.add(new TextField<>("buildNumber"));
         form.add(new DropDownChoice<>("status", Arrays.asList(Status.values())).setNullValid(true));
@@ -71,6 +78,7 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
             @Override
             public void onClick() {
                 BuildsFilterPanel.this.setModelObject(new BuildFilter());
+                onFilterChanged(pageModel);
             }
         });
         add(form);
@@ -81,5 +89,10 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
         buildRepository.findDistinctVariableNames().forEach(name -> variableNames.add(name));
         buildRepository.findDistinctVariableValues().forEach(val -> variableValues.add(val));
         log.debug("Loading variables filter took {} ms.", System.currentTimeMillis() - start);
+    }
+
+    private void onFilterChanged(IModel<BuildDocument> pageModel) {
+        pageModel.setObject(null);
+        BuildExpansion.get().collapseAll();
     }
 }

@@ -24,7 +24,7 @@ public class BuildsPanel extends GenericPanel<BuildDocument> {
 
     public BuildsPanel(String id, IModel<BuildDocument> model) {
         super(id, model);
-        add(new BuildsFilterPanel("filter", filter));
+        add(new BuildsFilterPanel("filter", filter, model));
         List<ITab> tabs = new ArrayList<ITab>();
         tabs.add(new AbstractTab(new AbstractReadOnlyModel<String>() {
 
