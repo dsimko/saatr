@@ -3,6 +3,7 @@ package org.jboss.qa.tool.saatr.domain.build;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -64,6 +65,8 @@ public class BuildDocument implements DocumentWithProperties<ObjectId>, Document
     private Long buildNumber;
 
     private Long timestamp;
+
+    private Date created;
 
     @Indexed
     private Status status;

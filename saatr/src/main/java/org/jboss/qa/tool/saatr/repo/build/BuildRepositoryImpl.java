@@ -70,13 +70,13 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
         query.limit((int) count);
         query.skip((int) first);
         query.with(new Sort(Sort.Direction.DESC, "id"));
-        query.addCriteria(createCriteria(filter, false));
+        query.addCriteria(createCriteria(filter, false, true));
         return template.find(query, BuildDocument.class).iterator();
     }
 
     @Override
     public long count(BuildFilter filter) {
-        return template.count(Query.query(createCriteria(filter, false)), BuildDocument.class);
+        return template.count(Query.query(createCriteria(filter, false, true)), BuildDocument.class);
     }
 
     @Override
@@ -183,8 +183,9 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
 
     @Override
     public Iterator<BuildDocument> getRoots(BuildFilter filter) {
-        Aggregation agg = newAggregation(match(createCriteria(filter, true)), group("jobCategory").count().as("numberOfChildren").sum("jobStatus").as("jobStatus"),
-                sort(Direction.ASC, "_id"), project("jobStatus", "numberOfChildren").and("_id").as("jobName").andExclude("_id"));
+        Aggregation agg = newAggregation(match(createCriteria(filter, true, true)),
+                group("jobCategory").count().as("numberOfChildren").sum("jobStatus").as("jobStatus"), sort(Direction.ASC, "_id"),
+                project("jobStatus", "numberOfChildren").and("_id").as("jobName").andExclude("_id"));
         AggregationResults<BuildDocument> results = template.aggregate(agg, BuildDocument.COLLECTION_NAME, BuildDocument.class);
         List<BuildDocument> mappedResult = results.getMappedResults();
         return mappedResult.iterator();
@@ -194,12 +195,13 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
         if (parent.getJobName().contains("/") && parent.getNumberOfChildren() != null && parent.getNumberOfChildren() > 0) {
             BuildFilter newfilter = filter.clone();
             newfilter.setJobName(parent.getJobName());
-            return template.find(Query.query(createCriteria(newfilter, false)), BuildDocument.class).iterator();
+            return template.find(Query.query(createCriteria(newfilter, false, false)), BuildDocument.class).iterator();
         } else {
             BuildFilter newfilter = filter.clone();
             newfilter.setJobCategory(parent.getJobName());
-            Aggregation agg = newAggregation(match(createCriteria(newfilter, true)), group("jobName").count().as("numberOfChildren").sum("jobStatus").as("jobStatus"),
-                    sort(Direction.ASC, "_id"), project("jobStatus", "numberOfChildren").and("_id").as("jobName").andExclude("_id"));
+            Aggregation agg = newAggregation(match(createCriteria(newfilter, true, true)),
+                    group("jobName").count().as("numberOfChildren").sum("jobStatus").as("jobStatus"), sort(Direction.ASC, "_id"),
+                    project("jobStatus", "numberOfChildren").and("_id").as("jobName").andExclude("_id"));
             AggregationResults<BuildDocument> results = template.aggregate(agg, BuildDocument.COLLECTION_NAME, BuildDocument.class);
             return results.getMappedResults().stream().map(b -> {
                 if (b.getNumberOfChildren() > 1) {
@@ -207,19 +209,23 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
                 } else {
                     BuildFilter newfilter2 = filter.clone();
                     newfilter2.setJobName(b.getJobName());
-                    return template.findOne(Query.query(createCriteria(newfilter2, false)), BuildDocument.class);
+                    return template.findOne(Query.query(createCriteria(newfilter2, false, false)), BuildDocument.class);
                 }
             }).iterator();
         }
     }
 
-    private Criteria createCriteria(BuildFilter filter, boolean convertoToBson) {
+    private Criteria createCriteria(BuildFilter filter, boolean convertoToBson, boolean jobNameLike) {
         List<Criteria> criterias = new ArrayList<>();
         if (filter.getBuildNumber() != null) {
             criterias.add(where("buildNumber").is(filter.getBuildNumber()));
         }
         if (filter.getJobName() != null) {
-            criterias.add(where("jobName").regex(filter.getJobName() + ".*"));
+            if (jobNameLike) {
+                criterias.add(where("jobName").regex(filter.getJobName() + ".*"));
+            } else {
+                criterias.add(where("jobName").is(filter.getJobName()));
+            }
         }
         if (filter.getJobCategory() != null) {
             criterias.add(where("jobCategory").is(filter.getJobCategory()));
@@ -227,13 +233,19 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
         if (filter.getStatus() != null) {
             criterias.add(where("status").is(filter.getStatus().name()));
         }
+        if (filter.getCreatedFrom() != null) {
+            criterias.add(where("created").gte(filter.getCreatedFrom()));
+        }
+        if (filter.getCreatedTo() != null) {
+            criterias.add(where("created").lte(filter.getCreatedTo()));
+        }
         if (filter.getVariableName() != null) {
             Object o;
             if (convertoToBson) {
                 o = new BsonDocument();
                 ((BsonDocument) o).put("name", new BsonString(filter.getVariableName()));
                 ((BsonDocument) o).put("value", new BsonString(filter.getVariableValue()));
-            }else{
+            } else {
                 o = new PropertyData(filter.getVariableName(), filter.getVariableValue());
             }
             criterias.add(where("variables").in(o));

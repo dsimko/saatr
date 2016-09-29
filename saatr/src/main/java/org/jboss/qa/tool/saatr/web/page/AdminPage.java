@@ -5,6 +5,7 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -96,7 +97,10 @@ public class AdminPage extends BasePage<Void> {
                     // mongoOperations.updateFirst(Query.query(where("id").is(b.getId())),
                     // Update.update("jobCategory", category), BuildDocument.class);
 
-                    mongoOperations.updateFirst(Query.query(where("id").is(b.getId())), Update.update("jobStatus", b.getStatus().getStatus()),
+                    // mongoOperations.updateFirst(Query.query(where("id").is(b.getId())),
+                    // Update.update("jobStatus", b.getStatus().getStatus()),
+                    // BuildDocument.class);
+                    mongoOperations.updateFirst(Query.query(where("id").is(b.getId())), Update.update("created", new Date(b.getTimestamp() * 1000L)),
                             BuildDocument.class);
 
                 });
