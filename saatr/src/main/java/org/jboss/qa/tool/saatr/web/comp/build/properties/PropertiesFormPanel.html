@@ -2,16 +2,23 @@
 <html xmlns:wicket>
 <body>
 	<wicket:panel>
-		<form wicket:id="form" class="form-horizontal" role="form">
-			<div wicket:id="feedback"></div>
-			<wicket:container wicket:id="props"></wicket:container>
-			<div class="form-group">
-				<div class="col-sm-offset-2 col-sm-10">
-					<a wicket:id="cancel" class="btn btn-default">Cancel</a>
-					<button wicket:id="submit" type="submit" class="btn btn-primary">Submit</button>
-				</div>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<a wicket:id="cancel" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a>
+				<div class="clearfix"></div>
 			</div>
-		</form>
+			<div class="panel-body">
+				<form wicket:id="form" class="form-horizontal" role="form">
+					<div wicket:id="feedback"></div>
+					<wicket:container wicket:id="props"></wicket:container>
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+							<button wicket:id="submit" type="submit" class="btn btn-primary">Submit</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
 	</wicket:panel>
 </body>
 </html>

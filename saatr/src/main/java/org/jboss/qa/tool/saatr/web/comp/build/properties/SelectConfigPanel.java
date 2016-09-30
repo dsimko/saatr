@@ -48,14 +48,27 @@ class SelectConfigPanel<T extends DocumentWithProperties<?>> extends GenericPane
 
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-                configRepository.prefillValues(configModel.getObject(), getModelObject());
-                propertiesFormPanel.replaceWith(new PropertiesFormPanel(propertiesFormPanel.getId(), configModel));
-                dropDownChoiceVisible = false;
+                replaceWithFormPanel(configModel);
                 target.add(wmc);
             }
+
         }));
         wmc.add(propertiesFormPanel = new EmptyPanel("propertiesFormPanel"));
         add(wmc);
+    }
+
+    @Override
+    protected void onConfigure() {
+        super.onConfigure();
+        if (getModelObject() != null && configRepository.count() == 1) {
+            replaceWithFormPanel(Model.of(configRepository.findAll().get(0)));
+        }
+    }
+
+    private void replaceWithFormPanel(final IModel<ConfigDocument> configModel) {
+        configRepository.prefillValues(configModel.getObject(), getModelObject());
+        propertiesFormPanel.replaceWith(new PropertiesFormPanel(propertiesFormPanel.getId(), configModel));
+        dropDownChoiceVisible = false;
     }
 
 }

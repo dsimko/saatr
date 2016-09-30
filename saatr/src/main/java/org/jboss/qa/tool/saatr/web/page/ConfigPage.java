@@ -23,6 +23,7 @@ import org.jboss.qa.tool.saatr.jaxb.config.Config;
 import org.jboss.qa.tool.saatr.repo.config.ConfigRepository;
 import org.jboss.qa.tool.saatr.util.IOUtils;
 import org.jboss.qa.tool.saatr.web.comp.DocumentModel;
+import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapButton;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapFeedbackPanel;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapTable;
 import org.jboss.qa.tool.saatr.web.comp.config.ConfigProvider;
@@ -54,7 +55,7 @@ public class ConfigPage extends BasePage<ConfigDocument> {
                 getModel()) {
 
             @Override
-            protected void selectRow(ConfigDocument configData) {
+            protected void selectRow(ConfigDocument configData) {   
                 setModelObject(configData);
             }
         };
@@ -96,6 +97,18 @@ public class ConfigPage extends BasePage<ConfigDocument> {
             @Override
             public boolean isVisible() {
                 return getModelObject() != null;
+            }
+        });
+        add(new BootstrapButton<ConfigDocument>("delete", getModel()) {
+            
+            @Override
+            public boolean isEnabled() {
+                return getModelObject() != null;
+            }
+            
+            @Override
+            public void onClick() {
+                configRepository.delete(getModelObject());
             }
         });
     }

@@ -41,7 +41,7 @@ class PropertiesFormPanel extends GenericPanel<ConfigDocument> {
                 send(this, Broadcast.BUBBLE, new AddInfoSubmitEvent(getModelObject(), target));
             }
         });
-        form.add(new AjaxLink<Void>("cancel") {
+        add(new AjaxLink<Void>("cancel") {
 
             @Override
             public void onClick(AjaxRequestTarget target) {
