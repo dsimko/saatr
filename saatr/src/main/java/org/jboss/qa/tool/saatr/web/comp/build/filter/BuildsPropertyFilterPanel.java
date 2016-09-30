@@ -9,14 +9,19 @@ import javax.inject.Inject;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.event.Broadcast;
 import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AutoCompleteSettings;
 import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AutoCompleteTextField;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
+import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildsPropertiesFilterPanel.AddPropertyEvent;
+import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildsPropertiesFilterPanel.RemovePropertyEvent;
 
 /**
  * @author dsimko@redhat.com
@@ -27,8 +32,9 @@ class BuildsPropertyFilterPanel extends GenericPanel<PropertyData> {
     @Inject
     private BuildRepository buildRepository;
 
-    public BuildsPropertyFilterPanel(String id, IModel<PropertyData> model, List<String> variableNames, List<String> variableValues) {
+    public BuildsPropertyFilterPanel(String id, String title, IModel<PropertyData> model, List<String> variableNames, List<String> variableValues, boolean buttonsVisible) {
         super(id, new CompoundPropertyModel<>(model));
+        add(new Label("title", title));
         add(new DropDownChoice<>("name", variableNames).setNullValid(true).add(new OnChangeAjaxBehavior() {
 
             @Override
@@ -56,5 +62,30 @@ class BuildsPropertyFilterPanel extends GenericPanel<PropertyData> {
                 return choices.iterator();
             }
         });
+        add(new AjaxLink<PropertyData>("add", model) {
+
+            @Override
+            public boolean isVisible() {
+                return buttonsVisible;
+            }
+            
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                send(this, Broadcast.BUBBLE, new AddPropertyEvent(target));
+            }
+        });
+        add(new AjaxLink<PropertyData>("remove", model) {
+
+            @Override
+            public boolean isVisible() {
+                return buttonsVisible;
+            }
+            
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                send(this, Broadcast.BUBBLE, new RemovePropertyEvent(target));
+            }
+        });
+
     }
 }

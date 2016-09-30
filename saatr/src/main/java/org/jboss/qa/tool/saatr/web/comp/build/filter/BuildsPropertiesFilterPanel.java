@@ -1,6 +1,7 @@
 
 package org.jboss.qa.tool.saatr.web.comp.build.filter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.event.IEvent;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RefreshingView;
@@ -18,6 +19,7 @@ import org.apache.wicket.model.Model;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -47,24 +49,10 @@ public class BuildsPropertiesFilterPanel extends GenericPanel<BuildFilter> {
 
             @Override
             protected void populateItem(Item<PropertyData> item) {
-                item.add(new BuildsPropertyFilterPanel("property", item.getModel(), new ArrayList<>(variableNames), new ArrayList<>(variableValues)));
+                item.add(new BuildsPropertyFilterPanel("property", "Job param name", item.getModel(), new ArrayList<>(variableNames), new ArrayList<>(variableValues),
+                        item.getIndex() == getModelObject().getVariables().size() - 1));
             }
         });
-        add(new AjaxLink<BuildFilter>("add", model) {
-
-            @Override
-            public void onClick(AjaxRequestTarget target) {
-                getModelObject().getVariables().add(new PropertyData());
-                target.add(BuildsPropertiesFilterPanel.this);
-            }
-        });
-    }
-
-    private void initVariables() {
-        long start = System.currentTimeMillis();
-        buildRepository.findDistinctVariableNames().forEach(name -> variableNames.add(name));
-        buildRepository.findDistinctVariableValues(null).forEach(val -> variableValues.add(val));
-        log.debug("Loading variables filter took {} ms.", System.currentTimeMillis() - start);
     }
 
     @Override
@@ -74,4 +62,35 @@ public class BuildsPropertiesFilterPanel extends GenericPanel<BuildFilter> {
             getModelObject().getVariables().add(new PropertyData());
         }
     }
+
+    @Override
+    public void onEvent(IEvent<?> event) {
+        if (event.getPayload() instanceof AddPropertyEvent) {
+            getModelObject().getVariables().add(new PropertyData());
+            ((AddPropertyEvent) event.getPayload()).target.add(this);
+        } else if (event.getPayload() instanceof RemovePropertyEvent) {
+            getModelObject().getVariables().remove(getModelObject().getVariables().size() - 1);
+            ((RemovePropertyEvent) event.getPayload()).target.add(this);
+        }
+    }
+
+    private void initVariables() {
+        long start = System.currentTimeMillis();
+        buildRepository.findDistinctVariableNames().forEach(name -> variableNames.add(name));
+        buildRepository.findDistinctVariableValues(null).forEach(val -> variableValues.add(val));
+        log.debug("Loading variables filter took {} ms.", System.currentTimeMillis() - start);
+    }
+
+    @AllArgsConstructor
+    static class AddPropertyEvent implements Serializable {
+
+        AjaxRequestTarget target;
+    }
+
+    @AllArgsConstructor
+    static class RemovePropertyEvent implements Serializable {
+
+        AjaxRequestTarget target;
+    }
+
 }

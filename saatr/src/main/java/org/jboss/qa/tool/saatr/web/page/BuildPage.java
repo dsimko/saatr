@@ -54,4 +54,5 @@ public class BuildPage extends BasePage<BuildDocument> {
         });
         add(new BootstrapTabbedPanel<>("tabs", tabs));
     }
+
 }
