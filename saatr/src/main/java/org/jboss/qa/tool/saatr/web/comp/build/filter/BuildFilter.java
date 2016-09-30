@@ -1,9 +1,12 @@
 
-package org.jboss.qa.tool.saatr.web.comp.build;
+package org.jboss.qa.tool.saatr.web.comp.build.filter;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.Status;
 
 import lombok.Data;
@@ -20,13 +23,11 @@ public class BuildFilter implements Serializable, Cloneable {
 
     private Status status;
 
-    private String variableName;
-
-    private String variableValue;
-    
     private Date createdFrom;
 
     private Date createdTo;
+    
+    private final List<PropertyData> variables = new ArrayList<>();
 
     @Override
     public BuildFilter clone() {

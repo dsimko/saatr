@@ -13,7 +13,7 @@ import org.jboss.qa.tool.saatr.domain.build.TestcaseDocument;
 import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument;
 import org.jboss.qa.tool.saatr.domain.config.ConfigDocument.ConfigProperty;
 import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite;
-import org.jboss.qa.tool.saatr.web.comp.build.BuildFilter;
+import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildFilter;
 
 /**
  * The interface for repository functionality that will be implemented manually.
@@ -34,7 +34,7 @@ interface BuildRepositoryCustom {
 
     Iterable<String> findDistinctVariableNames();
 
-    Iterable<String> findDistinctVariableValues();
+    Iterable<String> findDistinctVariableValues(String name);
 
     TestsuiteDocument findTestsuiteById(UUID id);
 

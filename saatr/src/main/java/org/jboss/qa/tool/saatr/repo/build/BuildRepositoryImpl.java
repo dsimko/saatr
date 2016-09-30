@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.bson.BsonDocument;
 import org.bson.BsonString;
@@ -26,7 +27,7 @@ import org.jboss.qa.tool.saatr.domain.build.TestcaseDocument;
 import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument;
 import org.jboss.qa.tool.saatr.domain.config.ConfigDocument.ConfigProperty;
 import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite;
-import org.jboss.qa.tool.saatr.web.comp.build.BuildFilter;
+import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -40,6 +41,7 @@ import org.springframework.stereotype.Component;
 
 import com.mongodb.AggregationOutput;
 import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
@@ -148,8 +150,12 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Iterable<String> findDistinctVariableValues() {
-        return template.getCollection(BuildDocument.COLLECTION_NAME).distinct("variables.value");
+    public Iterable<String> findDistinctVariableValues(String name) {
+        if (name == null) {
+            return template.getCollection(BuildDocument.COLLECTION_NAME).distinct("variables.value");
+        }
+        return (Iterable<String>) template.getCollection(BuildDocument.COLLECTION_NAME).distinct("variables").stream().filter(
+                p -> p != null && name.equals(((BasicDBObject) p).get("name"))).map(p -> ((BasicDBObject) p).get("value")).collect(Collectors.toList());
     }
 
     @Override
@@ -239,16 +245,19 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
         if (filter.getCreatedTo() != null) {
             criterias.add(where("created").lte(filter.getCreatedTo()));
         }
-        if (filter.getVariableName() != null) {
-            Object o;
-            if (convertoToBson) {
-                o = new BsonDocument();
-                ((BsonDocument) o).put("name", new BsonString(filter.getVariableName()));
-                ((BsonDocument) o).put("value", new BsonString(filter.getVariableValue()));
-            } else {
-                o = new PropertyData(filter.getVariableName(), filter.getVariableValue());
+        if (!filter.getVariables().isEmpty()) {
+            for (PropertyData property : filter.getVariables()) {
+                if (property.getName() != null && property.getValue() != null) {
+                    if (convertoToBson) {
+                        BsonDocument document = new BsonDocument();
+                        document.put("name", new BsonString(property.getName()));
+                        document.put("value", new BsonString(property.getValue()));
+                        criterias.add(where("variables").in(document));
+                    } else {
+                        criterias.add(where("variables").in(property));
+                    }
+                }
             }
-            criterias.add(where("variables").in(o));
         }
         Criteria criteria = new Criteria();
         if (!criterias.isEmpty()) {

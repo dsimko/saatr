@@ -29,6 +29,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 import org.jboss.qa.tool.saatr.web.comp.DocumentModel;
+import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildFilter;
 
 /**
  * @author dsimko@redhat.com
@@ -43,6 +44,7 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
 
         List<IColumn<BuildDocument, String>> columns = new ArrayList<>();
         columns.add(new TreeColumn<BuildDocument, String>(Model.of("Job Name")));
+        columns.add(new PropertyColumn<BuildDocument, String>(Model.of("Count"), "numberOfChildren"));
         columns.add(new PropertyColumn<BuildDocument, String>(Model.of("Build Number"), "buildNumber"));
         columns.add(new StatusColumn());
 
