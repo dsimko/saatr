@@ -26,8 +26,10 @@ public class BuildFilter implements Serializable, Cloneable {
     private Date createdFrom;
 
     private Date createdTo;
-    
+
     private final List<PropertyData> variables = new ArrayList<>();
+
+    private final List<PropertyData> systemParams = new ArrayList<>();
 
     @Override
     public BuildFilter clone() {

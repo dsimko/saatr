@@ -35,7 +35,8 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
         form.add(new DropDownChoice<>("status", Arrays.asList(Status.values())).setNullValid(true));
         form.add(new DateTimeField("createdFrom"));
         form.add(new DateTimeField("createdTo"));
-        form.add(new BuildsPropertiesFilterPanel("properties", model));
+        form.add(new JobParamsFilterPanel("jobParams", model));
+        form.add(new SystemParamsFilterPanel("systemParams", model));
         form.add(new Link<Void>("clear") {
 
             @Override

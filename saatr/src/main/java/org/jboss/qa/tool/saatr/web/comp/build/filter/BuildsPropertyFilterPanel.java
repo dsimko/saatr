@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -19,7 +17,6 @@ import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
-import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildsPropertiesFilterPanel.AddPropertyEvent;
 import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildsPropertiesFilterPanel.RemovePropertyEvent;
 
@@ -27,10 +24,7 @@ import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildsPropertiesFilterPanel
  * @author dsimko@redhat.com
  */
 @SuppressWarnings("serial")
-class BuildsPropertyFilterPanel extends GenericPanel<PropertyData> {
-
-    @Inject
-    private BuildRepository buildRepository;
+abstract class BuildsPropertyFilterPanel extends GenericPanel<PropertyData> {
 
     public BuildsPropertyFilterPanel(String id, String title, IModel<PropertyData> model, List<String> variableNames, List<String> variableValues, boolean buttonsVisible) {
         super(id, new CompoundPropertyModel<>(model));
@@ -40,7 +34,7 @@ class BuildsPropertyFilterPanel extends GenericPanel<PropertyData> {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 variableValues.clear();
-                buildRepository.findDistinctVariableValues(getModelObject().getName()).forEach(val -> variableValues.add(val));
+                findDistinctValues(getModelObject().getName()).forEach(val -> variableValues.add(val));
             }
 
         }));
@@ -88,4 +82,7 @@ class BuildsPropertyFilterPanel extends GenericPanel<PropertyData> {
         });
 
     }
+    
+    protected abstract Iterable<String> findDistinctValues(String name);
+
 }

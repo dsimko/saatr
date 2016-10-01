@@ -157,6 +157,22 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
         return (Iterable<String>) template.getCollection(BuildDocument.COLLECTION_NAME).distinct("variables").stream().filter(
                 p -> p != null && name.equals(((BasicDBObject) p).get("name"))).map(p -> ((BasicDBObject) p).get("value")).collect(Collectors.toList());
     }
+    
+    @Override
+    @SuppressWarnings("unchecked")
+    public Iterable<String> findDistinctSystemPropertiesNames() {
+        return template.getCollection(BuildDocument.COLLECTION_NAME).distinct("systemProperties.name");
+    }
+    
+    @Override
+    @SuppressWarnings("unchecked")
+    public Iterable<String> findDistinctSystemPropertiesValues(String name) {
+        if (name == null) {
+            return template.getCollection(BuildDocument.COLLECTION_NAME).distinct("systemProperties.value");
+        }
+        return (Iterable<String>) template.getCollection(BuildDocument.COLLECTION_NAME).distinct("systemProperties").stream().filter(
+                p -> p != null && name.equals(((BasicDBObject) p).get("name"))).map(p -> ((BasicDBObject) p).get("value")).collect(Collectors.toList());
+    }
 
     @Override
     public String aggregate(String query) {
@@ -255,6 +271,20 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
                         criterias.add(where("variables").in(document));
                     } else {
                         criterias.add(where("variables").in(property));
+                    }
+                }
+            }
+        }
+        if (!filter.getSystemParams().isEmpty()) {
+            for (PropertyData property : filter.getSystemParams()) {
+                if (property.getName() != null && property.getValue() != null) {
+                    if (convertoToBson) {
+                        BsonDocument document = new BsonDocument();
+                        document.put("name", new BsonString(property.getName()));
+                        document.put("value", new BsonString(property.getValue()));
+                        criterias.add(where("systemProperties").in(document));
+                    } else {
+                        criterias.add(where("systemProperties").in(property));
                     }
                 }
             }
