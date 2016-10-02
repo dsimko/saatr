@@ -9,7 +9,7 @@ import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 
 @SuppressWarnings("serial")
-public class JobParamsFilterPanel extends BuildsPropertiesFilterPanel {
+public class JobParamsFilterPanel extends AbsractPropertiesFilterPanel {
 
     @SpringBean
     private BuildRepository buildRepository;

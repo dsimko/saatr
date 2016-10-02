@@ -24,13 +24,13 @@ import lombok.extern.slf4j.Slf4j;
  */
 @SuppressWarnings("serial")
 @Slf4j
-public abstract class BuildsPropertiesFilterPanel extends GenericPanel<BuildFilter> {
+public abstract class AbsractPropertiesFilterPanel extends GenericPanel<BuildFilter> {
 
     private List<String> variableNames = new ArrayList<>();
 
     private List<String> variableValues = new ArrayList<>();
 
-    public BuildsPropertiesFilterPanel(String id, IModel<BuildFilter> model) {
+    public AbsractPropertiesFilterPanel(String id, IModel<BuildFilter> model) {
         super(id, model);
         initVariables();
         setOutputMarkupId(true);

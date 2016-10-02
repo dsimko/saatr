@@ -37,6 +37,7 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
         form.add(new DateTimeField("createdTo"));
         form.add(new JobParamsFilterPanel("jobParams", model));
         form.add(new SystemParamsFilterPanel("systemParams", model));
+        form.add(new CustomPropertiesFilterPanel("customProperties", model));
         form.add(new Link<Void>("clear") {
 
             @Override

@@ -30,7 +30,9 @@ public class BuildFilter implements Serializable, Cloneable {
     private final List<PropertyData> variables = new ArrayList<>();
 
     private final List<PropertyData> systemParams = new ArrayList<>();
-
+    
+    private final List<PropertyData> properties = new ArrayList<>();
+    
     @Override
     public BuildFilter clone() {
         try {

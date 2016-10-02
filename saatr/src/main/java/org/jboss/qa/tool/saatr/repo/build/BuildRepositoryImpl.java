@@ -143,35 +143,47 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Iterable<String> findDistinctVariableNames() {
-        return template.getCollection(BuildDocument.COLLECTION_NAME).distinct("variables.name");
+        return findDistinctPropertyNames("variables");
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Iterable<String> findDistinctVariableValues(String name) {
-        if (name == null) {
-            return template.getCollection(BuildDocument.COLLECTION_NAME).distinct("variables.value");
-        }
-        return (Iterable<String>) template.getCollection(BuildDocument.COLLECTION_NAME).distinct("variables").stream().filter(
-                p -> p != null && name.equals(((BasicDBObject) p).get("name"))).map(p -> ((BasicDBObject) p).get("value")).collect(Collectors.toList());
+        return findDistinctPropertyValues("variables", name);
     }
-    
+
     @Override
-    @SuppressWarnings("unchecked")
     public Iterable<String> findDistinctSystemPropertiesNames() {
-        return template.getCollection(BuildDocument.COLLECTION_NAME).distinct("systemProperties.name");
+        return findDistinctPropertyNames("systemProperties");
     }
-    
+
     @Override
-    @SuppressWarnings("unchecked")
     public Iterable<String> findDistinctSystemPropertiesValues(String name) {
-        if (name == null) {
-            return template.getCollection(BuildDocument.COLLECTION_NAME).distinct("systemProperties.value");
+        return findDistinctPropertyValues("systemProperties", name);
+    }
+
+    @Override
+    public Iterable<String> findDistinctPropertiesNames() {
+        return findDistinctPropertyNames("properties");
+    }
+
+    @Override
+    public Iterable<String> findDistinctPropertiesValues(String name) {
+        return findDistinctPropertyValues("properties", name);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Iterable<String> findDistinctPropertyNames(String fieldName) {
+        return template.getCollection(BuildDocument.COLLECTION_NAME).distinct(fieldName + ".name");
+    }
+
+    @SuppressWarnings("unchecked")
+    private Iterable<String> findDistinctPropertyValues(String fieldName, String propertyName) {
+        if (propertyName == null) {
+            return template.getCollection(BuildDocument.COLLECTION_NAME).distinct(fieldName + ".value");
         }
-        return (Iterable<String>) template.getCollection(BuildDocument.COLLECTION_NAME).distinct("systemProperties").stream().filter(
-                p -> p != null && name.equals(((BasicDBObject) p).get("name"))).map(p -> ((BasicDBObject) p).get("value")).collect(Collectors.toList());
+        return (Iterable<String>) template.getCollection(BuildDocument.COLLECTION_NAME).distinct(fieldName).stream().filter(
+                p -> p != null && propertyName.equals(((BasicDBObject) p).get("name"))).map(p -> ((BasicDBObject) p).get("value")).collect(Collectors.toList());
     }
 
     @Override
@@ -262,38 +274,34 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
             criterias.add(where("created").lte(filter.getCreatedTo()));
         }
         if (!filter.getVariables().isEmpty()) {
-            for (PropertyData property : filter.getVariables()) {
-                if (property.getName() != null && property.getValue() != null) {
-                    if (convertoToBson) {
-                        BsonDocument document = new BsonDocument();
-                        document.put("name", new BsonString(property.getName()));
-                        document.put("value", new BsonString(property.getValue()));
-                        criterias.add(where("variables").in(document));
-                    } else {
-                        criterias.add(where("variables").in(property));
-                    }
-                }
-            }
+            addPropertiesCriteria(filter.getVariables(), convertoToBson, criterias, "variables");
         }
         if (!filter.getSystemParams().isEmpty()) {
-            for (PropertyData property : filter.getSystemParams()) {
-                if (property.getName() != null && property.getValue() != null) {
-                    if (convertoToBson) {
-                        BsonDocument document = new BsonDocument();
-                        document.put("name", new BsonString(property.getName()));
-                        document.put("value", new BsonString(property.getValue()));
-                        criterias.add(where("systemProperties").in(document));
-                    } else {
-                        criterias.add(where("systemProperties").in(property));
-                    }
-                }
-            }
+            addPropertiesCriteria(filter.getSystemParams(), convertoToBson, criterias, "systemProperties");
+        }
+        if (!filter.getProperties().isEmpty()) {
+            addPropertiesCriteria(filter.getProperties(), convertoToBson, criterias, "properties");
         }
         Criteria criteria = new Criteria();
         if (!criterias.isEmpty()) {
             criteria.andOperator(criterias.toArray(new Criteria[0]));
         }
         return criteria;
+    }
+
+    private void addPropertiesCriteria(List<PropertyData> properties, boolean convertoToBson, List<Criteria> criterias, String fieldName) {
+        for (PropertyData property : properties) {
+            if (property.getName() != null && property.getValue() != null) {
+                if (convertoToBson) {
+                    BsonDocument document = new BsonDocument();
+                    document.put("name", new BsonString(property.getName()));
+                    document.put("value", new BsonString(property.getValue()));
+                    criterias.add(where(fieldName).in(document));
+                } else {
+                    criterias.add(where(fieldName).in(property));
+                }
+            }
+        }
     }
 
 }

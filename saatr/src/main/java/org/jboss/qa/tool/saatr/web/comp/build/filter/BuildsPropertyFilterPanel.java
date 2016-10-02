@@ -17,8 +17,8 @@ import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
-import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildsPropertiesFilterPanel.AddPropertyEvent;
-import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildsPropertiesFilterPanel.RemovePropertyEvent;
+import org.jboss.qa.tool.saatr.web.comp.build.filter.AbsractPropertiesFilterPanel.AddPropertyEvent;
+import org.jboss.qa.tool.saatr.web.comp.build.filter.AbsractPropertiesFilterPanel.RemovePropertyEvent;
 
 /**
  * @author dsimko@redhat.com
@@ -46,7 +46,7 @@ abstract class BuildsPropertyFilterPanel extends GenericPanel<PropertyData> {
             protected Iterator<String> getChoices(String input) {
                 List<String> choices = new ArrayList<>(10);
                 for (final String option : variableValues) {
-                    if (option.toLowerCase().startsWith(input.toLowerCase())) {
+                    if (option != null && option.toLowerCase().startsWith(input.toLowerCase())) {
                         choices.add(option);
                         if (choices.size() == 10) {
                             break;

@@ -40,6 +40,10 @@ interface BuildRepositoryCustom {
 
     Iterable<String> findDistinctSystemPropertiesValues(String name);
 
+    Iterable<String> findDistinctPropertiesNames();
+
+    Iterable<String> findDistinctPropertiesValues(String name);
+
     TestsuiteDocument findTestsuiteById(UUID id);
 
     TestcaseDocument findTestcaseById(UUID id, int index);

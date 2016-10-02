@@ -9,33 +9,33 @@ import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 
 @SuppressWarnings("serial")
-public class SystemParamsFilterPanel extends AbsractPropertiesFilterPanel {
+public class CustomPropertiesFilterPanel extends AbsractPropertiesFilterPanel {
 
     @SpringBean
     private BuildRepository buildRepository;
 
-    public SystemParamsFilterPanel(String id, IModel<BuildFilter> model) {
+    public CustomPropertiesFilterPanel(String id, IModel<BuildFilter> model) {
         super(id, model);
     }
 
     @Override
     protected String getTitle() {
-        return "System param name";
+        return "Custom property name";
     }
     
     @Override
     protected List<PropertyData> getProperties() {
-        return getModelObject().getSystemParams();
+        return getModelObject().getProperties();
     }
 
     @Override
     protected Iterable<String> getPropertyNames() {
-        return buildRepository.findDistinctSystemPropertiesNames();
+        return buildRepository.findDistinctPropertiesNames();
     }
 
     @Override
     protected Iterable<String> getPropertyValues(String name) {
-        return buildRepository.findDistinctSystemPropertiesValues(name);
+        return buildRepository.findDistinctPropertiesValues(name);
     }
 
 }
