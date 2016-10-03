@@ -66,7 +66,7 @@ public class BuildDocument implements DocumentWithProperties<ObjectId>, Document
 
     private Long timestamp;
 
-    private Date created;
+    private Date created = new Date();
 
     @Indexed
     private Status status;
@@ -82,6 +82,28 @@ public class BuildDocument implements DocumentWithProperties<ObjectId>, Document
     private final Set<PropertyData> properties = new TreeSet<>();
 
     private final List<TestsuiteDocument> testsuites = new ArrayList<>();
+
+    public void setJobName(String jobName) {
+        if (jobName == null) {
+            this.jobCategory = null;
+        } else {
+            if (jobName.contains("/")) {
+                this.jobName = jobName;
+            } else {
+                this.jobName = jobName + "/";
+            }
+            this.jobCategory = this.jobName.substring(0, this.jobName.indexOf("/"));
+        }
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+        if (status == null) {
+            this.jobStatus = 0;
+        } else {
+            this.jobStatus = status.getStatus();
+        }
+    }
 
     @Data
     @NoArgsConstructor

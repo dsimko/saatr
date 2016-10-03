@@ -112,15 +112,17 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
     @Override
     public <T extends DocumentWithProperties<?>> void addOrUpdateProperties(T document, Set<ConfigProperty> configProperties) {
         log.info("Adding or updating properties {} for {}", configProperties, document);
+        List<PropertyData> properties = configProperties.stream().filter(c -> c.getValue() != null).map(
+                c -> new PropertyData(c.getName(), c.getValue())).collect(Collectors.toList());
         if (document instanceof BuildDocument) {
-            template.updateFirst(Query.query(where("id").is(document.getId())), Update.update("properties", configProperties), BuildDocument.class);
+            template.updateFirst(Query.query(where("id").is(document.getId())), Update.update("properties", properties), BuildDocument.class);
         } else if (document instanceof TestsuiteDocument) {
-            template.updateFirst(Query.query(where("testsuites.id").is(document.getId())), Update.update("testsuites.$.properties", configProperties),
+            template.updateFirst(Query.query(where("testsuites.id").is(document.getId())), Update.update("testsuites.$.properties", properties),
                     BuildDocument.class);
         } else if (document instanceof TestcaseDocument) {
             TestcaseDocument testcaseData = (TestcaseDocument) document;
             template.updateFirst(Query.query(where("testsuites.testcases.id").is(testcaseData.getId())),
-                    Update.update("testsuites.$.testcases." + testcaseData.getIndex() + ".properties", configProperties), BuildDocument.class);
+                    Update.update("testsuites.$.testcases." + testcaseData.getIndex() + ".properties", properties), BuildDocument.class);
         }
     }
 

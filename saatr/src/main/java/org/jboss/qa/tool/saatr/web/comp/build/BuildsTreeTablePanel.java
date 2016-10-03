@@ -153,8 +153,9 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
         public boolean hasChildren(BuildDocument node) {
             if (node.getJobName().contains("/")) {
                 return node.getNumberOfChildren() != null && node.getNumberOfChildren() > 1;
+            } else {
+                return node.getNumberOfChildren() > 0;
             }
-            return node.getNumberOfChildren() > 0;
         }
 
         @Override
