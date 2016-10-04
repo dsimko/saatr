@@ -2,19 +2,21 @@
 package org.jboss.qa.tool.saatr.web.comp.build;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.HeadersToolbar;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.NoRecordsToolbar;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.extensions.markup.html.repeater.tree.ITreeProvider;
 import org.apache.wicket.extensions.markup.html.repeater.tree.TableTree;
-import org.apache.wicket.extensions.markup.html.repeater.tree.content.Folder;
+import org.apache.wicket.extensions.markup.html.repeater.tree.content.CheckedFolder;
 import org.apache.wicket.extensions.markup.html.repeater.tree.table.TreeColumn;
 import org.apache.wicket.extensions.markup.html.repeater.tree.theme.HumanTheme;
 import org.apache.wicket.injection.Injector;
@@ -26,10 +28,13 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 import org.jboss.qa.tool.saatr.web.comp.DocumentModel;
 import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildFilter;
+
+import lombok.AllArgsConstructor;
 
 /**
  * @author dsimko@redhat.com
@@ -38,6 +43,10 @@ import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildFilter;
 public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
 
     private TableTree<BuildDocument, String> tree;
+
+    private Set<String> selectedParents = new HashSet<>();
+
+    private Set<ObjectId> selectedIds = new HashSet<>();
 
     public BuildsTreeTablePanel(String id, IModel<BuildDocument> model, IModel<BuildFilter> filterModel) {
         super(id, model);
@@ -52,7 +61,28 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
 
             @Override
             protected Component newContentComponent(String id, IModel<BuildDocument> model) {
-                return new Folder<BuildDocument>(id, tree, model) {
+
+                return new CheckedFolder<BuildDocument>(id, tree, model) {
+
+                    @Override
+                    protected IModel<Boolean> newCheckBoxModel(final IModel<BuildDocument> model) {
+                        return new CheckBoxModel(model);
+                    }
+
+                    @Override
+                    protected void onUpdate(AjaxRequestTarget target) {
+                        tree.updateBranch(getModelObject(), target);
+                    }
+
+                    @Override
+                    protected boolean isSelected() {
+                        return BuildsTreeTablePanel.this.getModelObject() != null && BuildsTreeTablePanel.this.getModelObject().equals(getModelObject());
+                    }
+
+                    @Override
+                    protected IModel<?> newLabelModel(IModel<BuildDocument> model) {
+                        return new PropertyModel<>(model, "jobName");
+                    }
 
                     @Override
                     protected MarkupContainer newLinkComponent(String id, IModel<BuildDocument> model) {
@@ -67,16 +97,6 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
                                 }
                             };
                         }
-                    }
-
-                    @Override
-                    protected boolean isSelected() {
-                        return BuildsTreeTablePanel.this.getModelObject() != null && BuildsTreeTablePanel.this.getModelObject().equals(getModelObject());
-                    }
-
-                    @Override
-                    protected IModel<?> newLabelModel(IModel<BuildDocument> model) {
-                        return new PropertyModel<>(model, "jobName");
                     }
                 };
 
@@ -124,6 +144,75 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
         @Override
         public void detach() {
 
+        }
+    }
+
+    @AllArgsConstructor
+    private class CheckBoxModel extends Model<Boolean> {
+
+        final IModel<BuildDocument> model;
+
+        @Override
+        public Boolean getObject() {
+            String jobName = model.getObject().getJobName();
+            ObjectId id = model.getObject().getId();
+            if (id != null) {
+                return selectedIds.contains(id);
+            } else {
+                return selectedParents.contains(jobName);
+            }
+        }
+
+        @Override
+        public void setObject(Boolean object) {
+            String jobName = model.getObject().getJobName();
+            ObjectId id = model.getObject().getId();
+            if (id != null) {
+                if (selectedIds.contains(id)) {
+                    selectedIds.remove(id);
+                } else {
+                    selectedIds.add(id);
+                }
+            } else {
+                if (selectedParents.contains(jobName)) {
+                    selectedParents.remove(jobName);
+                    tree.getProvider().getChildren(model.getObject()).forEachRemaining(b -> {
+                        if (b.getId() != null) {
+                            if (selectedIds.contains(b.getId())) {
+                                selectedIds.remove(b.getId());
+                            }
+                        } else {
+                            if (selectedParents.contains(b.getJobName())) {
+                                selectedParents.remove(b.getJobName());
+                                tree.getProvider().getChildren(b).forEachRemaining(c -> {
+                                    if (selectedIds.contains(c.getId())) {
+                                        selectedIds.remove(c.getId());
+                                    }
+                                });
+                            }
+                        }
+                    });
+                } else {
+                    selectedParents.add(jobName);
+                    tree.getProvider().getChildren(model.getObject()).forEachRemaining(b -> {
+                        if (b.getId() != null) {
+                            if (!selectedIds.contains(b.getId())) {
+                                selectedIds.add(b.getId());
+                            }
+                        } else {
+                            if (!selectedParents.contains(b.getJobName())) {
+                                selectedParents.add(b.getJobName());
+                                tree.getProvider().getChildren(b).forEachRemaining(c -> {
+                                    if (!selectedIds.contains(c.getId())) {
+                                        selectedIds.add(c.getId());
+                                    }
+                                });
+                            }
+                        }
+
+                    });
+                }
+            }
         }
     }
 
