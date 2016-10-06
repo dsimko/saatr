@@ -3,7 +3,11 @@ package org.jboss.qa.tool.saatr.web.comp.build.properties;
 
 import java.util.Iterator;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.event.Broadcast;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RefreshingView;
@@ -11,6 +15,8 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
+import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapFeedbackPanel;
+import org.jboss.qa.tool.saatr.web.comp.build.BuildsTreeTablePanel.CopyToAllSelectedEvent;
 
 /**
  * @author dsimko@redhat.com
@@ -33,6 +39,15 @@ class PropertiesViewPanel<T extends DocumentWithProperties<?>> extends GenericPa
             protected void populateItem(Item<PropertyData> item) {
                 item.add(new Label("name"));
                 item.add(new Label("value"));
+            }
+        });
+        FeedbackPanel feedbackPanel = new BootstrapFeedbackPanel("feedback");
+        add(feedbackPanel.setOutputMarkupId(true));
+        add(new AjaxLink<T>("copyToAllSelected", model) {
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                send(getPage(), Broadcast.DEPTH, new CopyToAllSelectedEvent(getModelObject().getProperties(), feedbackPanel));
+                target.add(feedbackPanel);
             }
         });
     }

@@ -25,7 +25,6 @@ import org.jboss.qa.tool.saatr.domain.build.BuildDocument.Status;
 import org.jboss.qa.tool.saatr.domain.build.ConsoleTextDocument;
 import org.jboss.qa.tool.saatr.domain.build.TestcaseDocument;
 import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument;
-import org.jboss.qa.tool.saatr.domain.config.ConfigDocument.ConfigProperty;
 import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite;
 import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildFilter;
 import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildFilter.PropertyDto;
@@ -112,19 +111,18 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
     }
 
     @Override
-    public <T extends DocumentWithProperties<?>> void addOrUpdateProperties(T document, Set<ConfigProperty> configProperties) {
-        log.info("Adding or updating properties {} for {}", configProperties, document);
-        List<PropertyData> properties = configProperties.stream().filter(c -> c.getValue() != null).map(
-                c -> new PropertyData(c.getName(), c.getValue())).collect(Collectors.toList());
+    public <T extends DocumentWithProperties<?>> void addOrUpdateProperties(T document, Set<PropertyData> properties) {
+        log.info("Adding or updating properties {} for {}", properties, document);
+        List<PropertyData> filteredProperties = properties.stream().filter(c -> c.getValue() != null).collect(Collectors.toList());
         if (document instanceof BuildDocument) {
-            template.updateFirst(Query.query(where("id").is(document.getId())), Update.update("properties", properties), BuildDocument.class);
+            template.updateFirst(Query.query(where("id").is(document.getId())), Update.update("properties", filteredProperties), BuildDocument.class);
         } else if (document instanceof TestsuiteDocument) {
-            template.updateFirst(Query.query(where("testsuites.id").is(document.getId())), Update.update("testsuites.$.properties", properties),
+            template.updateFirst(Query.query(where("testsuites.id").is(document.getId())), Update.update("testsuites.$.properties", filteredProperties),
                     BuildDocument.class);
         } else if (document instanceof TestcaseDocument) {
             TestcaseDocument testcaseData = (TestcaseDocument) document;
             template.updateFirst(Query.query(where("testsuites.testcases.id").is(testcaseData.getId())),
-                    Update.update("testsuites.$.testcases." + testcaseData.getIndex() + ".properties", properties), BuildDocument.class);
+                    Update.update("testsuites.$.testcases." + testcaseData.getIndex() + ".properties", filteredProperties), BuildDocument.class);
         }
     }
 

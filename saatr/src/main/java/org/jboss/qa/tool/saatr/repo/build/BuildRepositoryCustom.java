@@ -11,7 +11,6 @@ import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
 import org.jboss.qa.tool.saatr.domain.build.TestcaseDocument;
 import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument;
-import org.jboss.qa.tool.saatr.domain.config.ConfigDocument.ConfigProperty;
 import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite;
 import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildFilter;
 
@@ -30,7 +29,7 @@ interface BuildRepositoryCustom {
 
     void addIfAbsent(PropertyData property, Set<PropertyData> properties);
 
-    <T extends DocumentWithProperties<?>> void addOrUpdateProperties(T documentWithProperties, Set<ConfigProperty> configProperties);
+    <T extends DocumentWithProperties<?>> void addOrUpdateProperties(T documentWithProperties, Set<PropertyData> properties);
 
     Iterable<String> findDistinctVariableNames();
 

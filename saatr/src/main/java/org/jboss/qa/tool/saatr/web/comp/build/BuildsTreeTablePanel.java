@@ -1,6 +1,7 @@
 
 package org.jboss.qa.tool.saatr.web.comp.build;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -11,6 +12,7 @@ import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.event.IEvent;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.HeadersToolbar;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.NoRecordsToolbar;
@@ -34,17 +36,22 @@ import org.apache.wicket.util.visit.IVisit;
 import org.apache.wicket.util.visit.IVisitor;
 import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
+import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 import org.jboss.qa.tool.saatr.web.comp.DocumentModel;
 import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildFilter;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 
 /**
  * @author dsimko@redhat.com
  */
 @SuppressWarnings("serial")
 public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
+
+    @SpringBean
+    private BuildRepository buildRepository;
 
     private TableTree<BuildDocument, String> tree;
 
@@ -146,7 +153,6 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
                         } else {
                             selectedParents.add(buildDocument.getJobName());
                         }
-
                     }
                 });
                 target.add(tree);
@@ -163,6 +169,21 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
                 target.add(selectedCount);
             }
         });
+    }
+
+    @Override
+    public void onEvent(IEvent<?> event) {
+        if (event.getPayload() instanceof CopyToAllSelectedEvent) {
+            CopyToAllSelectedEvent copyEvent = (CopyToAllSelectedEvent) event.getPayload();
+            for (ObjectId objectId : selectedIds) {
+                buildRepository.addOrUpdateProperties(buildRepository.findOne(objectId), copyEvent.getProperties());
+            }
+            if(selectedIds.size() > 0){
+                copyEvent.getFeedbackComponent().info("Successfully copied to " + selectedIds.size() + " documents.");
+            }else{
+                copyEvent.getFeedbackComponent().warn("0 documents selected.");
+            }
+        }
     }
 
     private class BuildsExpansionModel implements IModel<Set<BuildDocument>> {
@@ -292,5 +313,13 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
         public IModel<BuildDocument> model(BuildDocument object) {
             return new DocumentModel<>(object);
         }
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class CopyToAllSelectedEvent implements Serializable {
+
+        private Set<PropertyData> properties;
+        private Component feedbackComponent;
     }
 }
