@@ -4,33 +4,15 @@
 	<wicket:panel>
 		<div wicket:id="panel" class="panel">
 			<div class="panel-heading sub-panel-heading">
-				<h5 class="panel-title">
+				<h3 class="panel-title">
 					<wicket:container wicket:id="name"></wicket:container>
-				</h5>
+					<span class="pull-right">
+						<a wicket:id="collapse"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></a>
+						<a wicket:id="expand"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+					</span>	
+				</h3>
 			</div>
-			<div class="panel-body">
-				<div wicket:enclosure="time" class="row">
-					<div class="col-sm-2">Time</div>
-					<div class="col-sm-10">
-						<span class="text-muted" wicket:id="time"></span>
-					</div>
-				</div>
-				<div wicket:id="properties"></div>
-				<div wicket:id="skipped"></div>
-				<div wicket:id="error"></div>
-				<div wicket:id="failure"></div>
-				<div wicket:id="flakyFailures"></div>
-				<div wicket:id="rerunFailure"></div>
-				<div wicket:id="flakyErrors"></div>
-				<div wicket:enclosure="systemOut">
-					<strong>System Out</strong>
-					<div wicket:id="systemOut"></div>
-				</div>
-				<div wicket:enclosure="systemErr">
-					<strong>System Err</strong>
-					<div wicket:id="systemErr"></div>
-				</div>
-			</div>
+			<wicket:container wicket:id="bodyPanel"></wicket:container>
 		</div>
 	</wicket:panel>
 </body>

@@ -40,11 +40,10 @@ class BodyPanel extends GenericPanel<TestsuiteDocument> {
             protected Iterator<IModel<TestcaseDocument>> getItemModels() {
                 List<IModel<TestcaseDocument>> models = new ArrayList<>();
                 int index = 0;
+                for (TestcaseDocument tc : getModelObject().getTestcases())
+                    tc.setIndex(index++);
                 Collections.sort(getModelObject().getTestcases());
-                for (TestcaseDocument testcaseData : getModelObject().getTestcases()) {
-                    testcaseData.setIndex(index++);
-                    models.add(new TestcaseModel(testcaseData));
-                }
+                getModelObject().getTestcases().stream().forEach(tc -> models.add(new TestcaseModel(tc)));
                 return models.iterator();
             }
 

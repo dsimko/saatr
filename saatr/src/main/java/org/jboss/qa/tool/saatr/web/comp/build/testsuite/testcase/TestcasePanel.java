@@ -1,17 +1,19 @@
 
 package org.jboss.qa.tool.saatr.web.comp.build.testsuite.testcase;
 
+import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.GenericPanel;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.util.string.Strings;
 import org.jboss.qa.tool.saatr.domain.build.TestcaseDocument;
-import org.jboss.qa.tool.saatr.web.comp.LongTextLabel;
-import org.jboss.qa.tool.saatr.web.comp.build.properties.PropertiesPanel;
+import org.jboss.qa.tool.saatr.domain.build.TestcaseDocument.Status;
 
 /**
  * 
@@ -20,6 +22,8 @@ import org.jboss.qa.tool.saatr.web.comp.build.properties.PropertiesPanel;
  */
 @SuppressWarnings("serial")
 public class TestcasePanel extends GenericPanel<TestcaseDocument> {
+
+    private Component body;
 
     public TestcasePanel(String id, final IModel<TestcaseDocument> model) {
         super(id, new CompoundPropertyModel<>(model));
@@ -46,28 +50,45 @@ public class TestcasePanel extends GenericPanel<TestcaseDocument> {
                 }
             }
         };
-        add(panel);
+        if (getModelObject().getStatus() == Status.Failure || getModelObject().getStatus() == Status.Error) {
+            body = new BodyPanel("bodyPanel", model);
+        } else {
+            body = new EmptyPanel("bodyPanel");
+        }
+        add(panel.setOutputMarkupId(true));
         panel.add(new Label("name"));
-        panel.add(new Label("time") {
+        panel.add(body);
+        panel.add(new AjaxLink<Void>("collapse") {
 
             @Override
-            protected void onConfigure() {
-                super.onConfigure();
-                String value = getDefaultModelObjectAsString();
-                if (Strings.isEmpty(value) || "0".equals(value)) {
-                    setVisible(false);
-                }
+            public void onClick(AjaxRequestTarget target) {
+                replaceBodyPanel(new EmptyPanel(body.getId()));
+                target.add(panel);
+            }
+
+            @Override
+            public boolean isVisible() {
+                return body instanceof BodyPanel;
             }
         });
-        panel.add(new SkippedPanel("skipped"));
-        panel.add(new ErrorPanel("error"));
-        panel.add(new FailuresPanel("failure", "Failures"));
-        panel.add(new FailuresPanel("flakyErrors", "Flaky Errors"));
-        panel.add(new FailuresPanel("flakyFailures", "Flaky Failures"));
-        panel.add(new FailuresPanel("rerunFailure", "Rerun Failure"));
-        panel.add(new LongTextLabel("systemOut", new PropertyModel<>(model, "systemOut")));
-        panel.add(new LongTextLabel("systemErr", new PropertyModel<>(model, "systemErr")));
-        panel.add(new PropertiesPanel<>("properties", model));
+        panel.add(new AjaxLink<Void>("expand") {
 
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                replaceBodyPanel(new BodyPanel(body.getId(), model));
+                target.add(panel);
+            }
+
+            @Override
+            public boolean isVisible() {
+                return body instanceof EmptyPanel;
+            }
+        });
     }
+    
+    private void replaceBodyPanel(Panel with) {
+        body.replaceWith(with);
+        body = with;
+    }
+
 }
