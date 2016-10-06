@@ -21,7 +21,6 @@ class BodyPanel extends GenericPanel<TestcaseDocument> {
 
     public BodyPanel(String id, final IModel<TestcaseDocument> model) {
         super(id, new CompoundPropertyModel<>(model));
-        add(new Label("name"));
         add(new Label("time") {
 
             @Override
