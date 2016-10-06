@@ -51,3 +51,15 @@ div.wicket-aa ul li.selected {
 .margin-top-10 {
 	margin-top: 10px;
 }
+
+.tree-table table {
+	width: 100%;
+}
+
+.tree-table table tr.even {
+	background-color: #FFFFFF;
+}
+
+.tree-table table tr.odd {
+	background-color: #EEEEEE;
+}

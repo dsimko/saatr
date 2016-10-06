@@ -1,22 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <html xmlns:wicket>
-<head>
-<wicket:head>
-	<style>
-table {
-	width: 100%;
-}
-
-tr.even {
-	background-color: #FFFFFF;
-}
-
-tr.odd {
-	background-color: #EEEEEE;
-}
-</style>
-</wicket:head>
-</head>
 <body>
 	<wicket:panel>
 		<p>
@@ -26,7 +9,7 @@ tr.odd {
 			<a class="btn btn-default btn-xs" wicket:id="deselectAll">Deselect All</a>
 			Selected jobs <strong wicket:id="selectedCount"></strong>
 		</p>
-		<div wicket:id="tree"></div>
+		<div class="tree-table" wicket:id="tree"></div>
 		<br />
 	</wicket:panel>
 </body>
