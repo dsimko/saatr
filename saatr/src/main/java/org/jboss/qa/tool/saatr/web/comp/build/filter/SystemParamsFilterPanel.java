@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
+import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildFilter.PropertyDto;
 
 @SuppressWarnings("serial")
 public class SystemParamsFilterPanel extends AbsractPropertiesFilterPanel {
@@ -24,7 +24,7 @@ public class SystemParamsFilterPanel extends AbsractPropertiesFilterPanel {
     }
     
     @Override
-    protected List<PropertyData> getProperties() {
+    protected List<PropertyDto> getProperties() {
         return getModelObject().getSystemParams();
     }
 

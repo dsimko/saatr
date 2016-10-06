@@ -2,6 +2,7 @@
 package org.jboss.qa.tool.saatr.web.comp.build.filter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -12,21 +13,23 @@ import org.apache.wicket.event.Broadcast;
 import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AutoCompleteSettings;
 import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AutoCompleteTextField;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
 import org.jboss.qa.tool.saatr.web.comp.build.filter.AbsractPropertiesFilterPanel.AddPropertyEvent;
 import org.jboss.qa.tool.saatr.web.comp.build.filter.AbsractPropertiesFilterPanel.RemovePropertyEvent;
+import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildFilter.PropertyDto;
+import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildFilter.PropertyDto.Operation;
 
 /**
  * @author dsimko@redhat.com
  */
 @SuppressWarnings("serial")
-abstract class BuildsPropertyFilterPanel extends GenericPanel<PropertyData> {
+abstract class BuildsPropertyFilterPanel extends GenericPanel<PropertyDto> {
 
-    public BuildsPropertyFilterPanel(String id, String title, IModel<PropertyData> model, List<String> variableNames, List<String> variableValues, boolean buttonsVisible) {
+    public BuildsPropertyFilterPanel(String id, String title, IModel<PropertyDto> model, List<String> variableNames, List<String> variableValues, boolean buttonsVisible) {
         super(id, new CompoundPropertyModel<>(model));
         add(new Label("title", title));
         add(new DropDownChoice<>("name", variableNames).setNullValid(true).add(new OnChangeAjaxBehavior() {
@@ -38,6 +41,7 @@ abstract class BuildsPropertyFilterPanel extends GenericPanel<PropertyData> {
             }
 
         }));
+        add(new DropDownChoice<>("operation", Arrays.asList(Operation.values()), new ChoiceRenderer<>("label")));
         AutoCompleteSettings settings = new AutoCompleteSettings();
         settings.setShowListOnEmptyInput(true);
         add(new AutoCompleteTextField<String>("value", settings) {
@@ -56,7 +60,7 @@ abstract class BuildsPropertyFilterPanel extends GenericPanel<PropertyData> {
                 return choices.iterator();
             }
         });
-        add(new AjaxLink<PropertyData>("add", model) {
+        add(new AjaxLink<PropertyDto>("add", model) {
 
             @Override
             public boolean isVisible() {
@@ -68,7 +72,7 @@ abstract class BuildsPropertyFilterPanel extends GenericPanel<PropertyData> {
                 send(this, Broadcast.BUBBLE, new AddPropertyEvent(target));
             }
         });
-        add(new AjaxLink<PropertyData>("remove", model) {
+        add(new AjaxLink<PropertyDto>("remove", model) {
 
             @Override
             public boolean isVisible() {

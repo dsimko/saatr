@@ -28,6 +28,8 @@ import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument;
 import org.jboss.qa.tool.saatr.domain.config.ConfigDocument.ConfigProperty;
 import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite;
 import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildFilter;
+import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildFilter.PropertyDto;
+import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildFilter.PropertyDto.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -291,16 +293,22 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
         return criteria;
     }
 
-    private void addPropertiesCriteria(List<PropertyData> properties, boolean convertoToBson, List<Criteria> criterias, String fieldName) {
-        for (PropertyData property : properties) {
+    private void addPropertiesCriteria(List<PropertyDto> properties, boolean convertoToBson, List<Criteria> criterias, String fieldName) {
+        for (PropertyDto property : properties) {
             if (property.getName() != null && property.getValue() != null) {
+                Object o;
                 if (convertoToBson) {
                     BsonDocument document = new BsonDocument();
                     document.put("name", new BsonString(property.getName()));
                     document.put("value", new BsonString(property.getValue()));
-                    criterias.add(where(fieldName).in(document));
+                    o = document;
                 } else {
-                    criterias.add(where(fieldName).in(property));
+                    o = property;
+                }
+                if (property.getOperation() == Operation.EQUAL) {
+                    criterias.add(where(fieldName).in(o));
+                } else if (property.getOperation() == Operation.NOT_EQUAL) {
+                    criterias.add(where(fieldName).nin(o));
                 }
             }
         }

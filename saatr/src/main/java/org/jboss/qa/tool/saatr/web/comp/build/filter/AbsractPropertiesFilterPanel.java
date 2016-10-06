@@ -14,7 +14,7 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RefreshingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
+import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildFilter.PropertyDto;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,17 +34,17 @@ public abstract class AbsractPropertiesFilterPanel extends GenericPanel<BuildFil
         super(id, model);
         initVariables();
         setOutputMarkupId(true);
-        add(new RefreshingView<PropertyData>("properties") {
+        add(new RefreshingView<PropertyDto>("properties") {
 
             @Override
-            protected Iterator<IModel<PropertyData>> getItemModels() {
-                return getProperties().stream().map(p -> ((IModel<PropertyData>) Model.of(p))).collect(Collectors.toList()).iterator();
+            protected Iterator<IModel<PropertyDto>> getItemModels() {
+                return getProperties().stream().map(p -> ((IModel<PropertyDto>) Model.of(p))).collect(Collectors.toList()).iterator();
             }
 
             @Override
-            protected void populateItem(Item<PropertyData> item) {
-                item.add(new BuildsPropertyFilterPanel("property", getTitle(), item.getModel(), new ArrayList<>(variableNames),
-                        new ArrayList<>(variableValues), item.getIndex() == getProperties().size() - 1) {
+            protected void populateItem(Item<PropertyDto> item) {
+                item.add(new BuildsPropertyFilterPanel("property", getTitle(), item.getModel(), new ArrayList<>(variableNames), new ArrayList<>(variableValues),
+                        item.getIndex() == getProperties().size() - 1) {
 
                     @Override
                     protected Iterable<String> findDistinctValues(String name) {
@@ -59,14 +59,14 @@ public abstract class AbsractPropertiesFilterPanel extends GenericPanel<BuildFil
     protected void onConfigure() {
         super.onConfigure();
         if (getProperties().isEmpty()) {
-            getProperties().add(new PropertyData());
+            getProperties().add(new PropertyDto());
         }
     }
 
     @Override
     public void onEvent(IEvent<?> event) {
         if (event.getPayload() instanceof AddPropertyEvent) {
-            getProperties().add(new PropertyData());
+            getProperties().add(new PropertyDto());
             ((AddPropertyEvent) event.getPayload()).target.add(this);
         } else if (event.getPayload() instanceof RemovePropertyEvent) {
             getProperties().remove(getProperties().size() - 1);
@@ -94,8 +94,8 @@ public abstract class AbsractPropertiesFilterPanel extends GenericPanel<BuildFil
     }
 
     protected abstract String getTitle();
-    
-    protected abstract List<PropertyData> getProperties();
+
+    protected abstract List<PropertyDto> getProperties();
 
     protected abstract Iterable<String> getPropertyNames();
 
