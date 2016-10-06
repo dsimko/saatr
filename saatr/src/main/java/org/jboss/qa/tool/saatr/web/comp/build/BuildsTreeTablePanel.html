@@ -20,7 +20,11 @@ tr.odd {
 <body>
 	<wicket:panel>
 		<p>
-			<a class="btn btn-default btn-xs" wicket:id="collapseAll">Collapse All</a> <a class="btn btn-default btn-xs" wicket:id="expandAll">Expand All</a>
+			<a class="btn btn-default btn-xs" wicket:id="expandAll">Expand All</a>
+			<a class="btn btn-default btn-xs" wicket:id="collapseAll">Collapse All</a>
+			<a class="btn btn-default btn-xs" wicket:id="selectAll">Select All</a> 
+			<a class="btn btn-default btn-xs" wicket:id="deselectAll">Deselect All</a>
+			Selected jobs <strong wicket:id="selectedCount"></strong>
 		</p>
 		<div wicket:id="tree"></div>
 		<br />

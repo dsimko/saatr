@@ -10,6 +10,7 @@ import java.util.Set;
 import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.HeadersToolbar;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.NoRecordsToolbar;
@@ -20,6 +21,7 @@ import org.apache.wicket.extensions.markup.html.repeater.tree.content.CheckedFol
 import org.apache.wicket.extensions.markup.html.repeater.tree.table.TreeColumn;
 import org.apache.wicket.extensions.markup.html.repeater.tree.theme.HumanTheme;
 import org.apache.wicket.injection.Injector;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.markup.repeater.Item;
@@ -28,6 +30,8 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.visit.IVisit;
+import org.apache.wicket.util.visit.IVisitor;
 import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
@@ -56,7 +60,8 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
         columns.add(new PropertyColumn<BuildDocument, String>(Model.of("Count"), "numberOfChildren"));
         columns.add(new PropertyColumn<BuildDocument, String>(Model.of("Build Number"), "buildNumber"));
         columns.add(new StatusColumn());
-
+        final Label selectedCount = new Label("selectedCount", new PropertyModel<>(this, "selectedIds.size"));
+        add(selectedCount.setOutputMarkupId(true));
         tree = new TableTree<BuildDocument, String>("tree", columns, new BuildsProvider(filterModel), Integer.MAX_VALUE, new BuildsExpansionModel()) {
 
             @Override
@@ -72,6 +77,7 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
                     @Override
                     protected void onUpdate(AjaxRequestTarget target) {
                         tree.updateBranch(getModelObject(), target);
+                        target.add(selectedCount);
                     }
 
                     @Override
@@ -119,12 +125,42 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
                 BuildExpansion.get().expandAll();
             }
         });
-
         add(new Link<Void>("collapseAll") {
 
             @Override
             public void onClick() {
                 BuildExpansion.get().collapseAll();
+            }
+        });
+        add(new AjaxLink<Void>("selectAll") {
+
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                tree.visitChildren(CheckedFolder.class, new IVisitor<CheckedFolder<BuildDocument>, Void>() {
+
+                    @Override
+                    public void component(CheckedFolder<BuildDocument> component, IVisit<Void> visit) {
+                        BuildDocument buildDocument = component.getModelObject();
+                        if (buildDocument.getId() != null) {
+                            selectedIds.add(buildDocument.getId());
+                        } else {
+                            selectedParents.add(buildDocument.getJobName());
+                        }
+
+                    }
+                });
+                target.add(tree);
+                target.add(selectedCount);
+            }
+        });
+        add(new AjaxLink<Void>("deselectAll") {
+
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                selectedIds.clear();
+                selectedParents.clear();
+                target.add(tree);
+                target.add(selectedCount);
             }
         });
     }

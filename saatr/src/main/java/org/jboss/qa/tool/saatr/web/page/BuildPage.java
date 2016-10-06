@@ -11,6 +11,7 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
 import org.jboss.qa.tool.saatr.web.comp.DocumentModel;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapTabbedPanel;
+import org.jboss.qa.tool.saatr.web.comp.build.BuildExpansion;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildJsonPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildsPanel;
@@ -23,6 +24,7 @@ public class BuildPage extends BasePage<BuildDocument> {
 
     public BuildPage() {
         super(new DocumentModel<BuildDocument>(BuildDocument.class, null));
+        BuildExpansion.get().collapseAll();
         add(new BuildsPanel("buildsPanel", getModel()));
         List<ITab> tabs = new ArrayList<ITab>();
         tabs.add(new AbstractTab(new AbstractReadOnlyModel<String>() {

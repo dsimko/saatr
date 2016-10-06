@@ -303,7 +303,7 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
                     document.put("value", new BsonString(property.getValue()));
                     o = document;
                 } else {
-                    o = property;
+                    o = new PropertyData(property.getName(), property.getValue());
                 }
                 if (property.getOperation() == Operation.EQUAL) {
                     criterias.add(where(fieldName).in(o));
