@@ -94,6 +94,37 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
             build.getTestsuites().add(testsuiteData);
         }
         build.setStatus(BuildDocument.determineStatus(build.getTestsuites()));
+        calculateStatistics(build);
+    }
+
+    private void calculateStatistics(BuildDocument build) {
+        int failedTestsuites = 0, errorTestsuites = 0, testcases = 0, failedTestcases = 0, errorTestcases = 0, skippedTestcases = 0;
+        for (TestsuiteDocument testsuite : build.getTestsuites()) {
+            if (testsuite.getStatus() == TestsuiteDocument.Status.Error) {
+                errorTestsuites++;
+            }
+            if (testsuite.getStatus() == TestsuiteDocument.Status.Failure) {
+                failedTestsuites++;
+            }
+            for (TestcaseDocument testcase : testsuite.getTestcases()) {
+                testcases++;
+                if (testcase.getStatus() == TestcaseDocument.Status.Error) {
+                    errorTestcases++;
+                }
+                if (testcase.getStatus() == TestcaseDocument.Status.Failure) {
+                    failedTestcases++;
+                }
+                if (testcase.getStatus() == TestcaseDocument.Status.Skipped) {
+                    skippedTestcases++;
+                }
+            }
+        }
+        build.setFailedTestsuites(failedTestsuites);
+        build.setErrorTestsuites(errorTestsuites);
+        build.setTestcases(testcases);
+        build.setFailedTestcases(failedTestcases);
+        build.setErrorTestcases(errorTestcases);
+        build.setSkippedTestcases(skippedTestcases);
     }
 
     @Override

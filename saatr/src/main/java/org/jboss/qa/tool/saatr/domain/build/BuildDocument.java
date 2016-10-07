@@ -73,6 +73,18 @@ public class BuildDocument implements DocumentWithProperties<ObjectId>, Document
 
     private Long duration;
 
+    private Integer failedTestsuites;
+
+    private Integer errorTestsuites;
+
+    private Integer testcases;
+
+    private Integer failedTestcases;
+
+    private Integer errorTestcases;
+
+    private Integer skippedTestcases;
+
     private ObjectId consoleTextId;
 
     private final Set<PropertyData> systemProperties = new TreeSet<>();
