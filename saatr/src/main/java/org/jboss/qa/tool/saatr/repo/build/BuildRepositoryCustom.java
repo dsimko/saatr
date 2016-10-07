@@ -54,8 +54,7 @@ interface BuildRepositoryCustom {
     void addConsoleText(BuildDocument buildDocument, String response);
 
     Iterator<BuildDocument> getRoots(BuildFilter filter);
-    
-    Iterator<? extends BuildDocument> getChildren(BuildDocument parent, BuildFilter filter);
 
+    Iterator<? extends BuildDocument> getChildren(BuildDocument parent, BuildFilter filter);
 
 }

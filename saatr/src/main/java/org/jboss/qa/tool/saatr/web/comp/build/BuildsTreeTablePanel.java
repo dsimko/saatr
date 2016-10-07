@@ -28,6 +28,7 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.OddEvenItem;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -94,7 +95,22 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
 
                     @Override
                     protected IModel<?> newLabelModel(IModel<BuildDocument> model) {
-                        return new PropertyModel<>(model, "jobName");
+                        return new AbstractReadOnlyModel<String>() {
+
+                            @Override
+                            public String getObject() {
+                                BuildDocument buildDocument = model.getObject();
+                                if (buildDocument != null) {
+                                    String name = buildDocument.getJobName();
+                                    if (name.contains("/")) {
+                                        return name.substring(name.indexOf("/") + 1, name.length());
+                                    } else {
+                                        return name;
+                                    }
+                                }
+                                return null;
+                            }
+                        };
                     }
 
                     @Override
@@ -178,9 +194,9 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
             for (ObjectId objectId : selectedIds) {
                 buildRepository.addOrUpdateProperties(buildRepository.findOne(objectId), copyEvent.getProperties());
             }
-            if(selectedIds.size() > 0){
+            if (selectedIds.size() > 0) {
                 copyEvent.getFeedbackComponent().info("Successfully copied to " + selectedIds.size() + " documents.");
-            }else{
+            } else {
                 copyEvent.getFeedbackComponent().warn("0 documents selected.");
             }
         }
@@ -320,6 +336,7 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
     public static class CopyToAllSelectedEvent implements Serializable {
 
         private Set<PropertyData> properties;
+
         private Component feedbackComponent;
     }
 }
