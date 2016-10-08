@@ -13,6 +13,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.jboss.qa.tool.saatr.domain.config.ConfigDocument;
 import org.jboss.qa.tool.saatr.domain.config.ConfigDocument.ConfigProperty;
+import org.jboss.qa.tool.saatr.domain.config.ConfigDocument.ConfigProperty.Component;
 import org.jboss.qa.tool.saatr.jaxb.config.Config;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapFeedbackPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.properties.PropertiesEditPanel.AddInfoSubmitEvent;
@@ -31,7 +32,11 @@ class PropertiesFormPanel extends GenericPanel<ConfigDocument> {
         form.add(new BootstrapFeedbackPanel("feedback"));
         RepeatingView view = new RepeatingView("props");
         for (ConfigProperty prop : getModelObject().getProperties()) {
-            view.add(new PropertyPanel(view.newChildId(), new CompoundPropertyModel<ConfigProperty>(prop)));
+            if (prop.getComponent() == Component.TEXT_AREA) {
+                view.add(new PropertyTextAreaPanel(view.newChildId(), new CompoundPropertyModel<ConfigProperty>(prop)));
+            } else {
+                view.add(new PropertyTextFieldPanel(view.newChildId(), new CompoundPropertyModel<ConfigProperty>(prop)));
+            }
         }
         form.add(view);
         form.add(new AjaxSubmitLink("submit") {

@@ -20,9 +20,9 @@ import org.jboss.qa.tool.saatr.domain.config.ConfigDocument.ConfigProperty;
  *
  */
 @SuppressWarnings("serial")
-class PropertyPanel extends GenericPanel<ConfigProperty> {
+class PropertyTextFieldPanel extends GenericPanel<ConfigProperty> {
 
-    public PropertyPanel(String id, final IModel<ConfigProperty> model) {
+    public PropertyTextFieldPanel(String id, final IModel<ConfigProperty> model) {
         super(id, model);
         add(new Label("name"));
         AutoCompleteSettings settings = new AutoCompleteSettings();

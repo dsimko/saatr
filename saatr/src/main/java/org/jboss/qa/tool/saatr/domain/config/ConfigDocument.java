@@ -50,11 +50,23 @@ public class ConfigDocument implements DocumentWithID<ObjectId> {
     @NoArgsConstructor
     public static class ConfigProperty implements Serializable, Comparable<ConfigProperty> {
 
+        public static enum Component {
+            TEXT_FIELD, TEXT_AREA
+        }
+
         private String name;
 
         private String value;
 
+        private Component component = Component.TEXT_FIELD;
+
         private List<String> options = new ArrayList<>();
+
+        public ConfigProperty(String name, String value, List<String> options) {
+            this.name = name;
+            this.value = value;
+            this.options = options;
+        }
 
         @Override
         public boolean equals(Object obj) {
