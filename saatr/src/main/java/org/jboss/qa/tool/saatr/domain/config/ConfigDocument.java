@@ -9,6 +9,7 @@ import java.util.TreeSet;
 
 import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.domain.DocumentWithID;
+import org.jboss.qa.tool.saatr.domain.config.ConfigDocument.ConfigProperty.Component;
 import org.jboss.qa.tool.saatr.jaxb.config.Config;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -40,7 +41,13 @@ public class ConfigDocument implements DocumentWithID<ObjectId> {
         ConfigDocument configData = new ConfigDocument();
         configData.setName(name);
         config.getProperties().forEach(p -> {
-            configData.properties.add(new ConfigProperty(p.getName(), p.getValue(), p.getOptions()));
+            ConfigProperty configProperty = new ConfigProperty(p.getName(), p.getValue(), p.getOptions());
+            try {
+                configProperty.setComponent(Component.valueOf(p.getComponent()));
+            } catch (Exception e) {
+                configProperty.setComponent(Component.TEXT_FIELD);
+            }
+            configData.properties.add(configProperty);
         });
         return configData;
     }

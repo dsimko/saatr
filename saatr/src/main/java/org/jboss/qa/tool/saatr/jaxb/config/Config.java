@@ -47,6 +47,9 @@ public class Config implements Serializable {
         @XmlElementWrapper(name = "options")
         private List<String> options = new ArrayList<>();
 
+        @XmlAttribute(name = "component", required = false)
+        private String component;
+
         @Override
         public boolean equals(Object obj) {
             if (this == obj)
@@ -75,7 +78,8 @@ public class Config implements Serializable {
 
     public static Config create(ConfigDocument configData) {
         Config config = new Config();
-        configData.getProperties().forEach(p -> config.properties.add(new Property(p.getName(), p.getValue(), p.getOptions())));
+        configData.getProperties().forEach(
+                p -> config.properties.add(new Property(p.getName(), p.getValue(), p.getOptions(), String.valueOf(p.getComponent()))));
         return config;
     }
 }
