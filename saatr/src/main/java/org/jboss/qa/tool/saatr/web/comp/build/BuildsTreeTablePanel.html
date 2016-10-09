@@ -2,14 +2,19 @@
 <html xmlns:wicket>
 <body>
 	<wicket:panel>
-		<p>
-			<a class="btn btn-default btn-xs" wicket:id="expandAll">Expand All</a>
-			<a class="btn btn-default btn-xs" wicket:id="collapseAll">Collapse All</a>
-			<a class="btn btn-default btn-xs" wicket:id="selectAll">Select All</a> 
-			<a class="btn btn-default btn-xs" wicket:id="deselectAll">Deselect All</a>
-			Selected jobs <strong wicket:id="selectedCount"></strong>
-		</p>
-		<div class="tree-table" wicket:id="tree"></div>
+		<div class="row">
+			<div class="col-md-8">
+				<a class="btn btn-default btn-xs" wicket:id="expandAll">Expand All</a>
+				<a class="btn btn-default btn-xs" wicket:id="collapseAll">Collapse All</a>
+				<a class="btn btn-default btn-xs" wicket:id="selectAll">Select All</a> 
+				<a class="btn btn-default btn-xs" wicket:id="deselectAll">Deselect All</a>
+				Selected jobs <strong wicket:id="selectedCount"></strong>
+			</div>
+			<div class="col-md-4 text-right">
+				<a class="btn btn-default btn-xs" wicket:id="addColumn">Add Column</a>
+			</div>
+		</div>	
+		<div class="tree-table margin-top-10" wicket:id="tree"></div>
 		<br />
 	</wicket:panel>
 </body>

@@ -63,7 +63,7 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
     public BuildsTreeTablePanel(String id, IModel<BuildDocument> model, IModel<BuildFilter> filterModel) {
         super(id, model);
 
-        List<IColumn<BuildDocument, String>> columns = new ArrayList<>();
+        final List<IColumn<BuildDocument, String>> columns = new ArrayList<>();
         columns.add(new TreeColumn<BuildDocument, String>(Model.of("Job Name")));
         columns.add(new PropertyColumn<BuildDocument, String>(Model.of("Count"), "numberOfChildren"));
         columns.add(new PropertyColumn<BuildDocument, String>(Model.of("Build"), "buildNumber"));
@@ -184,6 +184,14 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
                 selectedParents.clear();
                 target.add(tree);
                 target.add(selectedCount);
+            }
+        });
+        add(new AjaxLink<Void>("addColumn") {
+
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                columns.add(columns.size() - 1, new VariableColumn("EAP ver.", "EAP_VERSION"));
+                target.add(tree);
             }
         });
     }
