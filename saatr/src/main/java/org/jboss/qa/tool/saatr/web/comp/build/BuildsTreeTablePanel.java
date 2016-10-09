@@ -66,7 +66,7 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
         List<IColumn<BuildDocument, String>> columns = new ArrayList<>();
         columns.add(new TreeColumn<BuildDocument, String>(Model.of("Job Name")));
         columns.add(new PropertyColumn<BuildDocument, String>(Model.of("Count"), "numberOfChildren"));
-        columns.add(new PropertyColumn<BuildDocument, String>(Model.of("Build Number"), "buildNumber"));
+        columns.add(new PropertyColumn<BuildDocument, String>(Model.of("Build"), "buildNumber"));
         columns.add(new StatsColumn());
         columns.add(new StatusColumn());
         final Label selectedCount = new Label("selectedCount", new PropertyModel<>(this, "selectedIds.size"));

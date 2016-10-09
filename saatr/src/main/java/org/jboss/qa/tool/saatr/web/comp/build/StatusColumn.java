@@ -49,7 +49,11 @@ public class StatusColumn extends PropertyColumn<BuildDocument, String> {
                 builder.append("blue16.png");
             }
             builder.append("\" /> ");
-            builder.append(status);
+            if (Status.SuccessWithFlakyError == status || Status.SuccessWithFlakyFailure == status) {
+                builder.append("Flaky");
+            } else {
+                builder.append(status);
+            }
             return builder.toString();
         }
     }
