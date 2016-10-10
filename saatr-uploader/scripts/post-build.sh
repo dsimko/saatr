@@ -20,7 +20,7 @@ echo "--------------UPLOAD-TESTS-RESULTS-TO-SAATR---------------"
 if [ -f testsuite.zip ] ; then
     rm testsuite.zip
 fi
-find . -path \*target/*reports/TEST-*.xml -exec zip testsuite.zip {} \;
+find . -name \TEST-*.xml -exec zip testsuite.zip {} \;
 command="curl \
   -u saatr:S44TR! \
   -F \"jobName=${JOB_NAME-testing_job}\" \
