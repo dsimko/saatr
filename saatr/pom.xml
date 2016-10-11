@@ -12,6 +12,10 @@
 	<artifactId>saatr</artifactId>
 	<packaging>jar</packaging>
 
+	<properties>
+		<start-class>org.jboss.qa.tool.saatr.SaatrApplication</start-class>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.wicket</groupId>
