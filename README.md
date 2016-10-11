@@ -16,7 +16,7 @@ SAATR consists from two parts:
 Web application is build with with Maven and Java 1.8. All data are stored in MongoDB.
 
 ##Usage
-1) Start MongoDB
+1) Start MongoDB.
 The easiest way is use docker e.g.:  
 ```sh
 # start mongo (data will be stored on host file system on /var/saatr/datadir)

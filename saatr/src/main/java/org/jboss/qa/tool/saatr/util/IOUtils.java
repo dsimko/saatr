@@ -49,7 +49,11 @@ public class IOUtils {
                     bos.write(buffer, 0, size);
                 }
                 bos.flush();
-                testsuites.add((Testsuite) jaxbUnmarshaller.unmarshal(new StringReader(new String(outputStream.toByteArray()))));
+                try {
+                    testsuites.add((Testsuite) jaxbUnmarshaller.unmarshal(new StringReader(new String(outputStream.toByteArray()))));
+                } catch (JAXBException e) {
+                    log.error("Error unmarshaling Testsuite", e);
+                }
             }
         }
         return testsuites;

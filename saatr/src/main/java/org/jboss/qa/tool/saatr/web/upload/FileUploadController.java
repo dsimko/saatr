@@ -37,7 +37,8 @@ public class FileUploadController {
     }
 
     @PostMapping("/UploadServlet")
-    public ResponseEntity<?> handleFileUpload(@RequestParam Map<String, String> allRequestParams, @RequestParam("testsuite") MultipartFile file) {
+    public ResponseEntity<?> handleFileUpload(@RequestParam Map<String, String> allRequestParams,
+            @RequestParam(name = "testsuite", required = false) MultipartFile file) {
         try {
             buildRepository.save(createBuild(allRequestParams, file));
             return new ResponseEntity<>(HttpStatus.OK);
@@ -49,7 +50,9 @@ public class FileUploadController {
 
     private BuildDocument createBuild(Map<String, String> allRequestParams, MultipartFile file) throws Exception {
         BuildDocument build = new BuildDocument();
-        buildRepository.fillBuildByTestsuites(IOUtils.unzipAndUnmarshalTestsuite(file.getInputStream()), build);
+        if (file != null) {
+            buildRepository.fillBuildByTestsuites(IOUtils.unzipAndUnmarshalTestsuite(file.getInputStream()), build);
+        }
         allRequestParams.entrySet().forEach(entry -> {
             final String name = entry.getKey();
             final String value = entry.getValue();
