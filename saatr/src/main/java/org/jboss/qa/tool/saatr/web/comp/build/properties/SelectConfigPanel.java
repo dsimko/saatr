@@ -67,7 +67,9 @@ class SelectConfigPanel<T extends DocumentWithProperties<?>> extends GenericPane
 
     private void replaceWithFormPanel(final IModel<ConfigDocument> configModel) {
         configRepository.prefillValues(configModel.getObject(), getModelObject());
-        propertiesFormPanel.replaceWith(new PropertiesFormPanel(propertiesFormPanel.getId(), configModel));
+        Panel formPanel = new PropertiesFormPanel(propertiesFormPanel.getId(), configModel);
+        propertiesFormPanel.replaceWith(formPanel);
+        propertiesFormPanel = formPanel;
         dropDownChoiceVisible = false;
     }
 

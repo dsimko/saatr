@@ -63,15 +63,15 @@ public class FileUploadController {
                     break;
                 }
                 case BUILD_NUMBER_NAME_PARAM_NAME: {
-                    build.setBuildNumber(Long.valueOf(value));
+                    build.setBuildNumber(toLong(value));
                     break;
                 }
                 case TIMESTAMP_NAME_PARAM_NAME: {
-                    build.setTimestamp(Long.valueOf(value));
+                    build.setTimestamp(toLong(value));
                     break;
                 }
                 case DURATION_NAME_PARAM_NAME: {
-                    build.setDuration(Long.valueOf(value));
+                    build.setDuration(toLong(value));
                     break;
                 }
                 default:
@@ -79,6 +79,14 @@ public class FileUploadController {
             }
         });
         return build;
+    }
+
+    private Long toLong(String value) {
+        try {
+            return Long.valueOf(value);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
 }
