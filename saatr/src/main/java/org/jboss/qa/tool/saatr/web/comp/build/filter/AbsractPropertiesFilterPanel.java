@@ -14,6 +14,8 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RefreshingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildFilter.PropertyDto;
 
 import lombok.AllArgsConstructor;
@@ -22,13 +24,16 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * @author dsimko@redhat.com
  */
-@SuppressWarnings("serial")
 @Slf4j
+@SuppressWarnings("serial")
 public abstract class AbsractPropertiesFilterPanel extends GenericPanel<BuildFilter> {
 
     private List<String> variableNames = new ArrayList<>();
 
     private List<String> variableValues = new ArrayList<>();
+
+    @SpringBean
+    protected BuildRepository buildRepository;
 
     public AbsractPropertiesFilterPanel(String id, IModel<BuildFilter> model) {
         super(id, model);

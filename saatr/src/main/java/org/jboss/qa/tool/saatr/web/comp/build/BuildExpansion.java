@@ -51,33 +51,38 @@ public class BuildExpansion implements Set<BuildDocument>, Serializable {
     }
 
     @Override
-    public boolean add(BuildDocument foo) {
-        if (inverse) {
-            return ids.remove(foo.getJobName());
+    public boolean add(BuildDocument build) {
+        if (build == null) {
+            return false;
+        } else if (inverse) {
+            return ids.remove(build.getJobName());
         } else {
-            return ids.add(foo.getJobName());
+            return ids.add(build.getJobName());
         }
     }
 
     @Override
     public boolean remove(Object o) {
-        BuildDocument foo = (BuildDocument) o;
+        BuildDocument build = (BuildDocument) o;
 
         if (inverse) {
-            return ids.add(foo.getJobName());
+            return ids.add(build.getJobName());
         } else {
-            return ids.remove(foo.getJobName());
+            return ids.remove(build.getJobName());
         }
     }
 
     @Override
     public boolean contains(Object o) {
-        BuildDocument foo = (BuildDocument) o;
+        if (o == null) {
+            return false;
+        }
+        BuildDocument build = (BuildDocument) o;
 
         if (inverse) {
-            return !ids.contains(foo.getJobName());
+            return !ids.contains(build.getJobName());
         } else {
-            return ids.contains(foo.getJobName());
+            return ids.contains(build.getJobName());
         }
     }
 

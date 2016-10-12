@@ -322,7 +322,10 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
 
         @Override
         public boolean hasChildren(BuildDocument node) {
-            if (node.getJobName().contains("/")) {
+            if (node == null) {
+                // this is because Junction component relies on it in 'isEnabled' method
+                return true;
+            } else if (node.getJobName().contains("/")) {
                 return node.getNumberOfChildren() != null && node.getNumberOfChildren() > 1;
             } else {
                 return node.getNumberOfChildren() > 0;
