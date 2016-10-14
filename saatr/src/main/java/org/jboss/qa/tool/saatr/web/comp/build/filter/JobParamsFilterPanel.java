@@ -4,7 +4,8 @@ package org.jboss.qa.tool.saatr.web.comp.build.filter;
 import java.util.List;
 
 import org.apache.wicket.model.IModel;
-import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildFilter.PropertyDto;
+import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
+import org.jboss.qa.tool.saatr.domain.build.BuildFilter.PropertyDto;
 
 @SuppressWarnings("serial")
 public class JobParamsFilterPanel extends AbsractPropertiesFilterPanel {

@@ -12,8 +12,8 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
+import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapTabbedPanel;
-import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildFilter;
 import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildsFilterPanel;
 
 /**
@@ -26,7 +26,7 @@ public class BuildsPanel extends GenericPanel<BuildDocument> {
 
     public BuildsPanel(String id, IModel<BuildDocument> model) {
         super(id, model);
-        add(new BuildsFilterPanel("filter", filter, model));
+        add(new BuildsFilterPanel("filter", filter));
         List<ITab> tabs = new ArrayList<ITab>();
         tabs.add(new AbstractTab(new AbstractReadOnlyModel<String>() {
 

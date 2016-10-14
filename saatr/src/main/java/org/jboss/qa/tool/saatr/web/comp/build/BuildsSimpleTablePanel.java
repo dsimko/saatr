@@ -15,10 +15,10 @@ import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
+import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 import org.jboss.qa.tool.saatr.web.comp.DocumentModel;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapTable;
-import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildFilter;
 
 /**
  * @author dsimko@redhat.com

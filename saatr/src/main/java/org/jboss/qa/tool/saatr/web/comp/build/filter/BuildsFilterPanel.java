@@ -11,8 +11,11 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.Status;
+import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
+import org.jboss.qa.tool.saatr.repo.build.BuildFilterRepository;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildExpansion;
 
 /**
@@ -21,13 +24,21 @@ import org.jboss.qa.tool.saatr.web.comp.build.BuildExpansion;
 @SuppressWarnings("serial")
 public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
 
-    public BuildsFilterPanel(String id, IModel<BuildFilter> model, final IModel<BuildDocument> pageModel) {
+    private static final String FILTER_PARAM_NAME = "filter";
+
+    @SpringBean
+    private BuildFilterRepository buildFilterRepository;
+
+    public BuildsFilterPanel(String id, IModel<BuildFilter> model) {
         super(id, model);
         Form<BuildFilter> form = new Form<BuildFilter>("form", new CompoundPropertyModel<BuildFilter>(model)) {
 
             @Override
             protected void onSubmit() {
-                onFilterChanged(pageModel);
+                PageParameters params = getPage().getPageParameters();
+                BuildFilter buildFilter = buildFilterRepository.save(getModelObject());
+                params.set(FILTER_PARAM_NAME, buildFilter.getId());
+                setResponsePage(getPage().getClass(), params);
             }
         };
         form.add(new TextField<>("jobName"));
@@ -42,15 +53,22 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
 
             @Override
             public void onClick() {
-                BuildsFilterPanel.this.setModelObject(new BuildFilter());
-                onFilterChanged(pageModel);
+                BuildExpansion.get().collapseAll();
+                setResponsePage(getPage().getClass());
             }
         });
         add(form);
     }
 
-    private void onFilterChanged(IModel<BuildDocument> pageModel) {
-        pageModel.setObject(null);
-        BuildExpansion.get().collapseAll();
+    @Override
+    protected void onConfigure() {
+        super.onConfigure();
+        String filterId = getPage().getPageParameters().get(FILTER_PARAM_NAME).toString(null);
+        if (filterId != null) {
+            BuildFilter buildFilter = buildFilterRepository.findAndUpdateLastUsed(filterId);
+            if (buildFilter != null) {
+                setModelObject(buildFilter);
+            }
+        }
     }
 }

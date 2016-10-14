@@ -8,11 +8,11 @@ import java.util.UUID;
 
 import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
+import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
 import org.jboss.qa.tool.saatr.domain.build.TestcaseDocument;
 import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument;
 import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite;
-import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildFilter;
 
 /**
  * The interface for repository functionality that will be implemented manually.

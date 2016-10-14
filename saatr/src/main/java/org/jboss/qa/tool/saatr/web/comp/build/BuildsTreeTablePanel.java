@@ -37,10 +37,10 @@ import org.apache.wicket.util.visit.IVisit;
 import org.apache.wicket.util.visit.IVisitor;
 import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
+import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 import org.jboss.qa.tool.saatr.web.comp.DocumentModel;
-import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildFilter;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

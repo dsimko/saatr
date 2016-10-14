@@ -15,8 +15,9 @@ import org.apache.wicket.markup.repeater.RefreshingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
+import org.jboss.qa.tool.saatr.domain.build.BuildFilter.PropertyDto;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
-import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildFilter.PropertyDto;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

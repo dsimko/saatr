@@ -1,12 +1,15 @@
 
-package org.jboss.qa.tool.saatr.web.comp.build.filter;
+package org.jboss.qa.tool.saatr.domain.build;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.Status;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +17,17 @@ import lombok.NoArgsConstructor;
 
 @Data
 @SuppressWarnings("serial")
+@Document(collection = BuildFilter.COLLECTION_NAME)
 public class BuildFilter implements Serializable, Cloneable {
+
+    public static final String COLLECTION_NAME = "buildFilters";
+
+    @Id
+    private ObjectId id;
+    
+    private Date created = new Date();
+    
+    private Date lastUsed = new Date();
 
     private Long buildNumber;
 

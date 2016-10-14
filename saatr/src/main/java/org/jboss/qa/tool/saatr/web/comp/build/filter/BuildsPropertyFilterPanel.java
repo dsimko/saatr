@@ -18,10 +18,10 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.jboss.qa.tool.saatr.domain.build.BuildFilter.PropertyDto;
+import org.jboss.qa.tool.saatr.domain.build.BuildFilter.PropertyDto.Operation;
 import org.jboss.qa.tool.saatr.web.comp.build.filter.AbsractPropertiesFilterPanel.AddPropertyEvent;
 import org.jboss.qa.tool.saatr.web.comp.build.filter.AbsractPropertiesFilterPanel.RemovePropertyEvent;
-import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildFilter.PropertyDto;
-import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildFilter.PropertyDto.Operation;
 
 /**
  * @author dsimko@redhat.com
