@@ -24,9 +24,9 @@ public class BuildFilter implements Serializable, Cloneable {
 
     @Id
     private ObjectId id;
-    
+
     private Date created = new Date();
-    
+
     private Date lastUsed = new Date();
 
     private Long buildNumber;

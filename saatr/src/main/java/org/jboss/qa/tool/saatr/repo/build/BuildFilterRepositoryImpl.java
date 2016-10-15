@@ -4,11 +4,13 @@ package org.jboss.qa.tool.saatr.repo.build;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 import java.util.Date;
+import java.util.Iterator;
 
 import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -39,5 +41,14 @@ class BuildFilterRepositoryImpl implements BuildFilterRepositoryCustom {
             template.updateFirst(query, Update.update("lastUsed", new Date()), BuildDocument.class);
         }
         return buildFilter;
+    }
+
+    @Override
+    public Iterator<BuildFilter> query(long first, long count) {
+        final Query query = new Query();
+        query.limit((int) count);
+        query.skip((int) first);
+        query.with(new Sort(Sort.Direction.DESC, "lastUsed"));
+        return template.find(query, BuildFilter.class).iterator();
     }
 }

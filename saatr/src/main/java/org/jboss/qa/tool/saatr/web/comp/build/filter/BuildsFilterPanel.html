@@ -4,38 +4,46 @@
 	<wicket:panel>
 		<div class="panel panel-default">
   			<div class="panel-body">
-				<form wicket:id="form" class="form-inline" role="form">
-					<div class="col-md-12">
-						<div class="form-group form-group-sm">
-							<label>Job Name</label> 
-							<input type="text" class="form-control input-sm" wicket:id="jobName" placeholder="Job Name">
-						</div>
-						<div class="form-group form-group-sm">
-							<label>Build Number</label> 
-							<input type="text" class="form-control input-sm" wicket:id="buildNumber" placeholder="Build Number">
-						</div>
-						<div class="form-group form-group-sm">
-							<label>Status</label> 
-							<select wicket:id="status" class="form-control input-sm"></select>
-						</div>
+  				<div class="row">
+	  				<div class="col-md-10">
+						<form wicket:id="form" class="form-inline" role="form">
+							<div class="col-md-12">
+								<div class="form-group form-group-sm">
+									<label>Job Name</label> 
+									<input type="text" class="form-control input-sm" wicket:id="jobName" placeholder="Job Name">
+								</div>
+								<div class="form-group form-group-sm">
+									<label>Build Number</label> 
+									<input type="text" class="form-control input-sm" wicket:id="buildNumber" placeholder="Build Number">
+								</div>
+								<div class="form-group form-group-sm">
+									<label>Status</label> 
+									<select wicket:id="status" class="form-control input-sm"></select>
+								</div>
+							</div>
+							<div class="col-md-12 margin-top-10">
+								<div class="form-group form-group-sm">
+									<label>Created From</label> 
+									<span wicket:id="createdFrom"></span>
+								</div>
+								<div class="form-group form-group-sm">
+									<label>Created To</label> 
+									<span wicket:id="createdTo"></span>
+								</div>
+							</div>
+							<div wicket:id="jobParams"></div>
+							<div wicket:id="systemParams"></div>
+							<div wicket:id="customProperties"></div>
+							<div class="col-md-12 margin-top-10 text-right">
+								<a wicket:id="clear" class="btn btn-default btn-sm">Clear</a> <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+							</div>
+						</form>
 					</div>
-					<div class="col-md-12 margin-top-10">
-						<div class="form-group form-group-sm">
-							<label>Created From</label> 
-							<span wicket:id="createdFrom"></span>
-						</div>
-						<div class="form-group form-group-sm">
-							<label>Created To</label> 
-							<span wicket:id="createdTo"></span>
-						</div>
+					<div class="col-md-2">
+						<span>Popular filters</span>
+						<table wicket:id="table" class="table table-hover small"></table>
 					</div>
-					<div wicket:id="jobParams"></div>
-					<div wicket:id="systemParams"></div>
-					<div wicket:id="customProperties"></div>
-					<div class="col-md-12 margin-top-10 text-right">
-						<a wicket:id="clear" class="btn btn-default btn-sm">Clear</a> <button type="submit" class="btn btn-primary btn-sm">Filter</button>
-					</div>
-				</form>
+				</div>
 			</div>
 		</div>
 	</wicket:panel>
