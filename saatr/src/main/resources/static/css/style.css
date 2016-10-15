@@ -7,6 +7,10 @@ body {
 	margin-bottom: 20px;
 }
 
+.clicable {
+	cursor: pointer;
+}
+
 div.wicket-aa {
 	font-family: "Lucida Grande", "Lucida Sans Unicode", Tahoma, Verdana;
 	font-size: 12px;
@@ -62,4 +66,13 @@ div.wicket-aa ul li.selected {
 
 .tree-table table tr.odd {
 	background-color: #EEEEEE;
+}
+
+table.small {
+	font-size: 10px;
+}
+
+table.small>tbody>tr>td {
+	padding-bottom: 0;
+	padding-top: 0;
 }

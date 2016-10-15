@@ -8,6 +8,7 @@ import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
 import org.jboss.qa.tool.saatr.web.comp.DocumentModel;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapTabbedPanel;
@@ -24,7 +25,18 @@ public class BuildPage extends BasePage<BuildDocument> {
 
     public BuildPage() {
         super(new DocumentModel<BuildDocument>(BuildDocument.class, null));
-        BuildExpansion.get().collapseAll();
+        initPage(null);
+    }
+
+    public BuildPage(PageParameters parameters) {
+        super(new DocumentModel<BuildDocument>(BuildDocument.class, null));
+        initPage(parameters);
+    }
+
+    private void initPage(PageParameters parameters) {
+        if (parameters == null || parameters.isEmpty()) {
+            BuildExpansion.get().collapseAll();
+        }
         add(new BuildsPanel("buildsPanel", getModel()));
         List<ITab> tabs = new ArrayList<ITab>();
         tabs.add(new AbstractTab(new AbstractReadOnlyModel<String>() {

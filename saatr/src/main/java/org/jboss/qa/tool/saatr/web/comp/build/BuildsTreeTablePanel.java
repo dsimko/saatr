@@ -24,6 +24,7 @@ import org.apache.wicket.extensions.markup.html.repeater.tree.table.TreeColumn;
 import org.apache.wicket.extensions.markup.html.repeater.tree.theme.HumanTheme;
 import org.apache.wicket.injection.Injector;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.markup.repeater.Item;
@@ -32,6 +33,7 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.visit.IVisit;
 import org.apache.wicket.util.visit.IVisitor;
@@ -50,6 +52,8 @@ import lombok.Data;
  */
 @SuppressWarnings("serial")
 public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
+
+    private static final String BUILD_PARAM_NAME = "build";
 
     @SpringBean
     private BuildRepository buildRepository;
@@ -116,16 +120,13 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
 
                     @Override
                     protected MarkupContainer newLinkComponent(String id, IModel<BuildDocument> model) {
-                        BuildDocument foo = model.getObject();
-                        if (tree.getProvider().hasChildren(foo)) {
+                        BuildDocument build = model.getObject();
+                        if (tree.getProvider().hasChildren(build)) {
                             return super.newLinkComponent(id, model);
                         } else {
-                            return new Link<BuildDocument>(id, model) {
-
-                                public void onClick() {
-                                    BuildsTreeTablePanel.this.setModelObject(getModelObject());
-                                }
-                            };
+                            PageParameters parameters = new PageParameters(BuildsTreeTablePanel.this.getPage().getPageParameters());
+                            parameters.set(BUILD_PARAM_NAME, build.getId());
+                            return new BookmarkablePageLink<>(id, tree.getPage().getClass(), parameters);
                         }
                     }
                 };
@@ -194,6 +195,18 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
                 target.add(tree);
             }
         });
+    }
+
+    @Override
+    protected void onConfigure() {
+        super.onConfigure();
+        String buildId = getPage().getPageParameters().get(BUILD_PARAM_NAME).toString(null);
+        if (buildId != null) {
+            BuildDocument build = buildRepository.findOne(new ObjectId(buildId));
+            if (build != null) {
+                setModelObject(build);
+            }
+        }
     }
 
     @Override
