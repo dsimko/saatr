@@ -3,12 +3,12 @@
 <body>
 	<wicket:panel>
 		<div wicket:id="panel" class="panel">
-			<div class="panel-heading sub-panel-heading">
-				<h3 class="panel-title">
+			<div wicket:id="head" class="panel-heading sub-panel-heading">
+				<h3 class="panel-title clicable">
 					<wicket:container wicket:id="name"></wicket:container>
 					<span class="pull-right">
-						<a wicket:id="collapse"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></a>
-						<a wicket:id="expand"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+						<span wicket:id="collapse" class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+						<span wicket:id="expand" class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 					</span>	
 				</h3>
 			</div>
