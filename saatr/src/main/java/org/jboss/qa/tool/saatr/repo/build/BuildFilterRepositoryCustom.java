@@ -13,7 +13,7 @@ import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 interface BuildFilterRepositoryCustom {
 
     BuildFilter findAndUpdateLastUsed(String id);
-    
+
     Iterator<BuildFilter> query(long first, long count);
 
 }

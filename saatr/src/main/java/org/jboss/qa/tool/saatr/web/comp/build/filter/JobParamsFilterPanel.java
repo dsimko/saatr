@@ -18,7 +18,7 @@ public class JobParamsFilterPanel extends AbsractPropertiesFilterPanel {
     protected String getTitle() {
         return "Job param name";
     }
-    
+
     @Override
     protected List<PropertyDto> getProperties() {
         return getModelObject().getVariables();

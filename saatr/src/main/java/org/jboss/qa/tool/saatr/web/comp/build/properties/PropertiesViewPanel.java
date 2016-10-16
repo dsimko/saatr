@@ -44,6 +44,7 @@ class PropertiesViewPanel<T extends DocumentWithProperties<?>> extends GenericPa
         FeedbackPanel feedbackPanel = new BootstrapFeedbackPanel("feedback");
         add(feedbackPanel.setOutputMarkupId(true));
         add(new AjaxLink<T>("copyToAllSelected", model) {
+
             @Override
             public void onClick(AjaxRequestTarget target) {
                 send(getPage(), Broadcast.DEPTH, new CopyToAllSelectedEvent(getModelObject().getProperties(), feedbackPanel));

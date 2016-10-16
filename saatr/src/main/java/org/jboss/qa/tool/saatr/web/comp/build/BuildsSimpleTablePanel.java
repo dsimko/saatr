@@ -42,7 +42,7 @@ public class BuildsSimpleTablePanel extends GenericPanel<BuildDocument> {
         };
         add(dataTable);
     }
-    
+
     private static class BuildProvider extends SortableDataProvider<BuildDocument, String> {
 
         @Inject

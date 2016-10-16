@@ -36,7 +36,7 @@ public class LongTextLabel extends GenericPanel<String> {
         super.onConfigure();
         if (StringUtils.isEmpty(getModelObject())) {
             setVisible(false);
-        }else{
+        } else {
             if (getModelObject().length() > MAX_PREVIEW_LENGTH) {
                 previewModel.setObject(getModelObject().substring(0, MAX_PREVIEW_LENGTH));
                 linkLabelModel.setObject("See full output");

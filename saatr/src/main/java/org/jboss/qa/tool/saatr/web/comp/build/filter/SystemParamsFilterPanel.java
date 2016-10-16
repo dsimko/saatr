@@ -18,7 +18,7 @@ public class SystemParamsFilterPanel extends AbsractPropertiesFilterPanel {
     protected String getTitle() {
         return "System param name";
     }
-    
+
     @Override
     protected List<PropertyDto> getProperties() {
         return getModelObject().getSystemParams();

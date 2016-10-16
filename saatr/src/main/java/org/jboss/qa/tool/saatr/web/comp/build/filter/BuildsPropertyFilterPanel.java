@@ -29,7 +29,8 @@ import org.jboss.qa.tool.saatr.web.comp.build.filter.AbsractPropertiesFilterPane
 @SuppressWarnings("serial")
 abstract class BuildsPropertyFilterPanel extends GenericPanel<PropertyDto> {
 
-    public BuildsPropertyFilterPanel(String id, String title, IModel<PropertyDto> model, List<String> variableNames, List<String> variableValues, boolean buttonsVisible) {
+    public BuildsPropertyFilterPanel(String id, String title, IModel<PropertyDto> model, List<String> variableNames, List<String> variableValues,
+            boolean buttonsVisible) {
         super(id, new CompoundPropertyModel<>(model));
         add(new Label("title", title));
         add(new DropDownChoice<>("name", variableNames).setNullValid(true).add(new OnChangeAjaxBehavior() {
@@ -66,7 +67,7 @@ abstract class BuildsPropertyFilterPanel extends GenericPanel<PropertyDto> {
             public boolean isVisible() {
                 return buttonsVisible;
             }
-            
+
             @Override
             public void onClick(AjaxRequestTarget target) {
                 send(this, Broadcast.BUBBLE, new AddPropertyEvent(target));
@@ -78,7 +79,7 @@ abstract class BuildsPropertyFilterPanel extends GenericPanel<PropertyDto> {
             public boolean isVisible() {
                 return buttonsVisible;
             }
-            
+
             @Override
             public void onClick(AjaxRequestTarget target) {
                 send(this, Broadcast.BUBBLE, new RemovePropertyEvent(target));
@@ -86,7 +87,7 @@ abstract class BuildsPropertyFilterPanel extends GenericPanel<PropertyDto> {
         });
 
     }
-    
+
     protected abstract Iterable<String> findDistinctValues(String name);
 
 }

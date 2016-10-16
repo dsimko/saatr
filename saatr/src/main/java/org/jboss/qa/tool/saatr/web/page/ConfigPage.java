@@ -55,7 +55,7 @@ public class ConfigPage extends BasePage<ConfigDocument> {
                 getModel()) {
 
             @Override
-            protected void selectRow(ConfigDocument configData) {   
+            protected void selectRow(ConfigDocument configData) {
                 setModelObject(configData);
             }
         };
@@ -100,12 +100,12 @@ public class ConfigPage extends BasePage<ConfigDocument> {
             }
         });
         add(new BootstrapButton<ConfigDocument>("delete", getModel()) {
-            
+
             @Override
             public boolean isEnabled() {
                 return getModelObject() != null;
             }
-            
+
             @Override
             public void onClick() {
                 configRepository.delete(getModelObject());
