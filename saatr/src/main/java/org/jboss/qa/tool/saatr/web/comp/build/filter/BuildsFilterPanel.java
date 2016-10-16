@@ -11,7 +11,6 @@ import org.apache.wicket.ajax.attributes.AjaxRequestAttributes;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.extensions.yui.calendar.DateTimeField;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -70,7 +69,7 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
         });
         add(form);
         List<IColumn<BuildFilter, String>> columns = new ArrayList<IColumn<BuildFilter, String>>();
-        columns.add(new PropertyColumn<BuildFilter, String>(new Model<String>("Name"), "lastUsed"));
+        columns.add(new FilterColumn());
         DataTable<BuildFilter, String> dataTable = new DataTable<BuildFilter, String>("table", columns, new BuildFilterProvider(), 10) {
 
             @Override

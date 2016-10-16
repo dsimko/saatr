@@ -8,9 +8,9 @@ import javax.inject.Inject;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.injection.Injector;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.repo.build.BuildFilterRepository;
+import org.jboss.qa.tool.saatr.web.comp.DocumentModel;
 
 @SuppressWarnings("serial")
 public class BuildFilterProvider extends SortableDataProvider<BuildFilter, String> {
@@ -34,6 +34,6 @@ public class BuildFilterProvider extends SortableDataProvider<BuildFilter, Strin
 
     @Override
     public IModel<BuildFilter> model(BuildFilter buildFilter) {
-        return new Model<BuildFilter>(buildFilter);
+        return new DocumentModel<BuildFilter>(buildFilter);
     }
 }
