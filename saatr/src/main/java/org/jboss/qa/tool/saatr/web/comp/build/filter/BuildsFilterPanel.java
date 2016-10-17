@@ -1,14 +1,19 @@
 
 package org.jboss.qa.tool.saatr.web.comp.build.filter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.attributes.AjaxRequestAttributes;
 import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.event.IEvent;
+import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.yui.calendar.DateTimeField;
@@ -29,6 +34,9 @@ import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.repo.build.BuildFilterRepository;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildExpansion;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 /**
  * @author dsimko@redhat.com
  */
@@ -46,7 +54,18 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
 
             @Override
             protected void onSubmit() {
-                BuildFilter buildFilter = buildFilterRepository.save(getModelObject());
+                BuildFilter buildFilter = getModelObject();
+                if (buildFilter.getId() == null) {
+                    buildFilter = buildFilterRepository.save(buildFilter);
+                } else {
+                    BuildFilter original = buildFilterRepository.findOne(buildFilter.getId());
+                    if (!buildFilter.equals(original)) {
+                        buildFilter.setId(null);
+                        buildFilter.setCreated(new Date());
+                        buildFilter.setLastUsed(new Date());
+                        buildFilter = buildFilterRepository.save(buildFilter);
+                    }
+                }
                 changeFilter(buildFilter);
             }
 
@@ -70,7 +89,14 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
         add(form);
         List<IColumn<BuildFilter, String>> columns = new ArrayList<IColumn<BuildFilter, String>>();
         columns.add(new FilterColumn());
-        DataTable<BuildFilter, String> dataTable = new DataTable<BuildFilter, String>("table", columns, new BuildFilterProvider(), 10) {
+        columns.add(new AbstractColumn<BuildFilter, String>(Model.of("")) {
+
+            @Override
+            public void populateItem(Item<ICellPopulator<BuildFilter>> cellItem, String componentId, IModel<BuildFilter> rowModel) {
+                cellItem.add(new DeleteColumnPanel(componentId, rowModel));
+            }
+        });
+        DataTable<BuildFilter, String> dataTable = new DataTable<BuildFilter, String>("table", columns, new BuildFilterProvider(), 5) {
 
             @Override
             protected Item<BuildFilter> newRowItem(String id, int index, final IModel<BuildFilter> model) {
@@ -97,8 +123,14 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
                 return row;
             }
 
+            @Override
+            public void onEvent(IEvent<?> event) {
+                if (event.getPayload() instanceof RefreshTableEvent) {
+                    ((RefreshTableEvent) event.getPayload()).getTarget().add(this);
+                }
+            }
         };
-        add(dataTable);
+        add(dataTable.setOutputMarkupId(true));
 
     }
 
@@ -121,4 +153,10 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
         setResponsePage(getPage().getClass(), params);
     }
 
+    @Data
+    @AllArgsConstructor
+    static class RefreshTableEvent implements Serializable {
+
+        AjaxRequestTarget target;
+    }
 }

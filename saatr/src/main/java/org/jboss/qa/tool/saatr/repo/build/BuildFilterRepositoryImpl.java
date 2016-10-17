@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.Iterator;
 
 import org.bson.types.ObjectId;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -38,7 +37,7 @@ class BuildFilterRepositoryImpl implements BuildFilterRepositoryCustom {
         Query query = Query.query(where("id").is(new ObjectId(id)));
         BuildFilter buildFilter = template.findOne(query, BuildFilter.class);
         if (buildFilter != null) {
-            template.updateFirst(query, Update.update("lastUsed", new Date()), BuildDocument.class);
+            template.updateFirst(query, Update.update("lastUsed", new Date()), BuildFilter.class);
         }
         return buildFilter;
     }

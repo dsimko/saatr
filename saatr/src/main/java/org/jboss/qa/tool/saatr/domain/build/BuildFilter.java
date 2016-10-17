@@ -14,11 +14,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @SuppressWarnings("serial")
 @Document(collection = BuildFilter.COLLECTION_NAME)
+@EqualsAndHashCode(exclude="lastUsed")
 public class BuildFilter implements DocumentWithID<ObjectId>, Cloneable {
 
     public static final String COLLECTION_NAME = "buildFilters";
