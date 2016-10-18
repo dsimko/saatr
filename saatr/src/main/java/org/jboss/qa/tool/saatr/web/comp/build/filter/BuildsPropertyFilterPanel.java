@@ -37,8 +37,7 @@ abstract class BuildsPropertyFilterPanel extends GenericPanel<PropertyDto> {
 
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-                variableValues.clear();
-                findDistinctValues(getModelObject().getName()).forEach(val -> variableValues.add(val));
+                initVariableValues(variableValues);
             }
 
         }));
@@ -50,6 +49,9 @@ abstract class BuildsPropertyFilterPanel extends GenericPanel<PropertyDto> {
             @Override
             protected Iterator<String> getChoices(String input) {
                 List<String> choices = new ArrayList<>(10);
+                if (variableValues.isEmpty() && BuildsPropertyFilterPanel.this.getModelObject().getName() != null) {
+                    initVariableValues(variableValues);
+                }
                 for (final String option : variableValues) {
                     if (option != null && option.toLowerCase().startsWith(input.toLowerCase())) {
                         choices.add(option);
@@ -60,7 +62,13 @@ abstract class BuildsPropertyFilterPanel extends GenericPanel<PropertyDto> {
                 }
                 return choices.iterator();
             }
-        });
+        }.add(new OnChangeAjaxBehavior() {
+
+            @Override
+            protected void onUpdate(AjaxRequestTarget target) {
+                // model is updated automatically
+            }
+        }));
         add(new AjaxLink<PropertyDto>("add", model) {
 
             @Override
@@ -86,6 +94,11 @@ abstract class BuildsPropertyFilterPanel extends GenericPanel<PropertyDto> {
             }
         });
 
+    }
+
+    private void initVariableValues(List<String> variableValues) {
+        variableValues.clear();
+        findDistinctValues(getModelObject().getName()).forEach(val -> variableValues.add(val));
     }
 
     protected abstract Iterable<String> findDistinctValues(String name);
