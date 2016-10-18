@@ -4,12 +4,14 @@ package org.jboss.qa.tool.saatr.web.comp.build.properties;
 import java.io.Serializable;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.event.Broadcast;
 import org.apache.wicket.event.IEvent;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.IModel;
 import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
+import org.jboss.qa.tool.saatr.web.comp.build.filter.CustomPropertiesFilterPanel.RefreshCustomPropertiesFilterEvent;
 
 import lombok.Data;
 
@@ -56,6 +58,7 @@ public class PropertiesPanel<T extends DocumentWithProperties<?>> extends Generi
         if (payload instanceof RefreshPropertiesPanelEvent) {
             RefreshPropertiesPanelEvent eventPayload = (RefreshPropertiesPanelEvent) payload;
             eventPayload.getTarget().add(panel);
+            send(getPage(), Broadcast.DEPTH, new RefreshCustomPropertiesFilterEvent(eventPayload.getTarget()));
         }
     }
 

@@ -80,8 +80,10 @@ public abstract class AbsractPropertiesFilterPanel extends GenericPanel<BuildFil
         }
     }
 
-    private void initVariables() {
+    protected void initVariables() {
         long start = System.currentTimeMillis();
+        variableNames.clear();
+        variableValues.clear();
         getPropertyNames().forEach(name -> variableNames.add(name));
         getPropertyValues(null).forEach(val -> variableValues.add(val));
         log.debug("Loading variables filter took {} ms.", System.currentTimeMillis() - start);
