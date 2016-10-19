@@ -50,6 +50,8 @@ public class BuildFilter implements DocumentWithID<ObjectId>, Cloneable {
 
     private final List<PropertyDto> properties = new ArrayList<>();
 
+    private String errorMessage;
+    
     @Data
     @NoArgsConstructor
     @AllArgsConstructor

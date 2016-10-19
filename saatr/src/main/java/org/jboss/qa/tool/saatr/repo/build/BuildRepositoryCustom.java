@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
 import org.jboss.qa.tool.saatr.domain.build.Build;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
@@ -57,4 +58,5 @@ interface BuildRepositoryCustom {
 
     Iterator<? extends Build> getChildren(Build parent, BuildFilter filter);
 
+    ObjectId findSimilar(String errorMessage);
 }

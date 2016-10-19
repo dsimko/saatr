@@ -43,7 +43,7 @@ import lombok.Data;
 @SuppressWarnings("serial")
 public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
 
-    private static final String FILTER_PARAM_NAME = "filter";
+    public static final String FILTER_PARAM_NAME = "filter";
 
     @SpringBean
     private BuildFilterRepository buildFilterRepository;

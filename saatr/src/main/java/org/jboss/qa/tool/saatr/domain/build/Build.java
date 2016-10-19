@@ -214,7 +214,7 @@ public class Build implements DocumentWithProperties<ObjectId>, DocumentWithID<O
 
         private static final int TEST_SUITE_STATISTICS_WIDTH = 120;
 
-        private static final int TEST_CASE_STATISTICS_WIDTH = 170;
+        private static final int TEST_CASE_STATISTICS_WIDTH = 175;
 
         private static final int STATUS_WIDTH = 80;
 

@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 import org.bson.BsonDocument;
 import org.bson.BsonString;
+import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
 import org.jboss.qa.tool.saatr.domain.build.Build;
 import org.jboss.qa.tool.saatr.domain.build.Build.Status;
@@ -321,6 +322,9 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
         if (!filter.getProperties().isEmpty()) {
             addPropertiesCriteria(filter.getProperties(), convertoToBson, criterias, "properties");
         }
+        if (filter.getErrorMessage() != null) {
+            criterias.add(where("testsuites.testcases.error.message").is(filter.getErrorMessage()));
+        }
         Criteria criteria = new Criteria();
         if (!criterias.isEmpty()) {
             criteria.andOperator(criterias.toArray(new Criteria[0]));
@@ -349,4 +353,10 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
         }
     }
 
+    public ObjectId findSimilar(String errorMessage) {
+        BuildFilter buildFilter = new BuildFilter();
+        buildFilter.setErrorMessage(errorMessage);
+        template.save(buildFilter);
+        return buildFilter.getId();
+    }
 }
