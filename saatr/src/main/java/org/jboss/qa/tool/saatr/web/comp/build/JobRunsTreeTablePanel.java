@@ -12,6 +12,7 @@ import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.core.request.handler.IPartialPageRequestHandler;
 import org.apache.wicket.event.IEvent;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.HeadersToolbar;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
@@ -90,7 +91,7 @@ public class JobRunsTreeTablePanel extends GenericPanel<JobRun> {
 
                     @Override
                     protected void onUpdate(AjaxRequestTarget target) {
-                        tree.updateNode(getModelObject(), target);
+                        updateTreeBranch(getModelObject(), target);
                         target.add(selectedCount);
                     }
 
@@ -131,9 +132,35 @@ public class JobRunsTreeTablePanel extends GenericPanel<JobRun> {
                             return new BookmarkablePageLink<>(id, tree.getPage().getClass(), parameters);
                         }
                     }
-                };
+                }.setOutputMarkupId(true);
 
             }
+
+            // /**
+            // * For an update of a node the complete row item is added to the ART.
+            // */
+            // @Override
+            // public void updateNode(JobRun t, final IPartialPageRequestHandler target) {
+            // final IModel<JobRun> model = getProvider().model(t);
+            // visitChildren(Item.class, new IVisitor<Item<JobRun>, Void>() {
+            //
+            // @Override
+            // public void component(Item<JobRun> item, IVisit<Void> visit) {
+            // IModel<JobRun> nodeModel = item.getModel();
+            //
+            // if (model.getObject().equals(nodeModel.getObject())) {
+            //
+            // // row items are configured to output their markupId
+            // System.out.println(model.getObject());
+            // target.add(item);
+            // // visit.stop();
+            // // return;
+            // }
+            // // visit.dontGoDeeper();
+            // }
+            // });
+            // model.detach();
+            // }
 
             @Override
             protected Item<JobRun> newRowItem(String id, int index, IModel<JobRun> model) {
@@ -141,6 +168,7 @@ public class JobRunsTreeTablePanel extends GenericPanel<JobRun> {
             }
 
         };
+
         tree.getTable().addTopToolbar(new HeadersToolbar<>(tree.getTable(), null));
         tree.getTable().addBottomToolbar(new NoRecordsToolbar(tree.getTable()));
         tree.add(new HumanTheme());
@@ -200,6 +228,33 @@ public class JobRunsTreeTablePanel extends GenericPanel<JobRun> {
                 target.add(tree);
             }
         });
+    }
+
+    private void updateTreeBranch(JobRun modelObject, AjaxRequestTarget target) {
+        final IModel<JobRun> model = tree.getProvider().model(modelObject);
+        tree.visitChildren(CheckedFolder.class, new IVisitor<CheckedFolder<JobRun>, Void>() {
+
+            @Override
+            public void component(final CheckedFolder<JobRun> item, IVisit<Void> visit) {
+                IModel<JobRun> nodeModel = item.getModel();
+                if (model.getObject().equals(nodeModel.getObject())) {
+
+                    target.add(item);
+                    System.out.println("ITEM1: " + item.getModelObject());
+                    item.visitChildren(Item.class, new IVisitor<Item<JobRun>, Void>() {
+
+                        @Override
+                        public void component(final Item<JobRun> item, IVisit<Void> visit) {
+                            System.out.println("ITEM2: " + item.getModelObject());
+                            target.add(item);
+                        }
+                    });
+
+                }
+            }
+        });
+        model.detach();
+
     }
 
     @Override
