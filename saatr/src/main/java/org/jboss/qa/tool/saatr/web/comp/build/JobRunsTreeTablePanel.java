@@ -38,10 +38,11 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.visit.IVisit;
 import org.apache.wicket.util.visit.IVisitor;
 import org.bson.types.ObjectId;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
-import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
-import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
+import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
+import org.jboss.qa.tool.saatr.domain.hierarchical.JobRun;
+import org.jboss.qa.tool.saatr.domain.hierarchical.JobRunFilter;
+import org.jboss.qa.tool.saatr.repo.build.JobRunRepository;
 import org.jboss.qa.tool.saatr.web.comp.DocumentModel;
 
 import lombok.AllArgsConstructor;
@@ -51,66 +52,67 @@ import lombok.Data;
  * @author dsimko@redhat.com
  */
 @SuppressWarnings("serial")
-public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
+public class JobRunsTreeTablePanel extends GenericPanel<JobRun> {
 
     private static final String BUILD_PARAM_NAME = "build";
 
     @SpringBean
-    private BuildRepository buildRepository;
+    private JobRunRepository buildRepository;
 
-    private TableTree<BuildDocument, String> tree;
+    private TableTree<JobRun, String> tree;
 
     private Set<String> selectedParents = new HashSet<>();
 
     private Set<ObjectId> selectedIds = new HashSet<>();
 
-    public BuildsTreeTablePanel(String id, IModel<BuildDocument> model, IModel<BuildFilter> filterModel) {
+    public JobRunsTreeTablePanel(String id, IModel<JobRun> model, IModel<BuildFilter> filterModel) {
         super(id, model);
 
-        final List<IColumn<BuildDocument, String>> columns = new ArrayList<>();
-        columns.add(new TreeColumn<BuildDocument, String>(Model.of("Job Name")));
-        columns.add(new PropertyColumn<BuildDocument, String>(Model.of("Count"), "numberOfChildren"));
-        columns.add(new PropertyColumn<BuildDocument, String>(Model.of("Build"), "buildNumber"));
-        columns.add(new StatsColumn());
-        columns.add(new StatusColumn());
+        final List<IColumn<JobRun, String>> columns = new ArrayList<>();
+        columns.add(new TreeColumn<JobRun, String>(Model.of("Job Name")));
+        columns.add(new PropertyColumn<JobRun, String>(Model.of("Count"), "childCount"));
+        columns.add(new PropertyColumn<JobRun, String>(Model.of("Build"), "buildNumber"));
+        // columns.add(new StatsColumn());
+        // columns.add(new StatusColumn());
         final Label selectedCount = new Label("selectedCount", new PropertyModel<>(this, "selectedIds.size"));
         add(selectedCount.setOutputMarkupId(true));
-        tree = new TableTree<BuildDocument, String>("tree", columns, new BuildsProvider(filterModel), Integer.MAX_VALUE, new BuildsExpansionModel()) {
+        tree = new TableTree<JobRun, String>("tree", columns, new BuildsProvider(filterModel), Integer.MAX_VALUE, new BuildsExpansionModel()) {
 
             @Override
-            protected Component newContentComponent(String id, IModel<BuildDocument> model) {
+            protected Component newContentComponent(String id, IModel<JobRun> model) {
 
-                return new CheckedFolder<BuildDocument>(id, tree, model) {
+                return new CheckedFolder<JobRun>(id, tree, model) {
 
                     @Override
-                    protected IModel<Boolean> newCheckBoxModel(final IModel<BuildDocument> model) {
+                    protected IModel<Boolean> newCheckBoxModel(final IModel<JobRun> model) {
                         return new CheckBoxModel(model);
                     }
 
                     @Override
                     protected void onUpdate(AjaxRequestTarget target) {
-                        tree.updateBranch(getModelObject(), target);
+                        tree.updateNode(getModelObject(), target);
                         target.add(selectedCount);
                     }
 
                     @Override
                     protected boolean isSelected() {
-                        return BuildsTreeTablePanel.this.getModelObject() != null && BuildsTreeTablePanel.this.getModelObject().equals(getModelObject());
+                        return JobRunsTreeTablePanel.this.getModelObject() != null && JobRunsTreeTablePanel.this.getModelObject().equals(getModelObject());
                     }
 
                     @Override
-                    protected IModel<?> newLabelModel(IModel<BuildDocument> model) {
+                    protected IModel<?> newLabelModel(IModel<JobRun> model) {
                         return new AbstractReadOnlyModel<String>() {
 
                             @Override
                             public String getObject() {
-                                BuildDocument buildDocument = model.getObject();
-                                if (buildDocument != null) {
-                                    String name = buildDocument.getJobName();
-                                    if (name.contains("/")) {
-                                        return name.substring(name.indexOf("/") + 1, name.length());
+                                JobRun jobRun = model.getObject();
+                                if (jobRun != null) {
+                                    if (jobRun.getId() != null) {
+                                        return jobRun.getFullName();
+                                    } else if (jobRun.getConfiguration() != null) {
+                                        return jobRun.getConfiguration();
                                     } else {
-                                        return name;
+                                        return jobRun.getName();
                                     }
                                 }
                                 return null;
@@ -119,12 +121,12 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
                     }
 
                     @Override
-                    protected MarkupContainer newLinkComponent(String id, IModel<BuildDocument> model) {
-                        BuildDocument build = model.getObject();
+                    protected MarkupContainer newLinkComponent(String id, IModel<JobRun> model) {
+                        JobRun build = model.getObject();
                         if (tree.getProvider().hasChildren(build)) {
                             return super.newLinkComponent(id, model);
                         } else {
-                            PageParameters parameters = new PageParameters(BuildsTreeTablePanel.this.getPage().getPageParameters());
+                            PageParameters parameters = new PageParameters(JobRunsTreeTablePanel.this.getPage().getPageParameters());
                             parameters.set(BUILD_PARAM_NAME, build.getId());
                             return new BookmarkablePageLink<>(id, tree.getPage().getClass(), parameters);
                         }
@@ -134,7 +136,7 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
             }
 
             @Override
-            protected Item<BuildDocument> newRowItem(String id, int index, IModel<BuildDocument> model) {
+            protected Item<JobRun> newRowItem(String id, int index, IModel<JobRun> model) {
                 return new OddEvenItem<>(id, index, model);
             }
 
@@ -147,29 +149,30 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
 
             @Override
             public void onClick() {
-                BuildExpansion.get().expandAll();
+                JobRunExpansion.get().expandAll();
             }
         });
         add(new Link<Void>("collapseAll") {
 
             @Override
             public void onClick() {
-                BuildExpansion.get().collapseAll();
+                JobRunExpansion.get().collapseAll();
             }
         });
         add(new AjaxLink<Void>("selectAll") {
 
             @Override
             public void onClick(AjaxRequestTarget target) {
-                tree.visitChildren(CheckedFolder.class, new IVisitor<CheckedFolder<BuildDocument>, Void>() {
+                tree.visitChildren(CheckedFolder.class, new IVisitor<CheckedFolder<JobRun>, Void>() {
 
                     @Override
-                    public void component(CheckedFolder<BuildDocument> component, IVisit<Void> visit) {
-                        BuildDocument buildDocument = component.getModelObject();
+                    public void component(CheckedFolder<JobRun> component, IVisit<Void> visit) {
+                        JobRun buildDocument = component.getModelObject();
                         if (buildDocument.getId() != null) {
                             selectedIds.add(buildDocument.getId());
                         } else {
-                            selectedParents.add(buildDocument.getJobName());
+                            // FIXME
+                            // selectedParents.add(buildDocument.getJobName());
                         }
                     }
                 });
@@ -191,7 +194,9 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
 
             @Override
             public void onClick(AjaxRequestTarget target) {
-                columns.add(columns.size() - 1, new VariableColumn("EAP ver.", "EAP_VERSION"));
+                // FIXME
+                // columns.add(columns.size() - 1, new VariableColumn("EAP ver.",
+                // "EAP_VERSION"));
                 target.add(tree);
             }
         });
@@ -202,7 +207,7 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
         super.onConfigure();
         String buildId = getPage().getPageParameters().get(BUILD_PARAM_NAME).toString(null);
         if (buildId != null) {
-            BuildDocument build = buildRepository.findOne(new ObjectId(buildId));
+            JobRun build = buildRepository.findOne(new ObjectId(buildId));
             if (build != null) {
                 setModelObject(build);
             }
@@ -224,15 +229,15 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
         }
     }
 
-    private class BuildsExpansionModel implements IModel<Set<BuildDocument>> {
+    private class BuildsExpansionModel implements IModel<Set<JobRun>> {
 
         @Override
-        public Set<BuildDocument> getObject() {
-            return BuildExpansion.get();
+        public Set<JobRun> getObject() {
+            return JobRunExpansion.get();
         }
 
         @Override
-        public void setObject(Set<BuildDocument> object) {
+        public void setObject(Set<JobRun> object) {
 
         }
 
@@ -245,11 +250,11 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
     @AllArgsConstructor
     private class CheckBoxModel extends Model<Boolean> {
 
-        final IModel<BuildDocument> model;
+        final IModel<JobRun> model;
 
         @Override
         public Boolean getObject() {
-            String jobName = model.getObject().getJobName();
+            String jobName = model.getObject().getName() + model.getObject().getConfiguration();
             ObjectId id = model.getObject().getId();
             if (id != null) {
                 return selectedIds.contains(id);
@@ -260,7 +265,7 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
 
         @Override
         public void setObject(Boolean object) {
-            String jobName = model.getObject().getJobName();
+            String jobName = model.getObject().getName() + model.getObject().getConfiguration();
             ObjectId id = model.getObject().getId();
             if (id != null) {
                 if (selectedIds.contains(id)) {
@@ -272,20 +277,20 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
                 if (selectedParents.contains(jobName)) {
                     selectedParents.remove(jobName);
                     if (tree.getProvider().hasChildren(model.getObject())) {
-                        Iterator<? extends BuildDocument> it = tree.getProvider().getChildren(model.getObject());
+                        Iterator<? extends JobRun> it = tree.getProvider().getChildren(model.getObject());
                         while (it.hasNext()) {
-                            BuildDocument b = it.next();
+                            JobRun b = it.next();
                             if (b.getId() != null) {
                                 if (selectedIds.contains(b.getId())) {
                                     selectedIds.remove(b.getId());
                                 }
                             } else {
-                                if (selectedParents.contains(b.getJobName())) {
-                                    selectedParents.remove(b.getJobName());
+                                if (selectedParents.contains(b.getName() + b.getConfiguration())) {
+                                    selectedParents.remove(b.getName() + b.getConfiguration());
                                     if (tree.getProvider().hasChildren(b)) {
-                                        Iterator<? extends BuildDocument> it2 = tree.getProvider().getChildren(b);
+                                        Iterator<? extends JobRun> it2 = tree.getProvider().getChildren(b);
                                         while (it2.hasNext()) {
-                                            BuildDocument c = it2.next();
+                                            JobRun c = it2.next();
                                             if (selectedIds.contains(c.getId())) {
                                                 selectedIds.remove(c.getId());
                                             }
@@ -298,20 +303,20 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
                 } else {
                     selectedParents.add(jobName);
                     if (tree.getProvider().hasChildren(model.getObject())) {
-                        Iterator<? extends BuildDocument> it = tree.getProvider().getChildren(model.getObject());
+                        Iterator<? extends JobRun> it = tree.getProvider().getChildren(model.getObject());
                         while (it.hasNext()) {
-                            BuildDocument b = it.next();
+                            JobRun b = it.next();
                             if (b.getId() != null) {
                                 if (!selectedIds.contains(b.getId())) {
                                     selectedIds.add(b.getId());
                                 }
                             } else {
-                                if (!selectedParents.contains(b.getJobName())) {
-                                    selectedParents.add(b.getJobName());
+                                if (!selectedParents.contains(b.getName() + b.getConfiguration())) {
+                                    selectedParents.add(b.getName() + b.getConfiguration());
                                     if (tree.getProvider().hasChildren(b)) {
-                                        Iterator<? extends BuildDocument> it2 = tree.getProvider().getChildren(b);
+                                        Iterator<? extends JobRun> it2 = tree.getProvider().getChildren(b);
                                         while (it2.hasNext()) {
-                                            BuildDocument c = it2.next();
+                                            JobRun c = it2.next();
                                             if (!selectedIds.contains(c.getId())) {
                                                 selectedIds.add(c.getId());
                                             }
@@ -326,12 +331,12 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
         }
     }
 
-    private static class BuildsProvider implements ITreeProvider<BuildDocument> {
+    private static class BuildsProvider implements ITreeProvider<JobRun> {
 
         final IModel<BuildFilter> filter;
 
         @SpringBean
-        BuildRepository buildRepository;
+        JobRunRepository buildRepository;
 
         BuildsProvider(IModel<BuildFilter> filter) {
             this.filter = filter;
@@ -344,29 +349,27 @@ public class BuildsTreeTablePanel extends GenericPanel<BuildDocument> {
         }
 
         @Override
-        public Iterator<? extends BuildDocument> getRoots() {
-            return buildRepository.getRoots(filter.getObject());
+        public Iterator<? extends JobRun> getRoots() {
+            return buildRepository.getRoots(JobRunFilter.create(filter.getObject()));
         }
 
         @Override
-        public boolean hasChildren(BuildDocument node) {
+        public boolean hasChildren(JobRun node) {
             if (node == null) {
                 // this is because Junction component relies on it in 'isEnabled' method
                 return true;
-            } else if (node.getJobName().contains("/")) {
-                return node.getNumberOfChildren() != null && node.getNumberOfChildren() > 1;
             } else {
-                return node.getNumberOfChildren() > 0;
+                return node.getId() == null;
             }
         }
 
         @Override
-        public Iterator<? extends BuildDocument> getChildren(BuildDocument node) {
-            return buildRepository.getChildren(node, filter.getObject());
+        public Iterator<? extends JobRun> getChildren(JobRun node) {
+            return buildRepository.getChildren(node, JobRunFilter.create(filter.getObject()));
         }
 
         @Override
-        public IModel<BuildDocument> model(BuildDocument object) {
+        public IModel<JobRun> model(JobRun object) {
             return new DocumentModel<>(object);
         }
     }

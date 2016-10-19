@@ -36,6 +36,7 @@ public class BuildDocument implements DocumentWithProperties<ObjectId>, Document
 
         Success(0), SuccessWithFlakyFailure(0), SuccessWithFlakyError(0), Failed(1);
 
+        // TODO rename to weight;
         int status;
 
         Status(int status) {

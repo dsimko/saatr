@@ -13,6 +13,8 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
+import org.jboss.qa.tool.saatr.domain.hierarchical.JobRun;
+import org.jboss.qa.tool.saatr.web.comp.DocumentModel;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapTabbedPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildsFilterPanel;
 
@@ -39,6 +41,20 @@ public class BuildsPanel extends GenericPanel<BuildDocument> {
             @Override
             public WebMarkupContainer getPanel(String panelId) {
                 return new BuildsTreeTablePanel(panelId, model, filter);
+            }
+        });
+
+        tabs.add(new AbstractTab(new AbstractReadOnlyModel<String>() {
+
+            @Override
+            public String getObject() {
+                return "<span class=\"glyphicon glyphicon-tree-conifer\"></span> New Tree";
+            }
+        }) {
+
+            @Override
+            public WebMarkupContainer getPanel(String panelId) {
+                return new JobRunsTreeTablePanel(panelId, new DocumentModel<JobRun>(JobRun.class, null), filter);
             }
         });
         tabs.add(new AbstractTab(new AbstractReadOnlyModel<String>() {
