@@ -25,10 +25,10 @@ import java.util.Set;
 
 import org.apache.wicket.MetaDataKey;
 import org.apache.wicket.Session;
-import org.jboss.qa.tool.saatr.domain.hierarchical.JobRun;
+import org.jboss.qa.tool.saatr.web.comp.build.JobRunsTreeTablePanel.JobRunDto;
 
 @SuppressWarnings("serial")
-public class JobRunExpansion implements Set<JobRun>, Serializable {
+public class JobRunExpansion implements Set<JobRunDto>, Serializable {
 
     private static MetaDataKey<JobRunExpansion> KEY = new MetaDataKey<JobRunExpansion>() {
 
@@ -51,7 +51,7 @@ public class JobRunExpansion implements Set<JobRun>, Serializable {
     }
 
     @Override
-    public boolean add(JobRun build) {
+    public boolean add(JobRunDto build) {
         if (build == null) {
             return false;
         } else if (inverse) {
@@ -63,7 +63,7 @@ public class JobRunExpansion implements Set<JobRun>, Serializable {
 
     @Override
     public boolean remove(Object o) {
-        JobRun build = (JobRun) o;
+        JobRunDto build = (JobRunDto) o;
 
         if (inverse) {
             return ids.add(build.getName() + build.getConfiguration());
@@ -77,7 +77,7 @@ public class JobRunExpansion implements Set<JobRun>, Serializable {
         if (o == null) {
             return false;
         }
-        JobRun build = (JobRun) o;
+        JobRunDto build = (JobRunDto) o;
 
         if (inverse) {
             return !ids.contains(build.getName() + build.getConfiguration());
@@ -107,7 +107,7 @@ public class JobRunExpansion implements Set<JobRun>, Serializable {
     }
 
     @Override
-    public Iterator<JobRun> iterator() {
+    public Iterator<JobRunDto> iterator() {
         throw new UnsupportedOperationException();
     }
 
@@ -122,7 +122,7 @@ public class JobRunExpansion implements Set<JobRun>, Serializable {
     }
 
     @Override
-    public boolean addAll(Collection<? extends JobRun> c) {
+    public boolean addAll(Collection<? extends JobRunDto> c) {
         throw new UnsupportedOperationException();
     }
 

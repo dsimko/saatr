@@ -31,6 +31,7 @@ import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument;
 import org.jboss.qa.tool.saatr.domain.hierarchical.JobRun;
 import org.jboss.qa.tool.saatr.domain.hierarchical.JobRunFilter;
 import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite;
+import org.jboss.qa.tool.saatr.web.comp.build.JobRunsTreeTablePanel.JobRunDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -251,16 +252,16 @@ class JobRunRepositoryImpl implements JobRunRepositoryCustom {
     }
 
     @Override
-    public Iterator<JobRun> getRoots(JobRunFilter filter) {
+    public Iterator<JobRunDto> getRoots(JobRunFilter filter) {
         Aggregation agg = newAggregation(match(createCriteria(filter, true)), group("name").count().as("childCount").sum("statusWeight").as("statusWeight"),
                 sort(Direction.ASC, "_id"), project("statusWeight", "childCount").and("_id").as("name").andExclude("_id"));
-        AggregationResults<JobRun> results = template.aggregate(agg, JobRun.COLLECTION_NAME, JobRun.class);
-        List<JobRun> mappedResult = results.getMappedResults();
+        AggregationResults<JobRunDto> results = template.aggregate(agg, JobRun.COLLECTION_NAME, JobRunDto.class);
+        List<JobRunDto> mappedResult = results.getMappedResults();
         return mappedResult.iterator();
     }
 
     @Override
-    public Iterator<JobRun> getChildren(JobRun parent, final JobRunFilter filter) {
+    public Iterator<JobRunDto> getChildren(JobRunDto parent, final JobRunFilter filter) {
         if (parent.getId() != null) {
             return Collections.emptyIterator();
         }
@@ -268,12 +269,12 @@ class JobRunRepositoryImpl implements JobRunRepositoryCustom {
             Aggregation agg = newAggregation(match(createCriteria(filter, true, where("name").is(parent.getName()))),
                     group("name", "configuration").count().as("childCount").sum("statusWeight").as("statusWeight"), sort(Direction.ASC, "_id"),
                     project("statusWeight", "childCount").and("_id.name").as("name").and("_id.configuration").as("configuration").andExclude("_id"));
-            AggregationResults<JobRun> results = template.aggregate(agg, JobRun.COLLECTION_NAME, JobRun.class);
+            AggregationResults<JobRunDto> results = template.aggregate(agg, JobRun.COLLECTION_NAME, JobRunDto.class);
             return results.getMappedResults().iterator();
         } else {
             return template.find(
                     Query.query(createCriteria(filter, false, where("name").is(parent.getName()), where("configuration").is(parent.getConfiguration()))),
-                    JobRun.class).iterator();
+                    JobRunDto.class, JobRun.COLLECTION_NAME).iterator();
         }
     }
 

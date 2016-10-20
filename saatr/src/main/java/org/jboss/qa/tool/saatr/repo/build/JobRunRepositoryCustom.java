@@ -14,6 +14,7 @@ import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument;
 import org.jboss.qa.tool.saatr.domain.hierarchical.JobRun;
 import org.jboss.qa.tool.saatr.domain.hierarchical.JobRunFilter;
 import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite;
+import org.jboss.qa.tool.saatr.web.comp.build.JobRunsTreeTablePanel.JobRunDto;
 
 /**
  * The interface for repository functionality that will be implemented manually.
@@ -54,8 +55,8 @@ interface JobRunRepositoryCustom {
 
     void addConsoleText(BuildDocument buildDocument, String response);
 
-    Iterator<JobRun> getRoots(JobRunFilter filter);
+    Iterator<JobRunDto> getRoots(JobRunFilter filter);
 
-    Iterator<? extends JobRun> getChildren(JobRun parent, JobRunFilter filter);
+    Iterator<? extends JobRunDto> getChildren(JobRunDto parent, JobRunFilter filter);
 
 }
