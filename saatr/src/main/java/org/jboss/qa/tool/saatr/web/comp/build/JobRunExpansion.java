@@ -25,7 +25,7 @@ import java.util.Set;
 
 import org.apache.wicket.MetaDataKey;
 import org.apache.wicket.Session;
-import org.jboss.qa.tool.saatr.web.comp.build.JobRunsTreeTablePanel.JobRunDto;
+import org.jboss.qa.tool.saatr.web.comp.build.JobRunsTreePanel.JobRunDto;
 
 @SuppressWarnings("serial")
 public class JobRunExpansion implements Set<JobRunDto>, Serializable {

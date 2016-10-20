@@ -25,7 +25,6 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.GenericPanel;
-import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -39,7 +38,6 @@ import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.domain.hierarchical.JobRun;
 import org.jboss.qa.tool.saatr.domain.hierarchical.JobRunFilter;
 import org.jboss.qa.tool.saatr.repo.build.JobRunRepository;
-import org.jboss.qa.tool.saatr.web.comp.build.JobRunsTreeTablePanel.JobRunDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -77,7 +75,7 @@ public class JobRunsTreePanel extends GenericPanel<JobRun> {
             @Override
             protected Component newContentComponent(String id, IModel<JobRunDto> model) {
 
-                return new CheckedFolder<JobRunDto>(id, tree, model) {
+                return new TreeCheckedFolder(id, tree, model) {
 
                     @Override
                     protected IModel<Boolean> newCheckBoxModel(final IModel<JobRunDto> model) {
@@ -107,26 +105,10 @@ public class JobRunsTreePanel extends GenericPanel<JobRun> {
                     }
 
                     @Override
-                    protected IModel<?> newLabelModel(IModel<JobRunDto> model) {
-                        return new AbstractReadOnlyModel<String>() {
-
-                            @Override
-                            public String getObject() {
-                                JobRunDto jobRun = model.getObject();
-                                if (jobRun != null) {
-                                    if (jobRun.getId() != null) {
-                                        // TODO
-                                        return jobRun.getName();
-                                    } else if (jobRun.getConfiguration() != null) {
-                                        return jobRun.getConfiguration();
-                                    } else {
-                                        return jobRun.getName();
-                                    }
-                                }
-                                return null;
-                            }
-                        };
+                    protected Component newLabelComponent(String id, IModel<JobRunDto> model) {
+                        return super.newLabelComponent(id, new PropertyModel<>(model, "contentInHtml")).setEscapeModelStrings(false);
                     }
+
 
                     @Override
                     protected MarkupContainer newLinkComponent(String id, IModel<JobRunDto> model) {
@@ -386,6 +368,93 @@ public class JobRunsTreePanel extends GenericPanel<JobRun> {
     }
 
     @Data
+    public static class JobRunDto implements Serializable {
+
+        private ObjectId id;
+
+        private String name;
+
+        private String configuration;
+
+        private Long buildNumber;
+
+        private Integer childCount;
+
+        public JobRunDto() {
+        }
+
+        public JobRunDto(JobRun jobRun) {
+            this.id = jobRun.getId();
+            this.name = jobRun.getName();
+            this.configuration = jobRun.getConfiguration();
+            this.buildNumber = jobRun.getBuildNumber();
+            this.childCount = jobRun.getChildCount();
+        }
+
+        public String getNameWithConfiguration() {
+            return name + (this.configuration == null ? "" : this.configuration);
+        }
+
+        public String getContentInHtml() {
+            StringBuilder builder = new StringBuilder();
+            builder.append("<span class=\"tree-column tree-column-1\">");
+            builder.append(name);
+            builder.append("</span>");
+            builder.append("<span class=\"tree-column tree-column-2\">");
+            builder.append(childCount);
+            builder.append("</span>");
+            builder.append("<span class=\"tree-column tree-column-3\">");
+            builder.append(buildNumber);
+            builder.append("</span>");
+            builder.append("<span class=\"tree-column tree-column-4\">");
+            builder.append("stats");
+            builder.append("</span>");
+            builder.append("<span class=\"tree-column tree-column-5\">");
+            builder.append("status");
+            builder.append("</span>");
+            return builder.toString();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            JobRunDto other = (JobRunDto) obj;
+            if (id == null) {
+                if (other.id != null)
+                    return false;
+            } else if (!id.equals(other.id))
+                return false;
+            if (name == null) {
+                if (other.name != null)
+                    return false;
+            } else if (!name.equals(other.name))
+                return false;
+            if (configuration == null) {
+                if (other.configuration != null)
+                    return false;
+            } else if (!configuration.equals(other.configuration))
+                return false;
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((id == null) ? 0 : id.hashCode());
+            result = prime * result + ((name == null) ? 0 : name.hashCode());
+            result = prime * result + ((configuration == null) ? 0 : configuration.hashCode());
+            return result;
+        }
+
+    }
+
+    @Data
     @AllArgsConstructor
     public static class CopyToAllSelectedEvent implements Serializable {
 
@@ -393,4 +462,5 @@ public class JobRunsTreePanel extends GenericPanel<JobRun> {
 
         private Component feedbackComponent;
     }
+
 }

@@ -31,7 +31,7 @@ import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument;
 import org.jboss.qa.tool.saatr.domain.hierarchical.JobRun;
 import org.jboss.qa.tool.saatr.domain.hierarchical.JobRunFilter;
 import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite;
-import org.jboss.qa.tool.saatr.web.comp.build.JobRunsTreeTablePanel.JobRunDto;
+import org.jboss.qa.tool.saatr.web.comp.build.JobRunsTreePanel.JobRunDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
