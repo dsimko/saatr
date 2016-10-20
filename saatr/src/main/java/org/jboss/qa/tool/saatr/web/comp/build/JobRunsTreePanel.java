@@ -109,7 +109,6 @@ public class JobRunsTreePanel extends GenericPanel<JobRun> {
                         return super.newLabelComponent(id, new PropertyModel<>(model, "contentInHtml")).setEscapeModelStrings(false);
                     }
 
-
                     @Override
                     protected MarkupContainer newLinkComponent(String id, IModel<JobRunDto> model) {
                         JobRunDto build = model.getObject();
@@ -396,9 +395,18 @@ public class JobRunsTreePanel extends GenericPanel<JobRun> {
         }
 
         public String getContentInHtml() {
+            int width = 600;
+            String label = name;
+            if (configuration != null) {
+                width -= 18;
+                label = configuration;
+            }
+            if (id != null) {
+                width -= 18;
+            }
             StringBuilder builder = new StringBuilder();
-            builder.append("<span class=\"tree-column tree-column-1\">");
-            builder.append(name);
+            builder.append("<span style=\"width:" + width + "px;\" class=\"tree-column\">");
+            builder.append(label);
             builder.append("</span>");
             builder.append("<span class=\"tree-column tree-column-2\">");
             builder.append(childCount);
