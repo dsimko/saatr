@@ -55,9 +55,9 @@ public class JobRunExpansion implements Set<JobRunDto>, Serializable {
         if (build == null) {
             return false;
         } else if (inverse) {
-            return ids.remove(build.getName() + build.getConfiguration());
+            return ids.remove(build.getNameWithConfiguration());
         } else {
-            return ids.add(build.getName() + build.getConfiguration());
+            return ids.add(build.getNameWithConfiguration());
         }
     }
 
@@ -66,9 +66,9 @@ public class JobRunExpansion implements Set<JobRunDto>, Serializable {
         JobRunDto build = (JobRunDto) o;
 
         if (inverse) {
-            return ids.add(build.getName() + build.getConfiguration());
+            return ids.add(build.getNameWithConfiguration());
         } else {
-            return ids.remove(build.getName() + build.getConfiguration());
+            return ids.remove(build.getNameWithConfiguration());
         }
     }
 
@@ -80,9 +80,9 @@ public class JobRunExpansion implements Set<JobRunDto>, Serializable {
         JobRunDto build = (JobRunDto) o;
 
         if (inverse) {
-            return !ids.contains(build.getName() + build.getConfiguration());
+            return !ids.contains(build.getNameWithConfiguration());
         } else {
-            return ids.contains(build.getName() + build.getConfiguration());
+            return ids.contains(build.getNameWithConfiguration());
         }
     }
 

@@ -61,6 +61,19 @@ public class BuildsPanel extends GenericPanel<BuildDocument> {
 
             @Override
             public String getObject() {
+                return "<span class=\"glyphicon glyphicon-tree-conifer\"></span> New Tree 2";
+            }
+        }) {
+
+            @Override
+            public WebMarkupContainer getPanel(String panelId) {
+                return new JobRunsTreePanel(panelId, new DocumentModel<JobRun>(JobRun.class, null), filter);
+            }
+        });
+        tabs.add(new AbstractTab(new AbstractReadOnlyModel<String>() {
+
+            @Override
+            public String getObject() {
                 return "<span class=\"glyphicon glyphicon-th-list\"></span> Table";
             }
         }) {

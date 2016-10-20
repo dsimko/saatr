@@ -13,12 +13,10 @@ import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.event.IEvent;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.HeadersToolbar;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.NoRecordsToolbar;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.extensions.markup.html.repeater.tree.ITreeProvider;
-import org.apache.wicket.extensions.markup.html.repeater.tree.TableTree;
+import org.apache.wicket.extensions.markup.html.repeater.tree.NestedTree;
 import org.apache.wicket.extensions.markup.html.repeater.tree.content.CheckedFolder;
 import org.apache.wicket.extensions.markup.html.repeater.tree.table.TreeColumn;
 import org.apache.wicket.extensions.markup.html.repeater.tree.theme.HumanTheme;
@@ -27,8 +25,6 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.GenericPanel;
-import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.markup.repeater.OddEvenItem;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -43,6 +39,7 @@ import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.domain.hierarchical.JobRun;
 import org.jboss.qa.tool.saatr.domain.hierarchical.JobRunFilter;
 import org.jboss.qa.tool.saatr.repo.build.JobRunRepository;
+import org.jboss.qa.tool.saatr.web.comp.build.JobRunsTreeTablePanel.JobRunDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -51,20 +48,20 @@ import lombok.Data;
  * @author dsimko@redhat.com
  */
 @SuppressWarnings("serial")
-public class JobRunsTreeTablePanel extends GenericPanel<JobRun> {
+public class JobRunsTreePanel extends GenericPanel<JobRun> {
 
     private static final String BUILD_PARAM_NAME = "build";
 
     @SpringBean
     private JobRunRepository buildRepository;
 
-    private TableTree<JobRunDto, String> tree;
+    private NestedTree<JobRunDto> tree;
 
     private Set<String> selectedParents = new HashSet<>();
 
     private Set<ObjectId> selectedIds = new HashSet<>();
 
-    public JobRunsTreeTablePanel(String id, IModel<JobRun> model, IModel<BuildFilter> filterModel) {
+    public JobRunsTreePanel(String id, IModel<JobRun> model, IModel<BuildFilter> filterModel) {
         super(id, model);
 
         final List<IColumn<JobRunDto, String>> columns = new ArrayList<>();
@@ -75,7 +72,7 @@ public class JobRunsTreeTablePanel extends GenericPanel<JobRun> {
         // columns.add(new StatusColumn());
         final Label selectedCount = new Label("selectedCount", new PropertyModel<>(this, "selectedIds.size"));
         add(selectedCount.setOutputMarkupId(true));
-        tree = new TableTree<JobRunDto, String>("tree", columns, new BuildsProvider(filterModel), Integer.MAX_VALUE, new BuildsExpansionModel()) {
+        tree = new NestedTree<JobRunDto>("tree", new BuildsProvider(filterModel), new BuildsExpansionModel()) {
 
             @Override
             protected Component newContentComponent(String id, IModel<JobRunDto> model) {
@@ -89,13 +86,24 @@ public class JobRunsTreeTablePanel extends GenericPanel<JobRun> {
 
                     @Override
                     protected void onUpdate(AjaxRequestTarget target) {
-                        updateTreeBranch(getModelObject(), target);
+                        final String name = getModelObject().getNameWithConfiguration();
+                        tree.visitChildren(CheckedFolder.class, new IVisitor<CheckedFolder<JobRunDto>, Void>() {
+
+                            @Override
+                            public void component(final CheckedFolder<JobRunDto> item, IVisit<Void> visit) {
+                                if (item.getModelObject().getNameWithConfiguration().startsWith(name)) {
+                                    target.add(item);
+                                    visit.stop();
+                                }
+                                visit.dontGoDeeper();
+                            }
+                        });
                         target.add(selectedCount);
                     }
 
                     @Override
                     protected boolean isSelected() {
-                        return JobRunsTreeTablePanel.this.getModelObject() != null && JobRunsTreeTablePanel.this.getModelObject().equals(getModelObject());
+                        return JobRunsTreePanel.this.getModelObject() != null && JobRunsTreePanel.this.getModelObject().equals(getModelObject());
                     }
 
                     @Override
@@ -107,6 +115,7 @@ public class JobRunsTreeTablePanel extends GenericPanel<JobRun> {
                                 JobRunDto jobRun = model.getObject();
                                 if (jobRun != null) {
                                     if (jobRun.getId() != null) {
+                                        // TODO
                                         return jobRun.getName();
                                     } else if (jobRun.getConfiguration() != null) {
                                         return jobRun.getConfiguration();
@@ -125,7 +134,7 @@ public class JobRunsTreeTablePanel extends GenericPanel<JobRun> {
                         if (tree.getProvider().hasChildren(build)) {
                             return super.newLinkComponent(id, model);
                         } else {
-                            PageParameters parameters = new PageParameters(JobRunsTreeTablePanel.this.getPage().getPageParameters());
+                            PageParameters parameters = new PageParameters(JobRunsTreePanel.this.getPage().getPageParameters());
                             parameters.set(BUILD_PARAM_NAME, build.getId());
                             return new BookmarkablePageLink<>(id, tree.getPage().getClass(), parameters);
                         }
@@ -134,41 +143,10 @@ public class JobRunsTreeTablePanel extends GenericPanel<JobRun> {
 
             }
 
-            // /**
-            // * For an update of a node the complete row item is added to the ART.
-            // */
-            // @Override
-            // public void updateNode(JobRun t, final IPartialPageRequestHandler target) {
-            // final IModel<JobRun> model = getProvider().model(t);
-            // visitChildren(Item.class, new IVisitor<Item<JobRun>, Void>() {
-            //
-            // @Override
-            // public void component(Item<JobRun> item, IVisit<Void> visit) {
-            // IModel<JobRun> nodeModel = item.getModel();
-            //
-            // if (model.getObject().equals(nodeModel.getObject())) {
-            //
-            // // row items are configured to output their markupId
-            // System.out.println(model.getObject());
-            // target.add(item);
-            // // visit.stop();
-            // // return;
-            // }
-            // // visit.dontGoDeeper();
-            // }
-            // });
-            // model.detach();
-            // }
-
-            @Override
-            protected Item<JobRunDto> newRowItem(String id, int index, IModel<JobRunDto> model) {
-                return new OddEvenItem<>(id, index, model);
-            }
-
         };
 
-        tree.getTable().addTopToolbar(new HeadersToolbar<>(tree.getTable(), null));
-        tree.getTable().addBottomToolbar(new NoRecordsToolbar(tree.getTable()));
+        // tree.getTable().addTopToolbar(new HeadersToolbar<>(tree.getTable(), null));
+        // tree.getTable().addBottomToolbar(new NoRecordsToolbar(tree.getTable()));
         tree.add(new HumanTheme());
         add(tree);
         add(new Link<Void>("expandAll") {
@@ -189,20 +167,20 @@ public class JobRunsTreeTablePanel extends GenericPanel<JobRun> {
 
             @Override
             public void onClick(AjaxRequestTarget target) {
-                tree.visitChildren(CheckedFolder.class, new IVisitor<CheckedFolder<JobRun>, Void>() {
+                tree.visitChildren(CheckedFolder.class, new IVisitor<CheckedFolder<JobRunDto>, Void>() {
 
                     @Override
-                    public void component(CheckedFolder<JobRun> component, IVisit<Void> visit) {
-                        JobRun buildDocument = component.getModelObject();
+                    public void component(CheckedFolder<JobRunDto> component, IVisit<Void> visit) {
+                        JobRunDto buildDocument = component.getModelObject();
                         if (buildDocument.getId() != null) {
                             selectedIds.add(buildDocument.getId());
                         } else {
-                            // FIXME
-                            // selectedParents.add(buildDocument.getJobName());
+                            selectedParents.add(buildDocument.getNameWithConfiguration());
                         }
+                        target.add(component);
+                        visit.dontGoDeeper();
                     }
                 });
-                target.add(tree);
                 target.add(selectedCount);
             }
         });
@@ -212,7 +190,14 @@ public class JobRunsTreeTablePanel extends GenericPanel<JobRun> {
             public void onClick(AjaxRequestTarget target) {
                 selectedIds.clear();
                 selectedParents.clear();
-                target.add(tree);
+                tree.visitChildren(CheckedFolder.class, new IVisitor<CheckedFolder<JobRunDto>, Void>() {
+
+                    @Override
+                    public void component(final CheckedFolder<JobRunDto> item, IVisit<Void> visit) {
+                        target.add(item);
+                        visit.dontGoDeeper();
+                    }
+                });
                 target.add(selectedCount);
             }
         });
@@ -224,27 +209,6 @@ public class JobRunsTreeTablePanel extends GenericPanel<JobRun> {
                 // columns.add(columns.size() - 1, new VariableColumn("EAP ver.",
                 // "EAP_VERSION"));
                 target.add(tree);
-            }
-        });
-    }
-
-    private void updateTreeBranch(JobRunDto jobRun, AjaxRequestTarget target) {
-        final String name = jobRun.getName() + (jobRun.getConfiguration() == null ? "" : jobRun.getConfiguration());
-        System.out.println("updateTreeBranch " + jobRun);
-        tree.visitChildren(CheckedFolder.class, new IVisitor<CheckedFolder<JobRunDto>, Void>() {
-
-            @Override
-            public void component(final CheckedFolder<JobRunDto> item, IVisit<Void> visit) {
-                IModel<JobRunDto> nodeModel = item.getModel();
-                final String name2 = item.getModelObject().getName()
-                        + (item.getModelObject().getConfiguration() == null ? "" : item.getModelObject().getConfiguration());
-                System.out.println("visitChildren " + name2);
-                if (name2.startsWith(name)) {
-                    target.add(item);
-                    System.out.println("ITEM1: " + name2);
-                    visit.stop();
-                }
-                visit.dontGoDeeper();
             }
         });
     }
@@ -301,7 +265,7 @@ public class JobRunsTreeTablePanel extends GenericPanel<JobRun> {
 
         @Override
         public Boolean getObject() {
-            String jobName = model.getObject().getName() + model.getObject().getConfiguration();
+            String jobName = model.getObject().getNameWithConfiguration();
             ObjectId id = model.getObject().getId();
             if (id != null) {
                 return selectedIds.contains(id);
@@ -312,7 +276,7 @@ public class JobRunsTreeTablePanel extends GenericPanel<JobRun> {
 
         @Override
         public void setObject(Boolean object) {
-            String jobName = model.getObject().getName() + model.getObject().getConfiguration();
+            String jobName = model.getObject().getNameWithConfiguration();
             ObjectId id = model.getObject().getId();
             if (id != null) {
                 if (selectedIds.contains(id)) {
@@ -332,8 +296,8 @@ public class JobRunsTreeTablePanel extends GenericPanel<JobRun> {
                                     selectedIds.remove(b.getId());
                                 }
                             } else {
-                                if (selectedParents.contains(b.getName() + b.getConfiguration())) {
-                                    selectedParents.remove(b.getName() + b.getConfiguration());
+                                if (selectedParents.contains(b.getNameWithConfiguration())) {
+                                    selectedParents.remove(b.getNameWithConfiguration());
                                     if (tree.getProvider().hasChildren(b)) {
                                         Iterator<? extends JobRunDto> it2 = tree.getProvider().getChildren(b);
                                         while (it2.hasNext()) {
@@ -358,8 +322,8 @@ public class JobRunsTreeTablePanel extends GenericPanel<JobRun> {
                                     selectedIds.add(b.getId());
                                 }
                             } else {
-                                if (!selectedParents.contains(b.getName() + b.getConfiguration())) {
-                                    selectedParents.add(b.getName() + b.getConfiguration());
+                                if (!selectedParents.contains(b.getNameWithConfiguration())) {
+                                    selectedParents.add(b.getNameWithConfiguration());
                                     if (tree.getProvider().hasChildren(b)) {
                                         Iterator<? extends JobRunDto> it2 = tree.getProvider().getChildren(b);
                                         while (it2.hasNext()) {
@@ -419,73 +383,6 @@ public class JobRunsTreeTablePanel extends GenericPanel<JobRun> {
         public IModel<JobRunDto> model(JobRunDto object) {
             return new Model<JobRunDto>(object);
         }
-    }
-
-    @Data
-    public static class JobRunDto implements Serializable {
-
-        private ObjectId id;
-
-        private String name;
-
-        private String configuration;
-
-        private Long buildNumber;
-
-        private Integer childCount;
-
-        public JobRunDto() {
-        }
-
-        public JobRunDto(JobRun jobRun) {
-            this.id = jobRun.getId();
-            this.name = jobRun.getName();
-            this.configuration = jobRun.getConfiguration();
-            this.buildNumber = jobRun.getBuildNumber();
-            this.childCount = jobRun.getChildCount();
-        }
-
-        public String getNameWithConfiguration() {
-            return name + (this.configuration == null ? "" : this.configuration);
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            JobRunDto other = (JobRunDto) obj;
-            if (id == null) {
-                if (other.id != null)
-                    return false;
-            } else if (!id.equals(other.id))
-                return false;
-            if (name == null) {
-                if (other.name != null)
-                    return false;
-            } else if (!name.equals(other.name))
-                return false;
-            if (configuration == null) {
-                if (other.configuration != null)
-                    return false;
-            } else if (!configuration.equals(other.configuration))
-                return false;
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((id == null) ? 0 : id.hashCode());
-            result = prime * result + ((name == null) ? 0 : name.hashCode());
-            result = prime * result + ((configuration == null) ? 0 : configuration.hashCode());
-            return result;
-        }
-
     }
 
     @Data
