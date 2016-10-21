@@ -3,6 +3,12 @@ body {
 	padding-bottom: 20px;
 }
 
+#wicketDebugBar {
+	top: 50px;
+	z-index: 2030;
+	position: fixed;
+}
+
 .navbar {
 	margin-bottom: 20px;
 }
@@ -122,13 +128,13 @@ tree-content {
 }
 
 .tree-column-2 {
-	width: 50px;
+	min-width: 50px;
 }
 
 .tree-column-3 {
-	width: 50px;
+	min-width: 50px;
 }
 
 .tree-column-4 {
-	width: 150px;
+	min-width: 150px;
 }

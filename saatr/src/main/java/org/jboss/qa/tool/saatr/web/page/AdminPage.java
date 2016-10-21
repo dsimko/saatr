@@ -15,14 +15,14 @@ import org.apache.wicket.markup.repeater.RefreshingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.jboss.qa.tool.saatr.domain.build.Build;
+import org.jboss.qa.tool.saatr.domain.build.Build.Status;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.domain.build.ConsoleTextDocument;
 import org.jboss.qa.tool.saatr.domain.config.ConfigDocument;
 import org.jboss.qa.tool.saatr.domain.config.QueryDocument;
-import org.jboss.qa.tool.saatr.domain.hierarchical.JobRun;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
-import org.jboss.qa.tool.saatr.repo.build.JobRunRepository;
 import org.springframework.data.mongodb.core.MongoOperations;
 
 /**
@@ -37,9 +37,6 @@ public class AdminPage extends BasePage<Void> {
     @Inject
     private BuildRepository buildRepository;
 
-    @Inject
-    private JobRunRepository jobRunRepository;
-
     @SuppressWarnings("unused")
     private String results;
 
@@ -50,7 +47,7 @@ public class AdminPage extends BasePage<Void> {
             protected Iterator<IModel<String>> getItemModels() {
                 List<IModel<String>> models = Arrays.asList(Model.of(BuildDocument.COLLECTION_NAME), Model.of(ConfigDocument.COLLECTION_NAME),
                         Model.of(QueryDocument.COLLECTION_NAME), Model.of(ConsoleTextDocument.COLLECTION_NAME), Model.of(BuildFilter.COLLECTION_NAME),
-                        Model.of(JobRun.COLLECTION_NAME));
+                        Model.of(Build.COLLECTION_NAME));
                 return models.iterator();
             }
 
@@ -100,12 +97,11 @@ public class AdminPage extends BasePage<Void> {
 
             @Override
             public void onClick() {
-                for (BuildDocument build : buildRepository.findAll()) {
-                    JobRun jobRun = new JobRun();
+                for (BuildDocument build : mongoOperations.findAll(BuildDocument.class)) {
+                    Build jobRun = new Build();
                     jobRun.setBuildNumber(build.getBuildNumber());
                     jobRun.setChildCount(build.getNumberOfChildren());
                     jobRun.setConfiguration(getJobConfiguration(build.getJobName()));
-                    System.out.println("Configuration: " + jobRun.getConfiguration());
                     jobRun.setConsoleTextId(build.getConsoleTextId());
                     jobRun.setCreated(build.getCreated());
                     jobRun.setDuration(build.getDuration());
@@ -115,16 +111,16 @@ public class AdminPage extends BasePage<Void> {
                     jobRun.setFailedTestsuitesCount(build.getFailedTestsuites());
                     jobRun.setFullName(build.getJobName());
                     jobRun.setName(build.getJobCategory());
-                    System.out.println("Name: " + jobRun.getName());
                     jobRun.setSkippedTestcasesCount(build.getSkippedTestcases());
-                    jobRun.setStatus(build.getStatus());
+                    jobRun.setStatus(Status.valueOf(build.getStatus().name()));
                     jobRun.setStatusWeight(build.getStatus().getStatus());
-                    jobRun.setTestcasesCount(build.getTestcases());
+                    jobRun.setTotalTestcasesCount(build.getTestcases());
+                    jobRun.setTotalTestsuitesCount(build.getTestsuites().size());
                     jobRun.getTestsuites().addAll(build.getTestsuites());
                     jobRun.getProperties().addAll(build.getProperties());
                     jobRun.getSystemProperties().addAll(build.getSystemProperties());
-                    jobRun.getVariables().addAll(build.getVariables());
-                    jobRunRepository.save(jobRun);
+                    jobRun.getBuildProperties().addAll(build.getVariables());
+                    buildRepository.save(jobRun);
                 }
             }
         });

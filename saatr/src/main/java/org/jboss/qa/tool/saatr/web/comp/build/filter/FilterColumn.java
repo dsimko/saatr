@@ -38,11 +38,11 @@ public class FilterColumn extends PropertyColumn<BuildFilter, String> {
         if (filter.getCreatedTo() != null) {
             append(filter.getCreatedTo(), builder);
         }
-        if (!filter.getVariables().isEmpty()) {
-            appendProperties(filter.getVariables(), builder);
+        if (!filter.getBuildProperties().isEmpty()) {
+            appendProperties(filter.getBuildProperties(), builder);
         }
-        if (!filter.getSystemParams().isEmpty()) {
-            appendProperties(filter.getSystemParams(), builder);
+        if (!filter.getSystemProperties().isEmpty()) {
+            appendProperties(filter.getSystemProperties(), builder);
         }
         if (!filter.getProperties().isEmpty()) {
             appendProperties(filter.getProperties(), builder);

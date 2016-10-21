@@ -25,10 +25,10 @@ import java.util.Set;
 
 import org.apache.wicket.MetaDataKey;
 import org.apache.wicket.Session;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
+import org.jboss.qa.tool.saatr.domain.build.Build;
 
 @SuppressWarnings("serial")
-public class BuildExpansion implements Set<BuildDocument>, Serializable {
+public class BuildExpansion implements Set<Build>, Serializable {
 
     private static MetaDataKey<BuildExpansion> KEY = new MetaDataKey<BuildExpansion>() {
 
@@ -51,24 +51,24 @@ public class BuildExpansion implements Set<BuildDocument>, Serializable {
     }
 
     @Override
-    public boolean add(BuildDocument build) {
+    public boolean add(Build build) {
         if (build == null) {
             return false;
         } else if (inverse) {
-            return ids.remove(build.getJobName());
+            return ids.remove(build.getNameWithConfiguration());
         } else {
-            return ids.add(build.getJobName());
+            return ids.add(build.getNameWithConfiguration());
         }
     }
 
     @Override
     public boolean remove(Object o) {
-        BuildDocument build = (BuildDocument) o;
+        Build build = (Build) o;
 
         if (inverse) {
-            return ids.add(build.getJobName());
+            return ids.add(build.getNameWithConfiguration());
         } else {
-            return ids.remove(build.getJobName());
+            return ids.remove(build.getNameWithConfiguration());
         }
     }
 
@@ -77,12 +77,12 @@ public class BuildExpansion implements Set<BuildDocument>, Serializable {
         if (o == null) {
             return false;
         }
-        BuildDocument build = (BuildDocument) o;
+        Build build = (Build) o;
 
         if (inverse) {
-            return !ids.contains(build.getJobName());
+            return !ids.contains(build.getNameWithConfiguration());
         } else {
-            return ids.contains(build.getJobName());
+            return ids.contains(build.getNameWithConfiguration());
         }
     }
 
@@ -107,7 +107,7 @@ public class BuildExpansion implements Set<BuildDocument>, Serializable {
     }
 
     @Override
-    public Iterator<BuildDocument> iterator() {
+    public Iterator<Build> iterator() {
         throw new UnsupportedOperationException();
     }
 
@@ -122,7 +122,7 @@ public class BuildExpansion implements Set<BuildDocument>, Serializable {
     }
 
     @Override
-    public boolean addAll(Collection<? extends BuildDocument> c) {
+    public boolean addAll(Collection<? extends Build> c) {
         throw new UnsupportedOperationException();
     }
 

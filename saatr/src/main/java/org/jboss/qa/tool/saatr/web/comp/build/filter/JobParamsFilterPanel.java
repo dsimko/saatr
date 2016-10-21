@@ -21,7 +21,7 @@ public class JobParamsFilterPanel extends AbsractPropertiesFilterPanel {
 
     @Override
     protected List<PropertyDto> getProperties() {
-        return getModelObject().getVariables();
+        return getModelObject().getBuildProperties();
     }
 
     @Override

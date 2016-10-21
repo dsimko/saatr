@@ -17,7 +17,8 @@ import org.apache.wicket.markup.repeater.RefreshingView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
+import org.jboss.qa.tool.saatr.domain.build.Build;
+import org.jboss.qa.tool.saatr.domain.build.Build.HtmlRenderer;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
 import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument;
 import org.jboss.qa.tool.saatr.web.comp.SmartLinkParser;
@@ -31,17 +32,17 @@ import org.springframework.util.StringUtils;
  *
  */
 @SuppressWarnings("serial")
-public class BuildPanel extends GenericPanel<BuildDocument> {
+public class BuildPanel extends GenericPanel<Build> {
 
-    public BuildPanel(String id, final IModel<BuildDocument> model) {
+    public BuildPanel(String id, final IModel<Build> model) {
         super(id, new CompoundPropertyModel<>(model));
-        add(new Label("jobName"));
+        add(new Label("fullName"));
         add(new Label("buildNumber"));
         add(new Label("status", new AbstractReadOnlyModel<String>() {
 
             @Override
             public String getObject() {
-                return StatusColumn.getStatusHtml(getModelObject());
+                return HtmlRenderer.getStatusHtml(getModelObject());
             }
         }).setEscapeModelStrings(false));
         add(DateLabel.forDatePattern("created", "yyyy-MM-dd' 'HH:mm:ss' 'Z"));
@@ -79,7 +80,7 @@ public class BuildPanel extends GenericPanel<BuildDocument> {
 
             @Override
             protected Iterator<IModel<PropertyData>> getItemModels() {
-                return getModelObject().getVariables().stream().filter(p -> !StringUtils.isEmpty(p.getValue())).sorted().map(
+                return getModelObject().getBuildProperties().stream().filter(p -> !StringUtils.isEmpty(p.getValue())).sorted().map(
                         p -> (IModel<PropertyData>) new CompoundPropertyModel<>(p)).iterator();
             }
 

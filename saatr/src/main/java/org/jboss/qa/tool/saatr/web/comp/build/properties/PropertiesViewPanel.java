@@ -16,7 +16,7 @@ import org.apache.wicket.model.IModel;
 import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapFeedbackPanel;
-import org.jboss.qa.tool.saatr.web.comp.build.BuildsTreeTablePanel.CopyToAllSelectedEvent;
+import org.jboss.qa.tool.saatr.web.comp.build.BuildTreePanel.CopyToAllSelectedEvent;
 
 /**
  * @author dsimko@redhat.com

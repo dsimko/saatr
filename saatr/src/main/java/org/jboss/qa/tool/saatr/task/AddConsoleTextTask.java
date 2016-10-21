@@ -3,7 +3,7 @@ package org.jboss.qa.tool.saatr.task;
 
 import java.net.URI;
 
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
+import org.jboss.qa.tool.saatr.domain.build.Build;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,11 +39,11 @@ public class AddConsoleTextTask {
     @Scheduled(fixedRate = 1000 * 60 * 10) // every 10 minutes
     public void addConsoleText() {
         log.info("Loading additional info started");
-        for (BuildDocument buildDocument : buildRepository.findFailedWithoutAdditionalInfo()) {
-            buildDocument.getVariables().stream().filter(p -> BUILD_URL.equals(p.getName())).findFirst().ifPresent(p -> {
+        for (Build build : buildRepository.findFailedWithoutAdditionalInfo()) {
+            build.getBuildProperties().stream().filter(p -> BUILD_URL.equals(p.getName())).findFirst().ifPresent(p -> {
                 try {
                     String response = restTemplate.getForObject(new URI(p.getValue() + CONSOLE_TEXT), String.class);
-                    buildRepository.addConsoleText(buildDocument, response);
+                    buildRepository.addConsoleText(build, response);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                 }

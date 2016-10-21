@@ -36,7 +36,7 @@ public class BuildFilter implements DocumentWithID<ObjectId>, Cloneable {
 
     private String jobName;
 
-    private String jobCategory;
+    private String jobConfiguration;
 
     private Status status;
 
@@ -44,20 +44,11 @@ public class BuildFilter implements DocumentWithID<ObjectId>, Cloneable {
 
     private Date createdTo;
 
-    private final List<PropertyDto> variables = new ArrayList<>();
+    private final List<PropertyDto> buildProperties = new ArrayList<>();
 
-    private final List<PropertyDto> systemParams = new ArrayList<>();
+    private final List<PropertyDto> systemProperties = new ArrayList<>();
 
     private final List<PropertyDto> properties = new ArrayList<>();
-
-    @Override
-    public BuildFilter clone() {
-        try {
-            return (BuildFilter) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     @Data
     @NoArgsConstructor

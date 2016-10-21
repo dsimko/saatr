@@ -11,10 +11,8 @@ import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
+import org.jboss.qa.tool.saatr.domain.build.Build;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
-import org.jboss.qa.tool.saatr.domain.hierarchical.JobRun;
-import org.jboss.qa.tool.saatr.web.comp.DocumentModel;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapTabbedPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildsFilterPanel;
 
@@ -22,11 +20,11 @@ import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildsFilterPanel;
  * @author dsimko@redhat.com
  */
 @SuppressWarnings("serial")
-public class BuildsPanel extends GenericPanel<BuildDocument> {
+public class BuildsPanel extends GenericPanel<Build> {
 
     protected IModel<BuildFilter> filter = Model.of(new BuildFilter());
 
-    public BuildsPanel(String id, IModel<BuildDocument> model) {
+    public BuildsPanel(String id, IModel<Build> model) {
         super(id, model);
         add(new BuildsFilterPanel("filter", filter));
         List<ITab> tabs = new ArrayList<ITab>();
@@ -40,21 +38,7 @@ public class BuildsPanel extends GenericPanel<BuildDocument> {
 
             @Override
             public WebMarkupContainer getPanel(String panelId) {
-                return new BuildsTreeTablePanel(panelId, model, filter);
-            }
-        });
-
-        tabs.add(new AbstractTab(new AbstractReadOnlyModel<String>() {
-
-            @Override
-            public String getObject() {
-                return "<span class=\"glyphicon glyphicon-tree-conifer\"></span> New Tree";
-            }
-        }) {
-
-            @Override
-            public WebMarkupContainer getPanel(String panelId) {
-                return new JobRunsTreePanel(panelId, new DocumentModel<JobRun>(JobRun.class, null), filter);
+                return new BuildTreePanel(panelId, model, filter);
             }
         });
         tabs.add(new AbstractTab(new AbstractReadOnlyModel<String>() {

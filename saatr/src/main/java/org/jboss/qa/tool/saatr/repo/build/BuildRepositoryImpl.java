@@ -9,6 +9,7 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -19,10 +20,10 @@ import java.util.stream.Collectors;
 import org.bson.BsonDocument;
 import org.bson.BsonString;
 import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
-import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
+import org.jboss.qa.tool.saatr.domain.build.Build;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument.Status;
+import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter.PropertyDto;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter.PropertyDto.Operation;
 import org.jboss.qa.tool.saatr.domain.build.ConsoleTextDocument;
@@ -68,22 +69,22 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
     }
 
     @Override
-    public Iterator<BuildDocument> query(long first, long count, BuildFilter filter) {
+    public Iterator<Build> query(long first, long count, BuildFilter filter) {
         final Query query = new Query();
         query.limit((int) count);
         query.skip((int) first);
         query.with(new Sort(Sort.Direction.DESC, "id"));
-        query.addCriteria(createCriteria(filter, false, true));
-        return template.find(query, BuildDocument.class).iterator();
+        query.addCriteria(createCriteria(filter, false));
+        return template.find(query, Build.class).iterator();
     }
 
     @Override
     public long count(BuildFilter filter) {
-        return template.count(Query.query(createCriteria(filter, false, true)), BuildDocument.class);
+        return template.count(Query.query(createCriteria(filter, false)), Build.class);
     }
 
     @Override
-    public void fillBuildByTestsuites(List<Testsuite> input, BuildDocument build) {
+    public void fillBuildByTestsuites(List<Testsuite> input, Build build) {
         for (Testsuite testsuite : input) {
             TestsuiteDocument testsuiteData = TestsuiteDocument.create(testsuite);
 
@@ -93,11 +94,11 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
 
             build.getTestsuites().add(testsuiteData);
         }
-        build.setStatus(BuildDocument.determineStatus(build.getTestsuites()));
+        build.setStatus(Build.determineStatus(build.getTestsuites()));
         calculateStatistics(build);
     }
 
-    private void calculateStatistics(BuildDocument build) {
+    private void calculateStatistics(Build build) {
         int failedTestsuites = 0, errorTestsuites = 0, testcases = 0, failedTestcases = 0, errorTestcases = 0, skippedTestcases = 0;
         for (TestsuiteDocument testsuite : build.getTestsuites()) {
             if (testsuite.getStatus() == TestsuiteDocument.Status.Error) {
@@ -119,12 +120,13 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
                 }
             }
         }
-        build.setFailedTestsuites(failedTestsuites);
-        build.setErrorTestsuites(errorTestsuites);
-        build.setTestcases(testcases);
-        build.setFailedTestcases(failedTestcases);
-        build.setErrorTestcases(errorTestcases);
-        build.setSkippedTestcases(skippedTestcases);
+        build.setFailedTestsuitesCount(failedTestsuites);
+        build.setErrorTestsuitesCount(errorTestsuites);
+        build.setTotalTestsuitesCount(build.getTestsuites().size());
+        build.setTotalTestcasesCount(testcases);
+        build.setFailedTestcasesCount(failedTestcases);
+        build.setErrorTestcasesCount(errorTestcases);
+        build.setSkippedTestcasesCount(skippedTestcases);
     }
 
     @Override
@@ -145,15 +147,15 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
     public <T extends DocumentWithProperties<?>> void addOrUpdateProperties(T document, Set<PropertyData> properties) {
         log.info("Adding or updating properties {} for {}", properties, document);
         List<PropertyData> filteredProperties = properties.stream().filter(c -> c.getValue() != null).collect(Collectors.toList());
-        if (document instanceof BuildDocument) {
-            template.updateFirst(Query.query(where("id").is(document.getId())), Update.update("properties", filteredProperties), BuildDocument.class);
+        if (document instanceof Build) {
+            template.updateFirst(Query.query(where("id").is(document.getId())), Update.update("properties", filteredProperties), Build.class);
         } else if (document instanceof TestsuiteDocument) {
             template.updateFirst(Query.query(where("testsuites.id").is(document.getId())), Update.update("testsuites.$.properties", filteredProperties),
-                    BuildDocument.class);
+                    Build.class);
         } else if (document instanceof TestcaseDocument) {
             TestcaseDocument testcaseData = (TestcaseDocument) document;
             template.updateFirst(Query.query(where("testsuites.testcases.id").is(testcaseData.getId())),
-                    Update.update("testsuites.$.testcases." + testcaseData.getIndex() + ".properties", filteredProperties), BuildDocument.class);
+                    Update.update("testsuites.$.testcases." + testcaseData.getIndex() + ".properties", filteredProperties), Build.class);
         }
     }
 
@@ -162,7 +164,7 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
         Query query = new Query();
         query.addCriteria(where("testsuites.id").is(id));
         query.fields().include("testsuites.$");
-        return template.findOne(query, BuildDocument.class).getTestsuites().get(0);
+        return template.findOne(query, Build.class).getTestsuites().get(0);
     }
 
     @Override
@@ -170,19 +172,19 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
         Query query = new Query();
         query.addCriteria(where("testsuites.testcases.id").is(id));
         query.fields().include("testsuites.$.testcases");
-        TestcaseDocument testcaseData = template.findOne(query, BuildDocument.class).getTestsuites().get(0).getTestcases().get(index);
+        TestcaseDocument testcaseData = template.findOne(query, Build.class).getTestsuites().get(0).getTestcases().get(index);
         testcaseData.setIndex(index);
         return testcaseData;
     }
 
     @Override
     public Iterable<String> findDistinctVariableNames() {
-        return findDistinctPropertyNames("variables");
+        return findDistinctPropertyNames("buildProperties");
     }
 
     @Override
     public Iterable<String> findDistinctVariableValues(String name) {
-        return findDistinctPropertyValues("variables", name);
+        return findDistinctPropertyValues("buildProperties", name);
     }
 
     @Override
@@ -207,15 +209,15 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
 
     @SuppressWarnings("unchecked")
     private Iterable<String> findDistinctPropertyNames(String fieldName) {
-        return template.getCollection(BuildDocument.COLLECTION_NAME).distinct(fieldName + ".name");
+        return template.getCollection(Build.COLLECTION_NAME).distinct(fieldName + ".name");
     }
 
     @SuppressWarnings("unchecked")
     private Iterable<String> findDistinctPropertyValues(String fieldName, String propertyName) {
         if (propertyName == null) {
-            return template.getCollection(BuildDocument.COLLECTION_NAME).distinct(fieldName + ".value");
+            return template.getCollection(Build.COLLECTION_NAME).distinct(fieldName + ".value");
         }
-        return (Iterable<String>) template.getCollection(BuildDocument.COLLECTION_NAME).distinct(fieldName).stream().filter(
+        return (Iterable<String>) template.getCollection(Build.COLLECTION_NAME).distinct(fieldName).stream().filter(
                 p -> p != null && propertyName.equals(((BasicDBObject) p).get("name"))).map(p -> ((BasicDBObject) p).get("value")).collect(Collectors.toList());
     }
 
@@ -224,7 +226,7 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
         Object json = JSON.parse(query);
         StringBuilder result = new StringBuilder();
         if (json instanceof BasicDBList) {
-            DBCollection suites = template.getCollection(BuildDocument.COLLECTION_NAME);
+            DBCollection suites = template.getCollection(Build.COLLECTION_NAME);
             @SuppressWarnings("unchecked")
             AggregationOutput suitesIt = suites.aggregate((List<? extends DBObject>) json);
             suitesIt.results().forEach(c -> {
@@ -235,67 +237,69 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
     }
 
     @Override
-    public List<BuildDocument> findFailedWithoutAdditionalInfo() {
+    public List<Build> findFailedWithoutAdditionalInfo() {
         Query query = Query.query(where("consoleTextId").is(null).andOperator(where("status").is(Status.Failed)));
-        return template.find(query, BuildDocument.class);
+        query.fields().exclude("testsuites");
+        return template.find(query, Build.class);
     }
 
     @Override
-    public void addConsoleText(BuildDocument buildDocument, String consoleText) {
+    public void addConsoleText(Build buildDocument, String consoleText) {
         ConsoleTextDocument consoleTextDocument = new ConsoleTextDocument(null, consoleText);
         template.save(consoleTextDocument);
-        template.updateFirst(Query.query(where("id").is(buildDocument.getId())), Update.update("consoleTextId", consoleTextDocument.getId()),
-                BuildDocument.class);
+        template.updateFirst(Query.query(where("id").is(buildDocument.getId())), Update.update("consoleTextId", consoleTextDocument.getId()), Build.class);
     }
 
     @Override
-    public Iterator<BuildDocument> getRoots(BuildFilter filter) {
-        Aggregation agg = newAggregation(match(createCriteria(filter, true, true)),
-                group("jobCategory").count().as("numberOfChildren").sum("jobStatus").as("jobStatus"), sort(Direction.ASC, "_id"),
-                project("jobStatus", "numberOfChildren").and("_id").as("jobName").andExclude("_id"));
-        AggregationResults<BuildDocument> results = template.aggregate(agg, BuildDocument.COLLECTION_NAME, BuildDocument.class);
-        List<BuildDocument> mappedResult = results.getMappedResults();
+    public Iterator<Build> getRoots(BuildFilter filter) {
+        Aggregation agg = newAggregation(match(createCriteria(filter, true)), group("name").count().as("childCount").sum("statusWeight").as("statusWeight"),
+                sort(Direction.ASC, "_id"), project("statusWeight", "childCount").and("_id").as("name").andExclude("_id"));
+        AggregationResults<Build> results = template.aggregate(agg, Build.COLLECTION_NAME, Build.class);
+        List<Build> mappedResult = results.getMappedResults();
         return mappedResult.iterator();
     }
 
-    public Iterator<BuildDocument> getChildren(BuildDocument parent, final BuildFilter filter) {
-        if (parent.getJobName().contains("/") && parent.getNumberOfChildren() != null && parent.getNumberOfChildren() > 0) {
-            BuildFilter newfilter = filter.clone();
-            newfilter.setJobName(parent.getJobName());
-            return template.find(Query.query(createCriteria(newfilter, false, false)), BuildDocument.class).iterator();
+    @Override
+    public Iterator<Build> getChildren(Build parent, final BuildFilter filter) {
+        if (parent.getId() != null) {
+            return Collections.emptyIterator();
+        }
+        if (parent.getConfiguration() == null) {
+            Aggregation agg = newAggregation(match(createCriteria(filter, true, where("name").is(parent.getName()))),
+                    group("name", "configuration").count().as("childCount").sum("statusWeight").as("statusWeight"), sort(Direction.ASC, "_id"),
+                    project("statusWeight", "childCount").and("_id.name").as("name").and("_id.configuration").as("configuration").andExclude("_id"));
+            AggregationResults<Build> results = template.aggregate(agg, Build.COLLECTION_NAME, Build.class);
+            return results.getMappedResults().iterator();
         } else {
-            BuildFilter newfilter = filter.clone();
-            newfilter.setJobCategory(parent.getJobName());
-            Aggregation agg = newAggregation(match(createCriteria(newfilter, true, true)),
-                    group("jobName").count().as("numberOfChildren").sum("jobStatus").as("jobStatus"), sort(Direction.ASC, "_id"),
-                    project("jobStatus", "numberOfChildren").and("_id").as("jobName").andExclude("_id"));
-            AggregationResults<BuildDocument> results = template.aggregate(agg, BuildDocument.COLLECTION_NAME, BuildDocument.class);
-            return results.getMappedResults().stream().map(b -> {
-                if (b.getNumberOfChildren() > 1) {
-                    return b;
-                } else {
-                    BuildFilter newfilter2 = filter.clone();
-                    newfilter2.setJobName(b.getJobName());
-                    return template.findOne(Query.query(createCriteria(newfilter2, false, false)), BuildDocument.class);
-                }
-            }).iterator();
+            Query query = Query.query(createCriteria(filter, false, where("name").is(parent.getName()), where("configuration").is(parent.getConfiguration())));
+            query.fields().include("id");
+            query.fields().include("name");
+            query.fields().include("configuration");
+            query.fields().include("buildNumber");
+            query.fields().include("status");
+            query.fields().include("failedTestsuitesCount");
+            query.fields().include("errorTestsuitesCount");
+            query.fields().include("testcasesCount");
+            query.fields().include("failedTestcasesCount");
+            query.fields().include("errorTestcasesCount");
+            query.fields().include("skippedTestcasesCount");
+            return template.find(query, Build.class, Build.COLLECTION_NAME).iterator();
         }
     }
 
-    private Criteria createCriteria(BuildFilter filter, boolean convertoToBson, boolean jobNameLike) {
+    private Criteria createCriteria(BuildFilter filter, boolean convertoToBson, Criteria... additionaleCriterias) {
         List<Criteria> criterias = new ArrayList<>();
+        for (Criteria criteria : additionaleCriterias) {
+            criterias.add(criteria);
+        }
         if (filter.getBuildNumber() != null) {
             criterias.add(where("buildNumber").is(filter.getBuildNumber()));
         }
         if (filter.getJobName() != null) {
-            if (jobNameLike) {
-                criterias.add(where("jobName").regex(filter.getJobName() + ".*"));
-            } else {
-                criterias.add(where("jobName").is(filter.getJobName()));
-            }
+            criterias.add(where("fullName").regex(filter.getJobName() + ".*"));
         }
-        if (filter.getJobCategory() != null) {
-            criterias.add(where("jobCategory").is(filter.getJobCategory()));
+        if (filter.getJobConfiguration() != null) {
+            criterias.add(where("configuration").is(filter.getJobConfiguration()));
         }
         if (filter.getStatus() != null) {
             criterias.add(where("status").is(filter.getStatus().name()));
@@ -306,11 +310,11 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
         if (filter.getCreatedTo() != null) {
             criterias.add(where("created").lte(filter.getCreatedTo()));
         }
-        if (!filter.getVariables().isEmpty()) {
-            addPropertiesCriteria(filter.getVariables(), convertoToBson, criterias, "variables");
+        if (!filter.getBuildProperties().isEmpty()) {
+            addPropertiesCriteria(filter.getBuildProperties(), convertoToBson, criterias, "buildProperties");
         }
-        if (!filter.getSystemParams().isEmpty()) {
-            addPropertiesCriteria(filter.getSystemParams(), convertoToBson, criterias, "systemProperties");
+        if (!filter.getSystemProperties().isEmpty()) {
+            addPropertiesCriteria(filter.getSystemProperties(), convertoToBson, criterias, "systemProperties");
         }
         if (!filter.getProperties().isEmpty()) {
             addPropertiesCriteria(filter.getProperties(), convertoToBson, criterias, "properties");

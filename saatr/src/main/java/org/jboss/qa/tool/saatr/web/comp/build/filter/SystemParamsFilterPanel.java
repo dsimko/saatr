@@ -21,7 +21,7 @@ public class SystemParamsFilterPanel extends AbsractPropertiesFilterPanel {
 
     @Override
     protected List<PropertyDto> getProperties() {
-        return getModelObject().getSystemParams();
+        return getModelObject().getSystemProperties();
     }
 
     @Override
