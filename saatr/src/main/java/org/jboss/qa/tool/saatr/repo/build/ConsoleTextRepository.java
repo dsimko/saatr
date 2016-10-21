@@ -2,7 +2,7 @@
 package org.jboss.qa.tool.saatr.repo.build;
 
 import org.bson.types.ObjectId;
-import org.jboss.qa.tool.saatr.domain.build.ConsoleTextDocument;
+import org.jboss.qa.tool.saatr.domain.build.ConsoleText;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
@@ -10,6 +10,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * 
  * @author dsimko@redhat.com
  */
-public interface ConsoleTextRepository extends MongoRepository<ConsoleTextDocument, ObjectId> {
+public interface ConsoleTextRepository extends MongoRepository<ConsoleText, ObjectId> {
 
 }

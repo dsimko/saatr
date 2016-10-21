@@ -1,7 +1,6 @@
 
 package org.jboss.qa.tool.saatr.domain.build;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,14 +10,12 @@ import java.util.TreeSet;
 import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.domain.DocumentWithID;
 import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
-import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite.Properties;
+import org.jboss.qa.tool.saatr.domain.build.Build.Status;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * An entity representing an {@link BuildDocument}.
@@ -31,22 +28,6 @@ import lombok.NoArgsConstructor;
 public class BuildDocument implements DocumentWithProperties<ObjectId>, DocumentWithID<ObjectId> {
 
     public static final String COLLECTION_NAME = "builds";
-
-    public static enum Status {
-
-        Success(0), SuccessWithFlakyFailure(0), SuccessWithFlakyError(0), Failed(1);
-
-        int status;
-
-        Status(int status) {
-            this.status = status;
-        }
-
-        public int getStatus() {
-            return status;
-        }
-
-    }
 
     @Id
     private ObjectId id;
@@ -87,13 +68,13 @@ public class BuildDocument implements DocumentWithProperties<ObjectId>, Document
 
     private ObjectId consoleTextId;
 
-    private final Set<PropertyData> systemProperties = new TreeSet<>();
+    private final Set<BuildProperty> systemProperties = new TreeSet<>();
 
-    private final Set<PropertyData> variables = new TreeSet<>();
+    private final Set<BuildProperty> variables = new TreeSet<>();
 
-    private final Set<PropertyData> properties = new TreeSet<>();
+    private final Set<BuildProperty> properties = new TreeSet<>();
 
-    private final List<TestsuiteDocument> testsuites = new ArrayList<>();
+    private final List<TestSuite> testsuites = new ArrayList<>();
 
     public void setJobName(String jobName) {
         if (jobName == null) {
@@ -113,66 +94,13 @@ public class BuildDocument implements DocumentWithProperties<ObjectId>, Document
         if (status == null) {
             this.jobStatus = 0;
         } else {
-            this.jobStatus = status.getStatus();
+            this.jobStatus = status.getWeight();
         }
     }
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class PropertyData implements Serializable, Comparable<PropertyData> {
-
-        private String name;
-
-        private String value;
-
-        public static List<PropertyData> create(List<Properties> properties) {
-            List<PropertyData> list = new ArrayList<>();
-            for (Properties props : properties) {
-                for (Properties.Property prop : props.getProperty()) {
-                    list.add(new PropertyData(prop.getName(), prop.getValue()));
-                }
-            }
-            return list;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            PropertyData other = (PropertyData) obj;
-            if (name == null) {
-                if (other.name != null)
-                    return false;
-            } else if (!name.equals(other.name))
-                return false;
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((name == null) ? 0 : name.hashCode());
-            return result;
-        }
-
-        @Override
-        public int compareTo(PropertyData o) {
-            if (this.name == null || o == null) {
-                return 0;
-            }
-            return this.name.compareToIgnoreCase(o.name);
-        }
-    }
-
-    public static Status determineStatus(List<TestsuiteDocument> testsuites) {
+    public static Status determineStatus(List<TestSuite> testsuites) {
         Status status = Status.Success;
-        for (TestsuiteDocument testsuiteData : testsuites) {
+        for (TestSuite testsuiteData : testsuites) {
             switch (testsuiteData.getStatus()) {
                 case Failure:
                 case Error:

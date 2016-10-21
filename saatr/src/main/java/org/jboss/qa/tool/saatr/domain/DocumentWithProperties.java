@@ -4,11 +4,12 @@ package org.jboss.qa.tool.saatr.domain;
 import java.io.Serializable;
 import java.util.Set;
 
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
+import org.jboss.qa.tool.saatr.domain.build.BuildProperty;
+
 
 public interface DocumentWithProperties<T extends Serializable> extends Serializable {
 
     T getId();
 
-    Set<PropertyData> getProperties();
+    Set<BuildProperty> getProperties();
 }

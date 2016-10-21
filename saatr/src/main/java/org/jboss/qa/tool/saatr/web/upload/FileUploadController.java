@@ -3,8 +3,8 @@ package org.jboss.qa.tool.saatr.web.upload;
 
 import java.util.Map;
 
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
+import org.jboss.qa.tool.saatr.domain.build.Build;
+import org.jboss.qa.tool.saatr.domain.build.BuildProperty;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 import org.jboss.qa.tool.saatr.util.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +24,6 @@ public class FileUploadController {
     private static final String JOB_NAME_PARAM_NAME = "jobName";
 
     private static final String BUILD_NUMBER_NAME_PARAM_NAME = "buildNumber";
-
-    private static final String TIMESTAMP_NAME_PARAM_NAME = "timestamp";
 
     private static final String DURATION_NAME_PARAM_NAME = "duration";
 
@@ -48,8 +46,8 @@ public class FileUploadController {
         }
     }
 
-    private BuildDocument createBuild(Map<String, String> allRequestParams, MultipartFile file) throws Exception {
-        BuildDocument build = new BuildDocument();
+    private Build createBuild(Map<String, String> allRequestParams, MultipartFile file) throws Exception {
+        Build build = new Build();
         if (file != null) {
             buildRepository.fillBuildByTestsuites(IOUtils.unzipAndUnmarshalTestsuite(file.getInputStream()), build);
         }
@@ -59,15 +57,11 @@ public class FileUploadController {
             log.debug("Uploaded fileItem with name = {} and value = {}", name, value);
             switch (name) {
                 case JOB_NAME_PARAM_NAME: {
-                    build.setJobName(value);
+                    build.setFullName(value);
                     break;
                 }
                 case BUILD_NUMBER_NAME_PARAM_NAME: {
                     build.setBuildNumber(toLong(value));
-                    break;
-                }
-                case TIMESTAMP_NAME_PARAM_NAME: {
-                    build.setTimestamp(toLong(value));
                     break;
                 }
                 case DURATION_NAME_PARAM_NAME: {
@@ -75,7 +69,7 @@ public class FileUploadController {
                     break;
                 }
                 default:
-                    buildRepository.addIfAbsent(new PropertyData(name, value), build.getVariables());
+                    buildRepository.addIfAbsent(new BuildProperty(name, value), build.getBuildProperties());
             }
         });
         return build;

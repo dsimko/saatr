@@ -13,8 +13,8 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument;
-import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument.Status;
+import org.jboss.qa.tool.saatr.domain.build.TestSuite;
+import org.jboss.qa.tool.saatr.domain.build.TestSuite.Status;
 
 /**
  * 
@@ -22,11 +22,11 @@ import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument.Status;
  *
  */
 @SuppressWarnings("serial")
-public class TestsuitePanel extends GenericPanel<TestsuiteDocument> {
+public class TestsuitePanel extends GenericPanel<TestSuite> {
 
     private Component body;
 
-    public TestsuitePanel(String id, final IModel<TestsuiteDocument> model) {
+    public TestsuitePanel(String id, final IModel<TestSuite> model) {
         super(id, new CompoundPropertyModel<>(model));
         final WebMarkupContainer panel = new WebMarkupContainer("panel") {
 

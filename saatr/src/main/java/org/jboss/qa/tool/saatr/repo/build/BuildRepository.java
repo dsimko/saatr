@@ -2,7 +2,7 @@
 package org.jboss.qa.tool.saatr.repo.build;
 
 import org.bson.types.ObjectId;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
+import org.jboss.qa.tool.saatr.domain.build.Build;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
@@ -11,6 +11,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * 
  * @author dsimko@redhat.com
  */
-public interface BuildRepository extends MongoRepository<BuildDocument, ObjectId>, BuildRepositoryCustom {
+public interface BuildRepository extends MongoRepository<Build, ObjectId>, BuildRepositoryCustom {
 
 }

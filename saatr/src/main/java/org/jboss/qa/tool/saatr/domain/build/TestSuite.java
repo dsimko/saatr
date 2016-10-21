@@ -13,8 +13,7 @@ import java.util.UUID;
 import javax.xml.bind.JAXBElement;
 
 import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
-import org.jboss.qa.tool.saatr.domain.build.TestcaseDocument.FailureData;
+import org.jboss.qa.tool.saatr.domain.build.TestCase.Fragment;
 import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite;
 import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite.Testcase;
 import org.springframework.data.annotation.Transient;
@@ -24,21 +23,21 @@ import org.w3c.dom.Element;
 import lombok.Data;
 
 /**
- * An embedded document representing an {@link TestsuiteDocument}.
+ * An embedded document representing an {@link TestSuite}.
  * 
  * @author dsimko@redhat.com
  */
 @Data
 @SuppressWarnings("serial")
-public class TestsuiteDocument implements DocumentWithProperties<UUID>, Comparable<TestsuiteDocument> {
+public class TestSuite implements DocumentWithProperties<UUID>, Comparable<TestSuite> {
 
     public static enum Status {
         Success, FlakyError, FlakyFailure, Error, Failure
     }
 
-    private final Set<PropertyData> properties = new TreeSet<>();
+    private final Set<BuildProperty> properties = new TreeSet<>();
 
-    private final List<TestcaseDocument> testcases = new ArrayList<>();
+    private final List<TestCase> testcases = new ArrayList<>();
 
     @Indexed
     private String name;
@@ -64,9 +63,9 @@ public class TestsuiteDocument implements DocumentWithProperties<UUID>, Comparab
     @Transient
     private boolean dirty;
 
-    public static TestsuiteDocument create(Testsuite testsuite) {
+    public static TestSuite create(Testsuite testsuite) {
 
-        TestsuiteDocument testsuiteData = new TestsuiteDocument();
+        TestSuite testsuiteData = new TestSuite();
         testsuiteData.name = testsuite.getName();
         testsuiteData.time = toDouble(testsuite.getTime());
         testsuiteData.tests = toInteger(testsuite.getTests());
@@ -76,29 +75,29 @@ public class TestsuiteDocument implements DocumentWithProperties<UUID>, Comparab
         testsuiteData.group = testsuite.getGroup();
 
         for (Testcase testcase : testsuite.getTestcase()) {
-            TestcaseDocument testcaseData = new TestcaseDocument();
+            TestCase testcaseData = new TestCase();
             testcaseData.systemOut = toString(testcase.getSystemOut());
             testcaseData.systemErr = toString(testcase.getSystemErr());
             testcaseData.name = testcase.getName();
             testcaseData.classname = testcase.getClassname();
             testcaseData.group = testcase.getGroup();
             testcaseData.time = toDouble(testcase.getTime());
-            testcaseData.status = TestcaseDocument.determineStatus(testcase);
+            testcaseData.status = TestCase.determineStatus(testcase);
             JAXBElement<Testsuite.Testcase.Error> error = testcase.getError();
             if (error != null) {
-                testcaseData.error = new FailureData();
+                testcaseData.error = new Fragment();
                 testcaseData.error.message = error.getValue().getMessage();
                 testcaseData.error.type = error.getValue().getType();
                 testcaseData.error.value = error.getValue().getValue();
             }
             JAXBElement<Testsuite.Testcase.Skipped> skipped = testcase.getSkipped();
             if (skipped != null) {
-                testcaseData.skipped = new FailureData();
+                testcaseData.skipped = new Fragment();
                 testcaseData.skipped.message = skipped.getValue().getMessage();
                 testcaseData.skipped.value = skipped.getValue().getValue();
             }
             for (Testsuite.Testcase.Failure failure : testcase.getFailure()) {
-                FailureData failureData = new FailureData();
+                Fragment failureData = new Fragment();
                 failureData.message = failure.getMessage();
                 failureData.time = toDouble(failure.getTime());
                 failureData.type = failure.getType();
@@ -106,7 +105,7 @@ public class TestsuiteDocument implements DocumentWithProperties<UUID>, Comparab
                 testcaseData.failure.add(failureData);
             }
             for (Testsuite.Testcase.FlakyFailure failure : testcase.getFlakyFailure()) {
-                FailureData failureData = new FailureData();
+                Fragment failureData = new Fragment();
                 failureData.message = failure.getMessage();
                 failureData.time = toDouble(failure.getTime());
                 failureData.type = failure.getType();
@@ -114,7 +113,7 @@ public class TestsuiteDocument implements DocumentWithProperties<UUID>, Comparab
                 testcaseData.flakyFailures.add(failureData);
             }
             for (Testsuite.Testcase.FlakyError failure : testcase.getFlakyError()) {
-                FailureData failureData = new FailureData();
+                Fragment failureData = new Fragment();
                 failureData.message = failure.getMessage();
                 failureData.time = toDouble(failure.getTime());
                 failureData.type = failure.getType();
@@ -122,7 +121,7 @@ public class TestsuiteDocument implements DocumentWithProperties<UUID>, Comparab
                 testcaseData.flakyErrors.add(failureData);
             }
             for (Testsuite.Testcase.RerunFailure failure : testcase.getRerunFailure()) {
-                FailureData failureData = new FailureData();
+                Fragment failureData = new Fragment();
                 failureData.message = failure.getMessage();
                 failureData.time = toDouble(failure.getTime());
                 failureData.type = failure.getType();
@@ -135,9 +134,9 @@ public class TestsuiteDocument implements DocumentWithProperties<UUID>, Comparab
         return testsuiteData;
     }
 
-    private static Status determineStatus(List<TestcaseDocument> testcases) {
+    private static Status determineStatus(List<TestCase> testcases) {
         Status status = Status.Success;
-        for (TestcaseDocument testcaseData : testcases) {
+        for (TestCase testcaseData : testcases) {
             switch (testcaseData.getStatus()) {
                 case Failure:
                     return Status.Failure;
@@ -188,7 +187,7 @@ public class TestsuiteDocument implements DocumentWithProperties<UUID>, Comparab
     }
 
     @Override
-    public int compareTo(TestsuiteDocument o) {
+    public int compareTo(TestSuite o) {
         if (this.equals(o) || status == null || status == o.status) {
             return 0;
         }
@@ -200,6 +199,6 @@ public class TestsuiteDocument implements DocumentWithProperties<UUID>, Comparab
 
     @Override
     public String toString() {
-        return "TestsuiteData [name=" + name + "]";
+        return "TestSuite [name=" + name + "]";
     }
 }

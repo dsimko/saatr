@@ -7,11 +7,11 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
+import org.jboss.qa.tool.saatr.domain.build.Build;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
-import org.jboss.qa.tool.saatr.domain.build.TestcaseDocument;
-import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument;
+import org.jboss.qa.tool.saatr.domain.build.BuildProperty;
+import org.jboss.qa.tool.saatr.domain.build.TestCase;
+import org.jboss.qa.tool.saatr.domain.build.TestSuite;
 import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite;
 
 /**
@@ -21,15 +21,15 @@ import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite;
  */
 interface BuildRepositoryCustom {
 
-    Iterator<BuildDocument> query(long first, long count, BuildFilter filter);
+    Iterator<Build> query(long first, long count, BuildFilter filter);
 
     long count(BuildFilter filter);
 
-    void fillBuildByTestsuites(List<Testsuite> input, BuildDocument build);
+    void fillBuildByTestsuites(List<Testsuite> input, Build build);
 
-    void addIfAbsent(PropertyData property, Set<PropertyData> properties);
+    void addIfAbsent(BuildProperty property, Set<BuildProperty> properties);
 
-    <T extends DocumentWithProperties<?>> void addOrUpdateProperties(T documentWithProperties, Set<PropertyData> properties);
+    <T extends DocumentWithProperties<?>> void addOrUpdateProperties(T documentWithProperties, Set<BuildProperty> properties);
 
     Iterable<String> findDistinctVariableNames();
 
@@ -43,18 +43,18 @@ interface BuildRepositoryCustom {
 
     Iterable<String> findDistinctPropertiesValues(String name);
 
-    TestsuiteDocument findTestsuiteById(UUID id);
+    TestSuite findTestsuiteById(UUID id);
 
-    TestcaseDocument findTestcaseById(UUID id, int index);
+    TestCase findTestcaseById(UUID id, int index);
 
     String aggregate(String query);
 
-    List<BuildDocument> findFailedWithoutAdditionalInfo();
+    List<Build> findFailedWithoutAdditionalInfo();
 
-    void addConsoleText(BuildDocument buildDocument, String response);
+    void addConsoleText(Build buildDocument, String response);
 
-    Iterator<BuildDocument> getRoots(BuildFilter filter);
+    Iterator<Build> getRoots(BuildFilter filter);
 
-    Iterator<? extends BuildDocument> getChildren(BuildDocument parent, BuildFilter filter);
+    Iterator<? extends Build> getChildren(Build parent, BuildFilter filter);
 
 }

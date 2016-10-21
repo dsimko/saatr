@@ -6,7 +6,7 @@ import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
+import org.jboss.qa.tool.saatr.domain.build.Build;
 import org.jboss.qa.tool.saatr.util.IOUtils;
 
 /**
@@ -14,9 +14,9 @@ import org.jboss.qa.tool.saatr.util.IOUtils;
  *
  */
 @SuppressWarnings("serial")
-public class BuildJsonPanel extends GenericPanel<BuildDocument> {
+public class BuildJsonPanel extends GenericPanel<Build> {
 
-    public BuildJsonPanel(String id, final IModel<BuildDocument> model) {
+    public BuildJsonPanel(String id, final IModel<Build> model) {
         super(id, new CompoundPropertyModel<>(model));
         add(new Label("json", new AbstractReadOnlyModel<String>() {
 

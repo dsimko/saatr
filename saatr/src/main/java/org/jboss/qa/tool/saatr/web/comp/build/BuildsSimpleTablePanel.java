@@ -14,7 +14,7 @@ import org.apache.wicket.injection.Injector;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
+import org.jboss.qa.tool.saatr.domain.build.Build;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 import org.jboss.qa.tool.saatr.web.comp.DocumentModel;
@@ -24,26 +24,26 @@ import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapTable;
  * @author dsimko@redhat.com
  */
 @SuppressWarnings("serial")
-public class BuildsSimpleTablePanel extends GenericPanel<BuildDocument> {
+public class BuildsSimpleTablePanel extends GenericPanel<Build> {
 
-    public BuildsSimpleTablePanel(String id, IModel<BuildDocument> model, IModel<BuildFilter> filterModel) {
+    public BuildsSimpleTablePanel(String id, IModel<Build> model, IModel<BuildFilter> filterModel) {
         super(id, model);
-        List<IColumn<BuildDocument, String>> columns = new ArrayList<IColumn<BuildDocument, String>>();
-        columns.add(new PropertyColumn<BuildDocument, String>(new Model<String>("Job Name"), "jobName"));
-        columns.add(new PropertyColumn<BuildDocument, String>(new Model<String>("Build Number"), "buildNumber"));
+        List<IColumn<Build, String>> columns = new ArrayList<IColumn<Build, String>>();
+        columns.add(new PropertyColumn<Build, String>(new Model<String>("Job Name"), "fullName"));
+        columns.add(new PropertyColumn<Build, String>(new Model<String>("Build Number"), "buildNumber"));
         columns.add(new StatusColumn());
-        BootstrapTable<BuildDocument, String> dataTable = new BootstrapTable<BuildDocument, String>("table", columns, new BuildProvider(filterModel), 10,
+        BootstrapTable<Build, String> dataTable = new BootstrapTable<Build, String>("table", columns, new BuildProvider(filterModel), 10,
                 getModel()) {
 
             @Override
-            protected void selectRow(BuildDocument build) {
+            protected void selectRow(Build build) {
                 setModelObject(build);
             }
         };
         add(dataTable);
     }
 
-    private static class BuildProvider extends SortableDataProvider<BuildDocument, String> {
+    private static class BuildProvider extends SortableDataProvider<Build, String> {
 
         @Inject
         private BuildRepository buildRepository;
@@ -56,7 +56,7 @@ public class BuildsSimpleTablePanel extends GenericPanel<BuildDocument> {
         }
 
         @Override
-        public Iterator<BuildDocument> iterator(long first, long count) {
+        public Iterator<Build> iterator(long first, long count) {
             return buildRepository.query(first, count, filter.getObject());
         }
 
@@ -66,8 +66,8 @@ public class BuildsSimpleTablePanel extends GenericPanel<BuildDocument> {
         }
 
         @Override
-        public IModel<BuildDocument> model(BuildDocument build) {
-            return new DocumentModel<BuildDocument>(build);
+        public IModel<Build> model(Build build) {
+            return new DocumentModel<Build>(build);
         }
     }
 

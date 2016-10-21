@@ -7,26 +7,26 @@ import javax.inject.Inject;
 
 import org.apache.wicket.injection.Injector;
 import org.apache.wicket.model.IModel;
-import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument;
+import org.jboss.qa.tool.saatr.domain.build.TestSuite;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 
 @SuppressWarnings("serial")
-public class TestsuiteModel implements IModel<TestsuiteDocument> {
+public class TestsuiteModel implements IModel<TestSuite> {
 
     @Inject
     private BuildRepository buildRepository;
 
     private UUID id;
 
-    private transient TestsuiteDocument entity;
+    private transient TestSuite entity;
 
-    public TestsuiteModel(TestsuiteDocument entity) {
+    public TestsuiteModel(TestSuite entity) {
         Injector.get().inject(this);
         setObject(entity);
     }
 
     @Override
-    public TestsuiteDocument getObject() {
+    public TestSuite getObject() {
         if (entity == null && id != null) {
             entity = buildRepository.findTestsuiteById(id);
         }
@@ -34,7 +34,7 @@ public class TestsuiteModel implements IModel<TestsuiteDocument> {
     }
 
     @Override
-    public final void setObject(TestsuiteDocument other) {
+    public final void setObject(TestSuite other) {
         if (other == null) {
             id = null;
             entity = null;

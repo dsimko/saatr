@@ -9,27 +9,27 @@ import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
+import org.jboss.qa.tool.saatr.domain.build.Build;
 import org.jboss.qa.tool.saatr.web.comp.DocumentModel;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapTabbedPanel;
-import org.jboss.qa.tool.saatr.web.comp.build.BuildExpansion;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildJsonPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildsPanel;
+import org.jboss.qa.tool.saatr.web.comp.build.BuildExpansion;
 
 /**
  * @author dsimko@redhat.com
  */
 @SuppressWarnings("serial")
-public class BuildPage extends BasePage<BuildDocument> {
+public class BuildPage extends BasePage<Build> {
 
     public BuildPage() {
-        super(new DocumentModel<BuildDocument>(BuildDocument.class, null));
+        super(new DocumentModel<Build>(Build.class, null));
         initPage(null);
     }
 
     public BuildPage(PageParameters parameters) {
-        super(new DocumentModel<BuildDocument>(BuildDocument.class, null));
+        super(new DocumentModel<Build>(Build.class, null));
         initPage(parameters);
     }
 

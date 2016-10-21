@@ -5,8 +5,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.map.HashedMap;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.event.IEvent;
 import org.apache.wicket.markup.html.panel.GenericPanel;
@@ -31,7 +33,7 @@ public abstract class AbsractPropertiesFilterPanel extends GenericPanel<BuildFil
 
     private List<String> variableNames = new ArrayList<>();
 
-    private List<String> variableValues = new ArrayList<>();
+    private Map<Integer, List<String>> variableValues = new HashedMap<>();
 
     @SpringBean
     protected BuildRepository buildRepository;
@@ -49,7 +51,12 @@ public abstract class AbsractPropertiesFilterPanel extends GenericPanel<BuildFil
 
             @Override
             protected void populateItem(Item<PropertyDto> item) {
-                item.add(new BuildsPropertyFilterPanel("property", getTitle(), item.getModel(), new ArrayList<>(variableNames), new ArrayList<>(variableValues),
+                List<String> values = variableValues.get(item.getIndex());
+                if (values == null) {
+                    values = new ArrayList<>();
+                    variableValues.put(item.getIndex(), values);
+                }
+                item.add(new BuildsPropertyFilterPanel("property", getTitle(), item.getModel(), variableNames, values,
                         item.getIndex() == getProperties().size() - 1) {
 
                     @Override
@@ -85,7 +92,6 @@ public abstract class AbsractPropertiesFilterPanel extends GenericPanel<BuildFil
         variableNames.clear();
         variableValues.clear();
         getPropertyNames().forEach(name -> variableNames.add(name));
-        getPropertyValues(null).forEach(val -> variableValues.add(val));
         log.debug("Loading variables filter took {} ms.", System.currentTimeMillis() - start);
     }
 

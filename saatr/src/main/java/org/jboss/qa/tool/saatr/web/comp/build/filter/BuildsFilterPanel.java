@@ -29,7 +29,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument.Status;
+import org.jboss.qa.tool.saatr.domain.build.Build.Status;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.repo.build.BuildFilterRepository;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildExpansion;
