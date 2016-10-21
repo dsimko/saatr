@@ -7,7 +7,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.util.string.Strings;
-import org.jboss.qa.tool.saatr.domain.build.TestcaseDocument;
+import org.jboss.qa.tool.saatr.domain.build.TestCase;
 import org.jboss.qa.tool.saatr.web.comp.LongTextLabel;
 import org.jboss.qa.tool.saatr.web.comp.build.properties.PropertiesPanel;
 
@@ -17,9 +17,9 @@ import org.jboss.qa.tool.saatr.web.comp.build.properties.PropertiesPanel;
  *
  */
 @SuppressWarnings("serial")
-class BodyPanel extends GenericPanel<TestcaseDocument> {
+class BodyPanel extends GenericPanel<TestCase> {
 
-    public BodyPanel(String id, final IModel<TestcaseDocument> model) {
+    public BodyPanel(String id, final IModel<TestCase> model) {
         super(id, new CompoundPropertyModel<>(model));
         add(new Label("time") {
 

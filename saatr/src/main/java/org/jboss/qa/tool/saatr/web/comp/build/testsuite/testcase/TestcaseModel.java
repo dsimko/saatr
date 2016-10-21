@@ -7,11 +7,11 @@ import javax.inject.Inject;
 
 import org.apache.wicket.injection.Injector;
 import org.apache.wicket.model.IModel;
-import org.jboss.qa.tool.saatr.domain.build.TestcaseDocument;
+import org.jboss.qa.tool.saatr.domain.build.TestCase;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 
 @SuppressWarnings("serial")
-public class TestcaseModel implements IModel<TestcaseDocument> {
+public class TestcaseModel implements IModel<TestCase> {
 
     @Inject
     private BuildRepository buildRepository;
@@ -20,15 +20,15 @@ public class TestcaseModel implements IModel<TestcaseDocument> {
 
     private Integer index;
 
-    private transient TestcaseDocument entity;
+    private transient TestCase entity;
 
-    public TestcaseModel(TestcaseDocument entity) {
+    public TestcaseModel(TestCase entity) {
         Injector.get().inject(this);
         setObject(entity);
     }
 
     @Override
-    public TestcaseDocument getObject() {
+    public TestCase getObject() {
         if (entity == null && id != null && index != null) {
             entity = buildRepository.findTestcaseById(id, index);
         }
@@ -36,7 +36,7 @@ public class TestcaseModel implements IModel<TestcaseDocument> {
     }
 
     @Override
-    public final void setObject(TestcaseDocument other) {
+    public final void setObject(TestCase other) {
         if (other == null) {
             id = null;
             entity = null;

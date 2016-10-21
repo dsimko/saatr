@@ -11,7 +11,6 @@ import org.apache.wicket.protocol.http.WebApplication;
 import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.domain.DocumentWithID;
 import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -28,7 +27,9 @@ import lombok.Data;
 @SuppressWarnings("serial")
 public class Build implements DocumentWithProperties<ObjectId>, DocumentWithID<ObjectId> {
 
-    public static final String COLLECTION_NAME = "jobRuns";
+    public static final String COLLECTION_NAME = "build";
+
+    private static final String NAME_CONFIG_DELIMITER = "/";
 
     public static enum Status {
 
@@ -86,19 +87,58 @@ public class Build implements DocumentWithProperties<ObjectId>, DocumentWithID<O
 
     private ObjectId consoleTextId;
 
-    private final Set<PropertyData> systemProperties = new TreeSet<>();
+    private final Set<BuildProperty> systemProperties = new TreeSet<>();
 
-    private final Set<PropertyData> buildProperties = new TreeSet<>();
+    private final Set<BuildProperty> buildProperties = new TreeSet<>();
 
-    private final Set<PropertyData> properties = new TreeSet<>();
+    private final Set<BuildProperty> properties = new TreeSet<>();
 
-    private final List<TestsuiteDocument> testsuites = new ArrayList<>();
+    private final List<TestSuite> testsuites = new ArrayList<>();
 
     private Integer childCount;
 
-    public static Status determineStatus(List<TestsuiteDocument> testsuites) {
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+        this.name = getJobName();
+        this.configuration = getJobConfiguration();
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+        if (status == null) {
+            statusWeight = Status.Success.weight;
+        } else {
+            statusWeight = status.weight;
+        }
+    }
+
+    private String getJobName() {
+        if (fullName == null) {
+            return null;
+        }
+        int index = fullName.indexOf(NAME_CONFIG_DELIMITER);
+        if (index != -1) {
+            return fullName.substring(0, index);
+        } else {
+            return fullName;
+        }
+    }
+
+    private String getJobConfiguration() {
+        if (fullName == null) {
+            return null;
+        }
+        int index = fullName.lastIndexOf(NAME_CONFIG_DELIMITER);
+        if (index != -1) {
+            return fullName.substring(index + 1, fullName.length());
+        } else {
+            return fullName;
+        }
+    }
+
+    public static Status determineStatus(List<TestSuite> testsuites) {
         Status status = Status.Success;
-        for (TestsuiteDocument testsuiteData : testsuites) {
+        for (TestSuite testsuiteData : testsuites) {
             switch (testsuiteData.getStatus()) {
                 case Failure:
                 case Error:
@@ -166,7 +206,17 @@ public class Build implements DocumentWithProperties<ObjectId>, DocumentWithID<O
 
         private static final String HTML_SPACE = "&nbsp;";
 
-        private static final int LABEL_WIDTH = 740;
+        private static final String PROPERTY_NAME = "EAP_VERSION";
+
+        private static final int LABEL_WIDTH = 710;
+
+        private static final int CHILD_COUNT_WIDTH = 30;
+
+        private static final int TEST_SUITE_STATISTICS_WIDTH = 120;
+
+        private static final int TEST_CASE_STATISTICS_WIDTH = 170;
+
+        private static final int STATUS_WIDTH = 80;
 
         private static final int SUB_TREE_MARGIN = 18;
 
@@ -179,24 +229,34 @@ public class Build implements DocumentWithProperties<ObjectId>, DocumentWithID<O
             }
             if (jobRun.getId() != null) {
                 width -= SUB_TREE_MARGIN;
+                label = "Build #" + jobRun.buildNumber + ", " + PROPERTY_NAME + " = " + getPropertyValue(jobRun.getBuildProperties(), PROPERTY_NAME);
             }
             StringBuilder builder = new StringBuilder();
             builder.append("<span style=\"width:" + width + "px;\" class=\"tree-column\">");
             builder.append(label);
             builder.append("</span>");
-            builder.append("<span class=\"tree-column tree-column-2\">");
+            builder.append("<span style=\"width:" + CHILD_COUNT_WIDTH + "px;\" class=\"tree-column\">");
             builder.append(jobRun.getChildCount() == null ? HTML_SPACE : jobRun.getChildCount());
             builder.append("</span>");
-            builder.append("<span class=\"tree-column tree-column-3\">");
-            builder.append(jobRun.getBuildNumber() == null ? HTML_SPACE : jobRun.getBuildNumber());
+            builder.append("<span style=\"width:" + TEST_SUITE_STATISTICS_WIDTH + "px;\" class=\"tree-column\">");
+            builder.append(getTestsuiteStatisticsHtml(jobRun));
             builder.append("</span>");
-            builder.append("<span class=\"tree-column tree-column-4\">");
-            builder.append(getStatisticsHtml(jobRun));
+            builder.append("<span style=\"width:" + TEST_CASE_STATISTICS_WIDTH + "px;\" class=\"tree-column\">");
+            builder.append(getTestcaseStatisticsHtml(jobRun));
             builder.append("</span>");
-            builder.append("<span class=\"tree-column tree-column-5\">");
+            builder.append("<span style=\"width:" + STATUS_WIDTH + "px;\" class=\"tree-column\">");
             builder.append(getStatusHtml(jobRun));
             builder.append("</span>");
             return builder.toString();
+        }
+
+        private static String getPropertyValue(Set<BuildProperty> properties, String propertyName) {
+            for (BuildProperty buildProperty : properties) {
+                if (propertyName.equals(buildProperty.getName())) {
+                    return buildProperty.getValue();
+                }
+            }
+            return "";
         }
 
         public static String getStatusHtml(Build build) {
@@ -227,27 +287,33 @@ public class Build implements DocumentWithProperties<ObjectId>, DocumentWithID<O
             }
         }
 
-        public static String getStatisticsHtml(Build build) {
+        public static String getTestcaseStatisticsHtml(Build build) {
             if (build.getId() == null) {
                 return HTML_SPACE;
             }
             StringBuilder builder = new StringBuilder();
-            builder.append("<span class=\"text-danger\">");
-            builder.append(build.getErrorTestsuitesCount());
-            builder.append("</span><span class=\"text-muted\">/</span>");
-            builder.append("<span class=\"text-danger\">");
-            builder.append(build.getFailedTestsuitesCount());
-            builder.append("</span><span class=\"text-muted\">/</span>");
-            builder.append(build.getTotalTestsuitesCount());
-            builder.append(" ");
-            builder.append("<span class=\"text-warning\">");
-            builder.append(build.getSkippedTestcasesCount());
-            builder.append("</span><span class=\"text-muted\">/</span><span class=\"text-danger\">");
-            builder.append(build.getErrorTestcasesCount());
-            builder.append("</span><span class=\"text-muted\">/</span><span class=\"text-danger\">");
+            builder.append("<span class=\"text-danger\">F: ");
             builder.append(build.getFailedTestcasesCount());
-            builder.append("</span><span class=\"text-muted\">/</span>");
+            builder.append("</span>, <span class=\"text-warning\">E:  ");
+            builder.append(build.getErrorTestcasesCount());
+            builder.append("</span>, <span class=\"text-muted\">S: ");
+            builder.append(build.getSkippedTestcasesCount());
+            builder.append("</span>, T: ");
             builder.append(build.getTotalTestcasesCount());
+            return builder.toString();
+        }
+
+        public static String getTestsuiteStatisticsHtml(Build build) {
+            if (build.getId() == null) {
+                return HTML_SPACE;
+            }
+            StringBuilder builder = new StringBuilder();
+            builder.append("<span class=\"text-danger\">F: ");
+            builder.append(build.getFailedTestsuitesCount());
+            builder.append("</span>, <span class=\"text-warning\">E:  ");
+            builder.append(build.getErrorTestsuitesCount());
+            builder.append("</span>, T: ");
+            builder.append(build.getTotalTestsuitesCount());
             return builder.toString();
         }
 

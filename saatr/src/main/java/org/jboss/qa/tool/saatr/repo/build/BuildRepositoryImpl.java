@@ -21,14 +21,14 @@ import org.bson.BsonDocument;
 import org.bson.BsonString;
 import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
 import org.jboss.qa.tool.saatr.domain.build.Build;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument.Status;
+import org.jboss.qa.tool.saatr.domain.build.Build.Status;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter.PropertyDto;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter.PropertyDto.Operation;
-import org.jboss.qa.tool.saatr.domain.build.ConsoleTextDocument;
-import org.jboss.qa.tool.saatr.domain.build.TestcaseDocument;
-import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument;
+import org.jboss.qa.tool.saatr.domain.build.BuildProperty;
+import org.jboss.qa.tool.saatr.domain.build.ConsoleText;
+import org.jboss.qa.tool.saatr.domain.build.TestCase;
+import org.jboss.qa.tool.saatr.domain.build.TestSuite;
 import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -86,9 +86,9 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
     @Override
     public void fillBuildByTestsuites(List<Testsuite> input, Build build) {
         for (Testsuite testsuite : input) {
-            TestsuiteDocument testsuiteData = TestsuiteDocument.create(testsuite);
+            TestSuite testsuiteData = TestSuite.create(testsuite);
 
-            PropertyData.create(testsuite.getProperties()).forEach(p -> {
+            BuildProperty.create(testsuite.getProperties()).forEach(p -> {
                 addIfAbsent(p, build.getSystemProperties());
             });
 
@@ -100,22 +100,22 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
 
     private void calculateStatistics(Build build) {
         int failedTestsuites = 0, errorTestsuites = 0, testcases = 0, failedTestcases = 0, errorTestcases = 0, skippedTestcases = 0;
-        for (TestsuiteDocument testsuite : build.getTestsuites()) {
-            if (testsuite.getStatus() == TestsuiteDocument.Status.Error) {
+        for (TestSuite testsuite : build.getTestsuites()) {
+            if (testsuite.getStatus() == TestSuite.Status.Error) {
                 errorTestsuites++;
             }
-            if (testsuite.getStatus() == TestsuiteDocument.Status.Failure) {
+            if (testsuite.getStatus() == TestSuite.Status.Failure) {
                 failedTestsuites++;
             }
-            for (TestcaseDocument testcase : testsuite.getTestcases()) {
+            for (TestCase testcase : testsuite.getTestcases()) {
                 testcases++;
-                if (testcase.getStatus() == TestcaseDocument.Status.Error) {
+                if (testcase.getStatus() == TestCase.Status.Error) {
                     errorTestcases++;
                 }
-                if (testcase.getStatus() == TestcaseDocument.Status.Failure) {
+                if (testcase.getStatus() == TestCase.Status.Failure) {
                     failedTestcases++;
                 }
-                if (testcase.getStatus() == TestcaseDocument.Status.Skipped) {
+                if (testcase.getStatus() == TestCase.Status.Skipped) {
                     skippedTestcases++;
                 }
             }
@@ -130,11 +130,11 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
     }
 
     @Override
-    public void addIfAbsent(PropertyData property, Set<PropertyData> properties) {
+    public void addIfAbsent(BuildProperty property, Set<BuildProperty> properties) {
         if (!properties.contains(property)) {
             properties.add(property);
         } else {
-            Optional<PropertyData> withDifferentValue = properties.stream().filter(
+            Optional<BuildProperty> withDifferentValue = properties.stream().filter(
                     p -> p.getName().equals(property.getName()) && !p.getValue().equals(property.getValue())).findFirst();
             if (withDifferentValue.isPresent()) {
                 log.warn("Property [name = {}, value = {}] has not been added because already exists with value {}.", property.getName(), property.getValue(),
@@ -144,23 +144,23 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
     }
 
     @Override
-    public <T extends DocumentWithProperties<?>> void addOrUpdateProperties(T document, Set<PropertyData> properties) {
+    public <T extends DocumentWithProperties<?>> void addOrUpdateProperties(T document, Set<BuildProperty> properties) {
         log.info("Adding or updating properties {} for {}", properties, document);
-        List<PropertyData> filteredProperties = properties.stream().filter(c -> c.getValue() != null).collect(Collectors.toList());
+        List<BuildProperty> filteredProperties = properties.stream().filter(c -> c.getValue() != null).collect(Collectors.toList());
         if (document instanceof Build) {
             template.updateFirst(Query.query(where("id").is(document.getId())), Update.update("properties", filteredProperties), Build.class);
-        } else if (document instanceof TestsuiteDocument) {
+        } else if (document instanceof TestSuite) {
             template.updateFirst(Query.query(where("testsuites.id").is(document.getId())), Update.update("testsuites.$.properties", filteredProperties),
                     Build.class);
-        } else if (document instanceof TestcaseDocument) {
-            TestcaseDocument testcaseData = (TestcaseDocument) document;
+        } else if (document instanceof TestCase) {
+            TestCase testcaseData = (TestCase) document;
             template.updateFirst(Query.query(where("testsuites.testcases.id").is(testcaseData.getId())),
                     Update.update("testsuites.$.testcases." + testcaseData.getIndex() + ".properties", filteredProperties), Build.class);
         }
     }
 
     @Override
-    public TestsuiteDocument findTestsuiteById(UUID id) {
+    public TestSuite findTestsuiteById(UUID id) {
         Query query = new Query();
         query.addCriteria(where("testsuites.id").is(id));
         query.fields().include("testsuites.$");
@@ -168,11 +168,11 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
     }
 
     @Override
-    public TestcaseDocument findTestcaseById(UUID id, int index) {
+    public TestCase findTestcaseById(UUID id, int index) {
         Query query = new Query();
         query.addCriteria(where("testsuites.testcases.id").is(id));
         query.fields().include("testsuites.$.testcases");
-        TestcaseDocument testcaseData = template.findOne(query, Build.class).getTestsuites().get(0).getTestcases().get(index);
+        TestCase testcaseData = template.findOne(query, Build.class).getTestsuites().get(0).getTestcases().get(index);
         testcaseData.setIndex(index);
         return testcaseData;
     }
@@ -245,7 +245,7 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
 
     @Override
     public void addConsoleText(Build buildDocument, String consoleText) {
-        ConsoleTextDocument consoleTextDocument = new ConsoleTextDocument(null, consoleText);
+        ConsoleText consoleTextDocument = new ConsoleText(null, consoleText);
         template.save(consoleTextDocument);
         template.updateFirst(Query.query(where("id").is(buildDocument.getId())), Update.update("consoleTextId", consoleTextDocument.getId()), Build.class);
     }
@@ -279,10 +279,12 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
             query.fields().include("status");
             query.fields().include("failedTestsuitesCount");
             query.fields().include("errorTestsuitesCount");
-            query.fields().include("testcasesCount");
+            query.fields().include("totalTestcasesCount");
             query.fields().include("failedTestcasesCount");
             query.fields().include("errorTestcasesCount");
             query.fields().include("skippedTestcasesCount");
+            query.fields().include("totalTestsuitesCount");
+            query.fields().include("buildProperties");
             return template.find(query, Build.class, Build.COLLECTION_NAME).iterator();
         }
     }
@@ -336,7 +338,7 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
                     document.put("value", new BsonString(property.getValue()));
                     o = document;
                 } else {
-                    o = new PropertyData(property.getName(), property.getValue());
+                    o = new BuildProperty(property.getName(), property.getValue());
                 }
                 if (property.getOperation() == Operation.EQUAL) {
                     criterias.add(where(fieldName).in(o));

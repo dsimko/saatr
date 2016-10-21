@@ -12,8 +12,8 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RefreshingView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.jboss.qa.tool.saatr.domain.build.TestcaseDocument;
-import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument;
+import org.jboss.qa.tool.saatr.domain.build.TestCase;
+import org.jboss.qa.tool.saatr.domain.build.TestSuite;
 import org.jboss.qa.tool.saatr.web.comp.build.properties.PropertiesPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.testsuite.testcase.TestcaseModel;
 import org.jboss.qa.tool.saatr.web.comp.build.testsuite.testcase.TestcasePanel;
@@ -24,9 +24,9 @@ import org.jboss.qa.tool.saatr.web.comp.build.testsuite.testcase.TestcasePanel;
  *
  */
 @SuppressWarnings("serial")
-class BodyPanel extends GenericPanel<TestsuiteDocument> {
+class BodyPanel extends GenericPanel<TestSuite> {
 
-    public BodyPanel(String id, final IModel<TestsuiteDocument> model) {
+    public BodyPanel(String id, final IModel<TestSuite> model) {
         super(id, new CompoundPropertyModel<>(model));
         add(new Label("time"));
         add(new Label("tests"));
@@ -34,13 +34,13 @@ class BodyPanel extends GenericPanel<TestsuiteDocument> {
         add(new Label("skipped"));
         add(new Label("failures"));
         add(new PropertiesPanel<>("properties", model));
-        add(new RefreshingView<TestcaseDocument>("testcases") {
+        add(new RefreshingView<TestCase>("testcases") {
 
             @Override
-            protected Iterator<IModel<TestcaseDocument>> getItemModels() {
-                List<IModel<TestcaseDocument>> models = new ArrayList<>();
+            protected Iterator<IModel<TestCase>> getItemModels() {
+                List<IModel<TestCase>> models = new ArrayList<>();
                 int index = 0;
-                for (TestcaseDocument tc : getModelObject().getTestcases())
+                for (TestCase tc : getModelObject().getTestcases())
                     tc.setIndex(index++);
                 Collections.sort(getModelObject().getTestcases());
                 getModelObject().getTestcases().stream().forEach(tc -> models.add(new TestcaseModel(tc)));
@@ -48,7 +48,7 @@ class BodyPanel extends GenericPanel<TestsuiteDocument> {
             }
 
             @Override
-            protected void populateItem(Item<TestcaseDocument> item) {
+            protected void populateItem(Item<TestCase> item) {
                 item.add(new TestcasePanel("testcase", item.getModel()));
             }
         });

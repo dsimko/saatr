@@ -8,9 +8,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
 
-import org.jboss.qa.tool.saatr.domain.build.TestcaseDocument;
-import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument;
-import org.jboss.qa.tool.saatr.domain.build.TestcaseDocument.FailureData;
+import org.jboss.qa.tool.saatr.domain.build.TestCase;
+import org.jboss.qa.tool.saatr.domain.build.TestSuite;
+import org.jboss.qa.tool.saatr.domain.build.TestCase.Fragment;
 import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -19,12 +19,12 @@ public class IOUtilsTest {
 
     private static List<Testsuite> testsuites;
 
-    private static TestsuiteDocument testsuiteData;
+    private static TestSuite testsuiteData;
 
     @BeforeClass
     public static void init() throws Exception {
         testsuites = IOUtils.unzipAndUnmarshalTestsuite(new FileInputStream(new File(IOUtilsTest.class.getResource("TEST-surefire-report.xml.zip").getPath())));
-        testsuiteData = TestsuiteDocument.create(testsuites.get(0));
+        testsuiteData = TestSuite.create(testsuites.get(0));
     }
 
     @Test
@@ -44,26 +44,26 @@ public class IOUtilsTest {
 
     @Test
     public void checkTestcases() {
-        List<TestcaseDocument> testcases = testsuiteData.getTestcases();
+        List<TestCase> testcases = testsuiteData.getTestcases();
         assertSame(8, testcases.size());
 
-        TestcaseDocument testcaseData = testcases.get(0);
+        TestCase testcaseData = testcases.get(0);
         assertEquals("commitHaltAtPhaseEnd", testcaseData.getName());
         assertEquals("org.jboss.as.test.jbossts.crashrec.test.JPALrcoCrashRecoveryTestCase(jta)", testcaseData.getClassname());
         assertEquals(Double.valueOf("81.127"), testcaseData.getTime());
-        assertEquals(TestcaseDocument.Status.Success, testcaseData.getStatus());
+        assertEquals(TestCase.Status.Success, testcaseData.getStatus());
 
         testcaseData = testcases.get(1);
-        assertEquals(TestcaseDocument.Status.Skipped, testcaseData.getStatus());
+        assertEquals(TestCase.Status.Skipped, testcaseData.getStatus());
 
         testcaseData = testcases.get(2);
-        assertEquals(TestcaseDocument.Status.Skipped, testcaseData.getStatus());
+        assertEquals(TestCase.Status.Skipped, testcaseData.getStatus());
         assertEquals("Unignore when JBEAP-3944 is included in EAP 7.x.x", testcaseData.getSkipped().getMessage());
         assertEquals("INFO  [org.jboss.as.server.deployment] (MSC service thread 1-7) WFLYSRV0028:", testcaseData.getSystemOut());
 
         testcaseData = testcases.get(3);
-        assertEquals(TestcaseDocument.Status.Failure, testcaseData.getStatus());
-        List<FailureData> failures = testcaseData.getFailure();
+        assertEquals(TestCase.Status.Failure, testcaseData.getStatus());
+        List<Fragment> failures = testcaseData.getFailure();
         assertEquals(1, failures.size());
         assertEquals("Incorrect data in database after crash recovery. expected", failures.get(0).getMessage());
         assertEquals("java.lang.AssertionError", failures.get(0).getType());
@@ -78,7 +78,7 @@ public class IOUtilsTest {
         // rerunFailures.get(0).getValue());
 
         testcaseData = testcases.get(4);
-        assertEquals(TestcaseDocument.Status.FlakyFailure, testcaseData.getStatus());
+        assertEquals(TestCase.Status.FlakyFailure, testcaseData.getStatus());
         failures = testcaseData.getFlakyFailures();
         assertEquals(1, failures.size());
         assertEquals("JBoss log parsed file", failures.get(0).getMessage());
@@ -86,7 +86,7 @@ public class IOUtilsTest {
         assertEquals("java.lang.AssertionError: JBoss log parsed", failures.get(0).getValue());
 
         testcaseData = testcases.get(5);
-        assertEquals(TestcaseDocument.Status.Failure, testcaseData.getStatus());
+        assertEquals(TestCase.Status.Failure, testcaseData.getStatus());
         failures = testcaseData.getFailure();
         assertEquals(1, failures.size());
         assertEquals("JBoss log parsed file", failures.get(0).getMessage());
@@ -95,15 +95,15 @@ public class IOUtilsTest {
         assertEquals("12:50:34,693 INFO Newly created connection:", testcaseData.getSystemOut());
 
         testcaseData = testcases.get(6);
-        assertEquals(TestcaseDocument.Status.Error, testcaseData.getStatus());
-        FailureData errorData = testcaseData.getError();
+        assertEquals(TestCase.Status.Error, testcaseData.getStatus());
+        Fragment errorData = testcaseData.getError();
         assertEquals("Cannot deploy: tx-inconsistent-when-higher-load.jar", errorData.getMessage());
         assertEquals("org.jboss.arquillian.container.spi.client.container.DeploymentException", errorData.getType());
         assertEquals("org.jboss.arquillian.container.spi.client", errorData.getValue());
         assertEquals("12:55:54,242 INFO  [org.jboss.as.test.jbossts.client.utils.JDBCDriverManager", testcaseData.getSystemOut());
 
         testcaseData = testcases.get(7);
-        assertEquals(TestcaseDocument.Status.FlakyError, testcaseData.getStatus());
+        assertEquals(TestCase.Status.FlakyError, testcaseData.getStatus());
         failures = testcaseData.getFlakyErrors();
         assertEquals(1, failures.size());
         assertEquals("Transaction rolled back", failures.get(0).getMessage());

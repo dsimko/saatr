@@ -28,8 +28,8 @@ import org.apache.wicket.util.visit.IVisit;
 import org.apache.wicket.util.visit.IVisitor;
 import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.domain.build.Build;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
+import org.jboss.qa.tool.saatr.domain.build.BuildProperty;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 
 import lombok.AllArgsConstructor;
@@ -348,7 +348,7 @@ public class BuildTreePanel extends GenericPanel<Build> {
     @AllArgsConstructor
     public static class CopyToAllSelectedEvent implements Serializable {
 
-        private Set<PropertyData> properties;
+        private Set<BuildProperty> properties;
 
         private Component feedbackComponent;
     }

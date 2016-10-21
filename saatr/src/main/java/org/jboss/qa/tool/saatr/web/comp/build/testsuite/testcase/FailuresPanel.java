@@ -11,7 +11,7 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RefreshingView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.jboss.qa.tool.saatr.domain.build.TestcaseDocument.FailureData;
+import org.jboss.qa.tool.saatr.domain.build.TestCase.Fragment;
 import org.jboss.qa.tool.saatr.web.comp.HideableLabel;
 
 /**
@@ -20,7 +20,7 @@ import org.jboss.qa.tool.saatr.web.comp.HideableLabel;
  *
  */
 @SuppressWarnings("serial")
-class FailuresPanel extends GenericPanel<List<FailureData>> {
+class FailuresPanel extends GenericPanel<List<Fragment>> {
 
     @Override
     protected void onConfigure() {
@@ -31,19 +31,19 @@ class FailuresPanel extends GenericPanel<List<FailureData>> {
     public FailuresPanel(String id, String name) {
         super(id);
         add(new Label("name", name));
-        add(new RefreshingView<FailureData>("failures") {
+        add(new RefreshingView<Fragment>("failures") {
 
             @Override
-            protected Iterator<IModel<FailureData>> getItemModels() {
-                List<IModel<FailureData>> models = new ArrayList<>();
-                for (FailureData failureData : getModelObject()) {
+            protected Iterator<IModel<Fragment>> getItemModels() {
+                List<IModel<Fragment>> models = new ArrayList<>();
+                for (Fragment failureData : getModelObject()) {
                     models.add(new CompoundPropertyModel<>(failureData));
                 }
                 return models.iterator();
             }
 
             @Override
-            protected void populateItem(Item<FailureData> item) {
+            protected void populateItem(Item<Fragment> item) {
                 item.add(new HideableLabel("value"));
                 item.add(new HideableLabel("message"));
                 item.add(new HideableLabel("type"));

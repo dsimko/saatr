@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
+import org.jboss.qa.tool.saatr.domain.build.Build;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,12 +28,12 @@ public class BuildRepositoryIntegrationTest {
     @Autowired
     MongoOperations operations;
 
-    BuildDocument build;
+    Build build;
 
     @Before
     public void setUp() {
         repository.deleteAll();
-        build = repository.save(new BuildDocument());
+        build = repository.save(new Build());
     }
 
     /**
@@ -43,7 +43,7 @@ public class BuildRepositoryIntegrationTest {
     @Test
     public void setsIdOnSave() {
 
-        BuildDocument dave = repository.save(new BuildDocument());
+        Build dave = repository.save(new Build());
         assertThat(dave.getId(), is(notNullValue()));
     }
 }

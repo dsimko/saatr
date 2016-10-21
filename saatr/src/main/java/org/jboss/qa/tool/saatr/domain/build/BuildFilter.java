@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.domain.DocumentWithID;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument.Status;
+import org.jboss.qa.tool.saatr.domain.build.Build.Status;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 

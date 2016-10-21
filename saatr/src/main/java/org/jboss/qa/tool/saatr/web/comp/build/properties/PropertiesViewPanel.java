@@ -14,7 +14,7 @@ import org.apache.wicket.markup.repeater.RefreshingView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
+import org.jboss.qa.tool.saatr.domain.build.BuildProperty;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapFeedbackPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildTreePanel.CopyToAllSelectedEvent;
 
@@ -27,16 +27,16 @@ class PropertiesViewPanel<T extends DocumentWithProperties<?>> extends GenericPa
 
     public PropertiesViewPanel(String id, final IModel<T> model) {
         super(id, new CompoundPropertyModel<>(model));
-        add(new RefreshingView<PropertyData>("properties") {
+        add(new RefreshingView<BuildProperty>("properties") {
 
             @Override
-            protected Iterator<IModel<PropertyData>> getItemModels() {
+            protected Iterator<IModel<BuildProperty>> getItemModels() {
                 return getModelObject().getProperties().stream().filter(p -> p.getValue() != null).sorted().map(
-                        p -> (IModel<PropertyData>) new CompoundPropertyModel<>(p)).iterator();
+                        p -> (IModel<BuildProperty>) new CompoundPropertyModel<>(p)).iterator();
             }
 
             @Override
-            protected void populateItem(Item<PropertyData> item) {
+            protected void populateItem(Item<BuildProperty> item) {
                 item.add(new Label("name"));
                 item.add(new Label("value"));
             }

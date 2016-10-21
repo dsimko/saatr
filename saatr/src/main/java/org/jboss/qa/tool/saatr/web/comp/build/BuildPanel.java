@@ -19,8 +19,8 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.jboss.qa.tool.saatr.domain.build.Build;
 import org.jboss.qa.tool.saatr.domain.build.Build.HtmlRenderer;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
-import org.jboss.qa.tool.saatr.domain.build.TestsuiteDocument;
+import org.jboss.qa.tool.saatr.domain.build.BuildProperty;
+import org.jboss.qa.tool.saatr.domain.build.TestSuite;
 import org.jboss.qa.tool.saatr.web.comp.SmartLinkParser;
 import org.jboss.qa.tool.saatr.web.comp.build.properties.PropertiesPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.testsuite.TestsuiteModel;
@@ -62,30 +62,30 @@ public class BuildPanel extends GenericPanel<Build> {
                 return getModelObject() != null && getModelObject().getConsoleTextId() != null;
             }
         });
-        add(new RefreshingView<PropertyData>("systemProperties") {
+        add(new RefreshingView<BuildProperty>("systemProperties") {
 
             @Override
-            protected Iterator<IModel<PropertyData>> getItemModels() {
+            protected Iterator<IModel<BuildProperty>> getItemModels() {
                 return getModelObject().getSystemProperties().stream().filter(p -> !StringUtils.isEmpty(p.getValue())).sorted().map(
-                        p -> (IModel<PropertyData>) new CompoundPropertyModel<>(p)).iterator();
+                        p -> (IModel<BuildProperty>) new CompoundPropertyModel<>(p)).iterator();
             }
 
             @Override
-            protected void populateItem(Item<PropertyData> item) {
+            protected void populateItem(Item<BuildProperty> item) {
                 item.add(new Label("name"));
                 item.add(new Label("value"));
             }
         });
-        add(new RefreshingView<PropertyData>("variables") {
+        add(new RefreshingView<BuildProperty>("variables") {
 
             @Override
-            protected Iterator<IModel<PropertyData>> getItemModels() {
+            protected Iterator<IModel<BuildProperty>> getItemModels() {
                 return getModelObject().getBuildProperties().stream().filter(p -> !StringUtils.isEmpty(p.getValue())).sorted().map(
-                        p -> (IModel<PropertyData>) new CompoundPropertyModel<>(p)).iterator();
+                        p -> (IModel<BuildProperty>) new CompoundPropertyModel<>(p)).iterator();
             }
 
             @Override
-            protected void populateItem(Item<PropertyData> item) {
+            protected void populateItem(Item<BuildProperty> item) {
                 item.add(new Label("name"));
                 item.add(new SmartLinkLabel("value") {
 
@@ -98,21 +98,21 @@ public class BuildPanel extends GenericPanel<Build> {
         });
 
         add(new PropertiesPanel<>("properties", model));
-        add(new RefreshingView<TestsuiteDocument>("testsuites") {
+        add(new RefreshingView<TestSuite>("testsuites") {
 
             @Override
-            protected Iterator<IModel<TestsuiteDocument>> getItemModels() {
-                List<IModel<TestsuiteDocument>> models = new ArrayList<>();
-                List<TestsuiteDocument> testsuites = getModelObject().getTestsuites();
+            protected Iterator<IModel<TestSuite>> getItemModels() {
+                List<IModel<TestSuite>> models = new ArrayList<>();
+                List<TestSuite> testsuites = getModelObject().getTestsuites();
                 Collections.sort(testsuites);
-                for (TestsuiteDocument testsuiteData : testsuites) {
+                for (TestSuite testsuiteData : testsuites) {
                     models.add(new TestsuiteModel(testsuiteData));
                 }
                 return models.iterator();
             }
 
             @Override
-            protected void populateItem(Item<TestsuiteDocument> item) {
+            protected void populateItem(Item<TestSuite> item) {
                 item.add(new TestsuitePanel("testsuite", item.getModel()));
             }
         });

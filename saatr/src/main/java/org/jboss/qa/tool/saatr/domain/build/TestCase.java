@@ -9,7 +9,6 @@ import java.util.TreeSet;
 import java.util.UUID;
 
 import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
 import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite.Testcase;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -17,31 +16,31 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import lombok.Data;
 
 /**
- * An embedded document representing an {@link TestcaseDocument}.
+ * An embedded document representing an {@link TestCase}.
  * 
  * @author dsimko@redhat.com
  */
 @Data
 @SuppressWarnings("serial")
-public class TestcaseDocument implements DocumentWithProperties<UUID>, Comparable<TestcaseDocument> {
+public class TestCase implements DocumentWithProperties<UUID>, Comparable<TestCase> {
 
     public static enum Status {
         Success, Skipped, FlakyFailure, FlakyError, Error, Failure
     }
 
-    final Set<PropertyData> properties = new TreeSet<>();
+    final Set<BuildProperty> properties = new TreeSet<>();
 
-    final List<FailureData> failure = new ArrayList<>();
+    final List<Fragment> failure = new ArrayList<>();
 
-    final List<FailureData> flakyErrors = new ArrayList<>();
+    final List<Fragment> flakyErrors = new ArrayList<>();
 
-    final List<FailureData> flakyFailures = new ArrayList<>();
+    final List<Fragment> flakyFailures = new ArrayList<>();
 
-    final List<FailureData> rerunFailure = new ArrayList<>();
+    final List<Fragment> rerunFailure = new ArrayList<>();
 
-    FailureData skipped;
+    Fragment skipped;
 
-    FailureData error;
+    Fragment error;
 
     String systemOut;
 
@@ -69,7 +68,7 @@ public class TestcaseDocument implements DocumentWithProperties<UUID>, Comparabl
     private boolean dirty;
 
     @Data
-    public static class FailureData implements Serializable {
+    public static class Fragment implements Serializable {
 
         String value;
 
@@ -83,7 +82,7 @@ public class TestcaseDocument implements DocumentWithProperties<UUID>, Comparabl
 
     @Override
     public String toString() {
-        return "TestcaseData [name=" + name + ", classname=" + classname + "]";
+        return "Testcase [name=" + name + ", classname=" + classname + "]";
     }
 
     public static Status determineStatus(Testcase testcase) {
@@ -106,7 +105,7 @@ public class TestcaseDocument implements DocumentWithProperties<UUID>, Comparabl
     }
 
     @Override
-    public int compareTo(TestcaseDocument o) {
+    public int compareTo(TestCase o) {
         if (this.equals(o) || status == null || status == o.status) {
             return 0;
         }

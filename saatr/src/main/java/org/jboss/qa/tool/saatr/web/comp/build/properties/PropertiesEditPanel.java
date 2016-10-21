@@ -17,7 +17,7 @@ import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
+import org.jboss.qa.tool.saatr.domain.build.BuildProperty;
 import org.jboss.qa.tool.saatr.domain.config.ConfigDocument;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 import org.jboss.qa.tool.saatr.web.comp.build.properties.PropertiesPanel.RefreshPropertiesPanelEvent;
@@ -73,7 +73,7 @@ class PropertiesEditPanel<T extends DocumentWithProperties<?>> extends GenericPa
         Object payload = event.getPayload();
         if (payload instanceof AddInfoSubmitEvent) {
             AddInfoSubmitEvent eventPayload = (AddInfoSubmitEvent) payload;
-            Set<PropertyData> properties = eventPayload.getConfig().getProperties().stream().map(c -> new PropertyData(c.getName(), c.getValue())).collect(
+            Set<BuildProperty> properties = eventPayload.getConfig().getProperties().stream().map(c -> new BuildProperty(c.getName(), c.getValue())).collect(
                     Collectors.toSet());
             buildRepository.addOrUpdateProperties(getModelObject(), properties);
             resetPanel();

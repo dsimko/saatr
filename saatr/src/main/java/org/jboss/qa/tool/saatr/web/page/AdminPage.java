@@ -16,10 +16,9 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.jboss.qa.tool.saatr.domain.build.Build;
-import org.jboss.qa.tool.saatr.domain.build.Build.Status;
 import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
-import org.jboss.qa.tool.saatr.domain.build.ConsoleTextDocument;
+import org.jboss.qa.tool.saatr.domain.build.ConsoleText;
 import org.jboss.qa.tool.saatr.domain.config.ConfigDocument;
 import org.jboss.qa.tool.saatr.domain.config.QueryDocument;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
@@ -46,7 +45,7 @@ public class AdminPage extends BasePage<Void> {
             @Override
             protected Iterator<IModel<String>> getItemModels() {
                 List<IModel<String>> models = Arrays.asList(Model.of(BuildDocument.COLLECTION_NAME), Model.of(ConfigDocument.COLLECTION_NAME),
-                        Model.of(QueryDocument.COLLECTION_NAME), Model.of(ConsoleTextDocument.COLLECTION_NAME), Model.of(BuildFilter.COLLECTION_NAME),
+                        Model.of(QueryDocument.COLLECTION_NAME), Model.of(ConsoleText.COLLECTION_NAME), Model.of(BuildFilter.COLLECTION_NAME),
                         Model.of(Build.COLLECTION_NAME));
                 return models.iterator();
             }
@@ -99,9 +98,9 @@ public class AdminPage extends BasePage<Void> {
             public void onClick() {
                 for (BuildDocument build : mongoOperations.findAll(BuildDocument.class)) {
                     Build jobRun = new Build();
+                    jobRun.setFullName(build.getJobName());
                     jobRun.setBuildNumber(build.getBuildNumber());
                     jobRun.setChildCount(build.getNumberOfChildren());
-                    jobRun.setConfiguration(getJobConfiguration(build.getJobName()));
                     jobRun.setConsoleTextId(build.getConsoleTextId());
                     jobRun.setCreated(build.getCreated());
                     jobRun.setDuration(build.getDuration());
@@ -109,11 +108,8 @@ public class AdminPage extends BasePage<Void> {
                     jobRun.setErrorTestsuitesCount(build.getErrorTestsuites());
                     jobRun.setFailedTestcasesCount(build.getFailedTestcases());
                     jobRun.setFailedTestsuitesCount(build.getFailedTestsuites());
-                    jobRun.setFullName(build.getJobName());
-                    jobRun.setName(build.getJobCategory());
                     jobRun.setSkippedTestcasesCount(build.getSkippedTestcases());
-                    jobRun.setStatus(Status.valueOf(build.getStatus().name()));
-                    jobRun.setStatusWeight(build.getStatus().getStatus());
+                    jobRun.setStatus(build.getStatus());
                     jobRun.setTotalTestcasesCount(build.getTestcases());
                     jobRun.setTotalTestsuitesCount(build.getTestsuites().size());
                     jobRun.getTestsuites().addAll(build.getTestsuites());
@@ -124,15 +120,6 @@ public class AdminPage extends BasePage<Void> {
                 }
             }
         });
-    }
-
-    private String getJobConfiguration(String jobName) {
-        int index = jobName.lastIndexOf("/");
-        if (index != -1) {
-            return jobName.substring(index + 1, jobName.length());
-        } else {
-            return jobName;
-        }
     }
 
     private void showAllIndexes(String collectionName) {

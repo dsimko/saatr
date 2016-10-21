@@ -4,7 +4,7 @@ package org.jboss.qa.tool.saatr.web.upload;
 import java.util.Map;
 
 import org.jboss.qa.tool.saatr.domain.build.Build;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument.PropertyData;
+import org.jboss.qa.tool.saatr.domain.build.BuildProperty;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 import org.jboss.qa.tool.saatr.util.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +69,7 @@ public class FileUploadController {
                     break;
                 }
                 default:
-                    buildRepository.addIfAbsent(new PropertyData(name, value), build.getBuildProperties());
+                    buildRepository.addIfAbsent(new BuildProperty(name, value), build.getBuildProperties());
             }
         });
         return build;

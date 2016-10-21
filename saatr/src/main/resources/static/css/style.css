@@ -122,19 +122,3 @@ tree-content {
 .tree-row-line {
 	border-bottom: 1px solid #ddd;
 }
-
-.tree-column-1 {
-	width: 600px;
-}
-
-.tree-column-2 {
-	min-width: 50px;
-}
-
-.tree-column-3 {
-	min-width: 50px;
-}
-
-.tree-column-4 {
-	min-width: 150px;
-}
