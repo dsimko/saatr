@@ -14,7 +14,14 @@
 				<a class="btn btn-default btn-xs">Noop</a>
 			</div>
 		</div>	
-		<div class="tree-table margin-top-10" wicket:id="tree"></div>
+		<div class="tree-head margin-top-10">
+			<div class="tree-column tree-column-1">Child count</div>
+			<div class="tree-column tree-column-2">Testuites stats</div>
+			<div class="tree-column tree-column-3">Testcases stats</div>
+			<div class="tree-column tree-column-4">Status</div>
+		</div>
+		<div class="clearfix tree-row-line"></div>
+		<div wicket:id="tree"></div>
 		<br />
 	</wicket:panel>
 </body>

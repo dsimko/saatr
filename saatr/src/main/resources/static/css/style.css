@@ -62,18 +62,6 @@ div.wicket-aa ul li.selected {
 	margin-top: 10px;
 }
 
-.tree-table table {
-	width: 100%;
-}
-
-.tree-table table tr.even {
-	background-color: #FFFFFF;
-}
-
-.tree-table table tr.odd {
-	background-color: #EEEEEE;
-}
-
 table.small {
 	font-size: 10px;
 }
@@ -121,4 +109,32 @@ tree-content {
 
 .tree-row-line {
 	border-bottom: 1px solid #ddd;
+}
+
+.tree-head {
+	font-weight: bold;
+}
+
+.tree-head .tree-column-1 {
+	width: 90px;
+	margin-left: 690px;
+}
+
+.tree-head .tree-column-2 {
+	width: 110px;
+	margin-left: 5px;
+}
+
+.tree-head .tree-column-3 {
+	width: 140px;
+	margin-left: 11px;
+}
+
+.tree-head .tree-column-4 {
+	width: 65px;
+	margin-left: 34px;;
+}
+
+.build-system-properties {
+	height: 150px;
 }
