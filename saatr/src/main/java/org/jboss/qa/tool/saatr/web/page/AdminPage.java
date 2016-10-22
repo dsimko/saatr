@@ -16,12 +16,10 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.jboss.qa.tool.saatr.domain.build.Build;
-import org.jboss.qa.tool.saatr.domain.build.BuildDocument;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.domain.build.ConsoleText;
 import org.jboss.qa.tool.saatr.domain.config.ConfigDocument;
 import org.jboss.qa.tool.saatr.domain.config.QueryDocument;
-import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 import org.springframework.data.mongodb.core.MongoOperations;
 
 /**
@@ -33,9 +31,6 @@ public class AdminPage extends BasePage<Void> {
     @Inject
     private MongoOperations mongoOperations;
 
-    @Inject
-    private BuildRepository buildRepository;
-
     @SuppressWarnings("unused")
     private String results;
 
@@ -44,9 +39,8 @@ public class AdminPage extends BasePage<Void> {
 
             @Override
             protected Iterator<IModel<String>> getItemModels() {
-                List<IModel<String>> models = Arrays.asList(Model.of(BuildDocument.COLLECTION_NAME), Model.of(ConfigDocument.COLLECTION_NAME),
-                        Model.of(QueryDocument.COLLECTION_NAME), Model.of(ConsoleText.COLLECTION_NAME), Model.of(BuildFilter.COLLECTION_NAME),
-                        Model.of(Build.COLLECTION_NAME));
+                List<IModel<String>> models = Arrays.asList(Model.of(Build.COLLECTION_NAME), Model.of(ConfigDocument.COLLECTION_NAME),
+                        Model.of(QueryDocument.COLLECTION_NAME), Model.of(ConsoleText.COLLECTION_NAME), Model.of(BuildFilter.COLLECTION_NAME));
                 return models.iterator();
             }
 
@@ -90,34 +84,6 @@ public class AdminPage extends BasePage<Void> {
             @Override
             public void onClick() {
                 getSession().invalidateNow();
-            }
-        });
-        add(new Link<Void>("tmp") {
-
-            @Override
-            public void onClick() {
-                for (BuildDocument build : mongoOperations.findAll(BuildDocument.class)) {
-                    Build jobRun = new Build();
-                    jobRun.setFullName(build.getJobName());
-                    jobRun.setBuildNumber(build.getBuildNumber());
-                    jobRun.setChildCount(build.getNumberOfChildren());
-                    jobRun.setConsoleTextId(build.getConsoleTextId());
-                    jobRun.setCreated(build.getCreated());
-                    jobRun.setDuration(build.getDuration());
-                    jobRun.setErrorTestcasesCount(build.getErrorTestcases());
-                    jobRun.setErrorTestsuitesCount(build.getErrorTestsuites());
-                    jobRun.setFailedTestcasesCount(build.getFailedTestcases());
-                    jobRun.setFailedTestsuitesCount(build.getFailedTestsuites());
-                    jobRun.setSkippedTestcasesCount(build.getSkippedTestcases());
-                    jobRun.setStatus(build.getStatus());
-                    jobRun.setTotalTestcasesCount(build.getTestcases());
-                    jobRun.setTotalTestsuitesCount(build.getTestsuites().size());
-                    jobRun.getTestsuites().addAll(build.getTestsuites());
-                    jobRun.getProperties().addAll(build.getProperties());
-                    jobRun.getSystemProperties().addAll(build.getSystemProperties());
-                    jobRun.getBuildProperties().addAll(build.getVariables());
-                    buildRepository.save(jobRun);
-                }
             }
         });
     }
