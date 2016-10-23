@@ -65,6 +65,11 @@ public class TestsuitePanel extends GenericPanel<TestSuite> {
 
         });
         panelHead.add(new Label("name"));
+        panelHead.add(new Label("time"));
+        panelHead.add(new Label("tests"));
+        panelHead.add(new Label("errors"));
+        panelHead.add(new Label("skipped"));
+        panelHead.add(new Label("failures"));
         panelHead.add(new Label("collapse", Model.of("")) {
 
             @Override
