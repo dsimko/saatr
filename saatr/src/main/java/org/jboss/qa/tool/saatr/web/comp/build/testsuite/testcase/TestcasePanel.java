@@ -14,7 +14,6 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.jboss.qa.tool.saatr.domain.build.TestCase;
-import org.jboss.qa.tool.saatr.domain.build.TestCase.Status;
 
 /**
  * 
@@ -51,11 +50,7 @@ public class TestcasePanel extends GenericPanel<TestCase> {
                 }
             }
         };
-        if (getModelObject().getStatus() == Status.Failure || getModelObject().getStatus() == Status.Error) {
-            body = new BodyPanel("bodyPanel", model);
-        } else {
-            body = new EmptyPanel("bodyPanel");
-        }
+        body = new EmptyPanel("bodyPanel");
         add(panel.setOutputMarkupId(true));
         panel.add(body);
         WebMarkupContainer panelHead = new WebMarkupContainer("head");

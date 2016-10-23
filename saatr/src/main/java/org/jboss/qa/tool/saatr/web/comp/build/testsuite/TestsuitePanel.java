@@ -14,7 +14,6 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.jboss.qa.tool.saatr.domain.build.TestSuite;
-import org.jboss.qa.tool.saatr.domain.build.TestSuite.Status;
 
 /**
  * 
@@ -48,11 +47,7 @@ public class TestsuitePanel extends GenericPanel<TestSuite> {
                 }
             }
         };
-        if (getModelObject().getStatus() == Status.Failure || getModelObject().getStatus() == Status.Error) {
-            body = new BodyPanel("bodyPanel", model);
-        } else {
-            body = new EmptyPanel("bodyPanel");
-        }
+        body = new EmptyPanel("bodyPanel");
         add(panel.setOutputMarkupId(true));
         panel.add(body);
         WebMarkupContainer panelHead = new WebMarkupContainer("head");
@@ -70,6 +65,11 @@ public class TestsuitePanel extends GenericPanel<TestSuite> {
 
         });
         panelHead.add(new Label("name"));
+        panelHead.add(new Label("time"));
+        panelHead.add(new Label("tests"));
+        panelHead.add(new Label("errors"));
+        panelHead.add(new Label("skipped"));
+        panelHead.add(new Label("failures"));
         panelHead.add(new Label("collapse", Model.of("")) {
 
             @Override

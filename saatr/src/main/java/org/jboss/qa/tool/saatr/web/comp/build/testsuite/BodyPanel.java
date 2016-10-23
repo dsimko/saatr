@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RefreshingView;
@@ -28,11 +27,6 @@ class BodyPanel extends GenericPanel<TestSuite> {
 
     public BodyPanel(String id, final IModel<TestSuite> model) {
         super(id, new CompoundPropertyModel<>(model));
-        add(new Label("time"));
-        add(new Label("tests"));
-        add(new Label("errors"));
-        add(new Label("skipped"));
-        add(new Label("failures"));
         add(new PropertiesPanel<>("properties", model));
         add(new RefreshingView<TestCase>("testcases") {
 

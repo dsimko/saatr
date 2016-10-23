@@ -3,14 +3,22 @@
 <body>
 	<wicket:panel>
 		<div wicket:id="panel" class="panel">
-			<div wicket:id="head" class="panel-heading">
-				<h3 class="panel-title clicable">
+			<div wicket:id="head" class="panel-heading clicable">
+				<h3 class="panel-title pull-left">
 					<wicket:container wicket:id="name"></wicket:container>
-					<span class="pull-right">
-						<span wicket:id="collapse" class="glyphicon glyphicon-minus" aria-hidden="true"></span>
-						<span wicket:id="expand" class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-					</span>	
 				</h3>
+				<div class="pull-right" style="margin-left: 10px;">
+					<span wicket:id="collapse" class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+					<span wicket:id="expand" class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+				</div>	
+				<div class="pull-right">
+					F: <span wicket:id="failures"></span>, 
+					E: <span wicket:id="errors"></span>,
+					S: <span wicket:id="skipped"></span>,
+					T: <span wicket:id="tests"></span>, 
+					(<span class="text-muted" wicket:id="time"></span>)
+				</div>
+				<div class="clearfix"></div>
 			</div>
 			<wicket:container wicket:id="bodyPanel"></wicket:container>
 		</div>
