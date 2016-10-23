@@ -25,7 +25,13 @@ import lombok.Data;
 public class TestCase implements DocumentWithProperties<UUID>, Comparable<TestCase> {
 
     public static enum Status {
-        Success, Skipped, FlakyFailure, FlakyError, Error, Failure
+        Success(1), Skipped(0), FlakyFailure(1), FlakyError(1), Error(2), Failure(3);
+        
+        final int weight;
+        
+        private Status(int weight) {
+            this.weight = weight;
+        }
     }
 
     final Set<BuildProperty> properties = new TreeSet<>();
@@ -112,6 +118,6 @@ public class TestCase implements DocumentWithProperties<UUID>, Comparable<TestCa
         if (o.status == null) {
             return 1;
         }
-        return o.status.ordinal() - status.ordinal();
+        return o.status.weight - status.weight;
     }
 }
