@@ -7,8 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
-import org.apache.wicket.extensions.markup.html.basic.ILinkParser;
-import org.apache.wicket.extensions.markup.html.basic.SmartLinkLabel;
+import org.apache.wicket.markup.ComponentTag;
+import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.panel.GenericPanel;
@@ -87,12 +87,14 @@ public class BuildPanel extends GenericPanel<Build> {
             @Override
             protected void populateItem(Item<BuildProperty> item) {
                 item.add(new Label("name"));
-                item.add(new SmartLinkLabel("value") {
+                item.add(new Label("value") {
 
                     @Override
-                    protected ILinkParser getLinkParser() {
-                        return new SmartLinkParser();
+                    public void onComponentTagBody(final MarkupStream markupStream, final ComponentTag openTag) {
+                        String text = getDefaultModelObjectAsString();
+                        replaceComponentTagBody(markupStream, openTag, SmartLinkParser.INSTANCE.parse(text.replaceAll("&amp;", "&")));
                     }
+
                 });
             }
         });

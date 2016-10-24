@@ -16,7 +16,9 @@ public class SmartLinkParser extends LinkParser {
         }
     };
 
-    public SmartLinkParser() {
+    public static final LinkParser INSTANCE = new SmartLinkParser();
+
+    private SmartLinkParser() {
         addLinkRenderStrategy(URL_PATTERN, URL_RENDER_STRATEGY);
     }
 

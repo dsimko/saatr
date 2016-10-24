@@ -4,13 +4,13 @@ package org.jboss.qa.tool.saatr.web.comp.bootstrap;
 import java.util.List;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
-import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
 
 @SuppressWarnings("serial")
-public class BootstrapTabbedPanel<T extends ITab> extends TabbedPanel<T> {
+public class BootstrapTabbedPanel<T extends ITab> extends AjaxTabbedPanel<T> {
 
     /**
      * {@inheritDoc}

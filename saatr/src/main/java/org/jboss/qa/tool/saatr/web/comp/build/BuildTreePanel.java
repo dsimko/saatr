@@ -17,7 +17,6 @@ import org.apache.wicket.extensions.markup.html.repeater.tree.theme.HumanTheme;
 import org.apache.wicket.injection.Injector;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -42,6 +41,7 @@ import lombok.Data;
 public class BuildTreePanel extends GenericPanel<Build> {
 
     private static final String BUILD_PARAM_NAME = "build";
+    public static final String ANCHOR_PARAM_NAME = "anchor";
 
     @SpringBean
     private BuildRepository buildRepository;
@@ -100,6 +100,7 @@ public class BuildTreePanel extends GenericPanel<Build> {
                         } else {
                             PageParameters parameters = new PageParameters(BuildTreePanel.this.getPage().getPageParameters());
                             parameters.set(BUILD_PARAM_NAME, build.getId());
+                            parameters.set(ANCHOR_PARAM_NAME, true);
                             return new BookmarkablePageLink<>(id, tree.getPage().getClass(), parameters);
                         }
                     }
@@ -109,19 +110,21 @@ public class BuildTreePanel extends GenericPanel<Build> {
 
         };
         tree.add(new HumanTheme());
-        add(tree);
-        add(new Link<Void>("expandAll") {
+        add(tree.setOutputMarkupId(true));
+        add(new AjaxLink<Void>("expandAll") {
 
             @Override
-            public void onClick() {
+            public void onClick(AjaxRequestTarget target) {
                 BuildExpansion.get().expandAll();
+                target.add(tree);
             }
         });
-        add(new Link<Void>("collapseAll") {
+        add(new AjaxLink<Void>("collapseAll") {
 
             @Override
-            public void onClick() {
+            public void onClick(AjaxRequestTarget target) {
                 BuildExpansion.get().collapseAll();
+                target.add(tree);
             }
         });
         add(new AjaxLink<Void>("selectAll") {

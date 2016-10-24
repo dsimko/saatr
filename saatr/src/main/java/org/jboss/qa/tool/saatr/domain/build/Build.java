@@ -208,13 +208,13 @@ public class Build implements DocumentWithProperties<ObjectId>, DocumentWithID<O
 
         private static final String PROPERTY_NAME = "EAP_VERSION";
 
-        private static final int LABEL_WIDTH = 710;
+        private static final int LABEL_WIDTH = 750;
 
         private static final int CHILD_COUNT_WIDTH = 30;
 
-        private static final int TEST_SUITE_STATISTICS_WIDTH = 120;
+        private static final int TEST_SUITE_STATISTICS_WIDTH = 150;
 
-        private static final int TEST_CASE_STATISTICS_WIDTH = 175;
+        private static final int TEST_CASE_STATISTICS_WIDTH = 200;
 
         private static final int STATUS_WIDTH = 80;
 
