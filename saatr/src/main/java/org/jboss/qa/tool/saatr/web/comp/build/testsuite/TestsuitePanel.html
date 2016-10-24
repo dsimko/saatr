@@ -12,11 +12,11 @@
 					<span wicket:id="expand" class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 				</div>	
 				<div class="pull-right">
-					F: <span wicket:id="failures"></span>, 
-					E: <span wicket:id="errors"></span>,
-					S: <span wicket:id="skipped"></span>,
-					T: <span wicket:id="tests"></span>, 
-					(<span class="text-muted" wicket:id="time"></span>)
+					F: <wicket:container wicket:id="failures"></wicket:container><span class="text-muted"> | </span>
+					E: <wicket:container wicket:id="errors"></wicket:container><span class="text-muted"> | </span>
+					S: <wicket:container wicket:id="skipped"></wicket:container><span class="text-muted"> | </span>
+					T: <wicket:container wicket:id="tests"></wicket:container><span class="text-muted"> | </span>  
+					<span class="text-muted">(<wicket:container wicket:id="time"></wicket:container>)</span>
 				</div>
 				<div class="clearfix"></div>
 			</div>

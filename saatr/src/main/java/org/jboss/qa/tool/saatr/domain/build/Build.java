@@ -294,11 +294,11 @@ public class Build implements DocumentWithProperties<ObjectId>, DocumentWithID<O
             StringBuilder builder = new StringBuilder();
             builder.append("<span class=\"text-danger\">F: ");
             builder.append(build.getFailedTestcasesCount());
-            builder.append("</span>, <span class=\"text-warning\">E:  ");
+            builder.append("</span><span class=\"text-muted\"> | </span><span class=\"text-warning\">E:  ");
             builder.append(build.getErrorTestcasesCount());
-            builder.append("</span>, <span class=\"text-muted\">S: ");
+            builder.append("</span><span class=\"text-muted\"> | S: ");
             builder.append(build.getSkippedTestcasesCount());
-            builder.append("</span>, T: ");
+            builder.append(" | </span> T: ");
             builder.append(build.getTotalTestcasesCount());
             return builder.toString();
         }
@@ -310,9 +310,9 @@ public class Build implements DocumentWithProperties<ObjectId>, DocumentWithID<O
             StringBuilder builder = new StringBuilder();
             builder.append("<span class=\"text-danger\">F: ");
             builder.append(build.getFailedTestsuitesCount());
-            builder.append("</span>, <span class=\"text-warning\">E:  ");
+            builder.append("</span><span class=\"text-muted\"> | </span><span class=\"text-warning\">E:  ");
             builder.append(build.getErrorTestsuitesCount());
-            builder.append("</span>, T: ");
+            builder.append("</span><span class=\"text-muted\"> | </span>T: ");
             builder.append(build.getTotalTestsuitesCount());
             return builder.toString();
         }
