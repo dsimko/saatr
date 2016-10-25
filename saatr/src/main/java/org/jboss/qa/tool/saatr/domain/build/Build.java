@@ -29,6 +29,10 @@ public class Build implements DocumentWithProperties<ObjectId>, DocumentWithID<O
 
     public static final String COLLECTION_NAME = "build";
 
+    public static final String[] EAGERLY_LOADED_FIELDS = new String[] { "id", "name", "configuration", "buildNumber", "status", "failedTestsuitesCount",
+        "errorTestsuitesCount", "totalTestcasesCount", "failedTestcasesCount", "errorTestcasesCount", "skippedTestcasesCount", "totalTestsuitesCount",
+        "buildProperties" };
+
     private static final String NAME_CONFIG_DELIMITER = "/";
 
     public static enum Status {

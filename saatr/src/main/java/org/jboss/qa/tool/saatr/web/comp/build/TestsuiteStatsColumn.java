@@ -12,10 +12,10 @@ import org.jboss.qa.tool.saatr.domain.build.Build;
 import org.jboss.qa.tool.saatr.domain.build.Build.HtmlRenderer;
 
 @SuppressWarnings("serial")
-public class StatusColumn extends PropertyColumn<Build, String> {
+public class TestsuiteStatsColumn extends PropertyColumn<Build, String> {
 
-    public StatusColumn() {
-        super(Model.of("Status"), "status", "status");
+    public TestsuiteStatsColumn() {
+        super(Model.of("Testuites stats"), null);
     }
 
     @Override
@@ -24,9 +24,9 @@ public class StatusColumn extends PropertyColumn<Build, String> {
 
             @Override
             public String getObject() {
-                return HtmlRenderer.getStatusHtml(rowModel.getObject());
+                return HtmlRenderer.getTestsuiteStatisticsHtml(rowModel.getObject());
             }
         }).setEscapeModelStrings(false));
     }
-
+ 
 }

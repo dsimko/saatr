@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
 import org.jboss.qa.tool.saatr.domain.build.Build;
@@ -22,7 +23,7 @@ import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite;
  */
 interface BuildRepositoryCustom {
 
-    Iterator<Build> query(long first, long count, BuildFilter filter);
+    Iterator<Build> query(long first, long count, BuildFilter filter, SortParam<String> sortParam);
 
     long count(BuildFilter filter);
 

@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.bson.BsonDocument;
 import org.bson.BsonString;
 import org.bson.types.ObjectId;
@@ -70,12 +71,15 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
     }
 
     @Override
-    public Iterator<Build> query(long first, long count, BuildFilter filter) {
+    public Iterator<Build> query(long first, long count, BuildFilter filter, SortParam<String> sortParam) {
         final Query query = new Query();
         query.limit((int) count);
         query.skip((int) first);
-        query.with(new Sort(Sort.Direction.DESC, "id"));
+        query.with(new Sort(sortParam.isAscending() ? Sort.Direction.ASC : Sort.Direction.DESC, sortParam.getProperty()));
         query.addCriteria(createCriteria(filter, false));
+        for (String field : Build.EAGERLY_LOADED_FIELDS) {
+            query.fields().include(field);
+        }
         return template.find(query, Build.class).iterator();
     }
 
@@ -273,19 +277,9 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
             return results.getMappedResults().iterator();
         } else {
             Query query = Query.query(createCriteria(filter, false, where("name").is(parent.getName()), where("configuration").is(parent.getConfiguration())));
-            query.fields().include("id");
-            query.fields().include("name");
-            query.fields().include("configuration");
-            query.fields().include("buildNumber");
-            query.fields().include("status");
-            query.fields().include("failedTestsuitesCount");
-            query.fields().include("errorTestsuitesCount");
-            query.fields().include("totalTestcasesCount");
-            query.fields().include("failedTestcasesCount");
-            query.fields().include("errorTestcasesCount");
-            query.fields().include("skippedTestcasesCount");
-            query.fields().include("totalTestsuitesCount");
-            query.fields().include("buildProperties");
+            for (String field : Build.EAGERLY_LOADED_FIELDS) {
+                query.fields().include(field);
+            }
             return template.find(query, Build.class, Build.COLLECTION_NAME).iterator();
         }
     }

@@ -73,8 +73,15 @@ table.small {
 }
 
 table.small>tbody>tr>td {
-	padding-bottom: 0;
-	padding-top: 0;
+	padding: 0;
+}
+
+table.smaller {
+	font-size: 12px;
+}
+
+table.smaller>tbody>tr>td {
+	padding: 0;
 }
 
 tree-branch {
