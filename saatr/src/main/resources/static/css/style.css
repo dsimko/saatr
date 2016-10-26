@@ -9,6 +9,10 @@ body {
 	}
 }
 
+.builds {
+	margin-top: 40px;
+}
+
 #wicketDebugBar {
 	top: 50px;
 	z-index: 2030;
