@@ -40,6 +40,8 @@ public abstract class BasePage<T> extends GenericWebPage<T> {
     }
 
     private void initBasePage() {
+        // for reason of this please see RequestCycleSettings#setGatherExtendedBrowserInfo
+        getSession().getClientInfo();
         add(new DebugBar("debug").setVisible(getApplication().getDebugSettings().isDevelopmentUtilitiesEnabled()));
         add(new BootstrapNavbarLink("builds", BuildPage.class, Model.of("Builds"), "glyphicon glyphicon-th-list"));
         add(new BootstrapNavbarLink("config", ConfigPage.class, Model.of("Config"), "glyphicon glyphicon-wrench"));
