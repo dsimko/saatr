@@ -13,6 +13,7 @@ import java.util.UUID;
 import javax.xml.bind.JAXBElement;
 
 import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
+import org.jboss.qa.tool.saatr.domain.DocumentWithName;
 import org.jboss.qa.tool.saatr.domain.build.TestCase.Fragment;
 import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite;
 import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite.Testcase;
@@ -29,7 +30,7 @@ import lombok.Data;
  */
 @Data
 @SuppressWarnings("serial")
-public class TestSuite implements DocumentWithProperties<UUID>, Comparable<TestSuite> {
+public class TestSuite implements DocumentWithProperties<UUID>, DocumentWithName, Comparable<TestSuite> {
 
     public static enum Status {
         Success, FlakyError, FlakyFailure, Error, Failure
@@ -62,7 +63,7 @@ public class TestSuite implements DocumentWithProperties<UUID>, Comparable<TestS
 
     @Transient
     private boolean dirty;
-
+    
     public static TestSuite create(Testsuite testsuite) {
 
         TestSuite testsuiteData = new TestSuite();

@@ -152,6 +152,21 @@ tree-content {
 	margin-left: 63px;;
 }
 
+.compare-panel {
+	position: absolute;
+	width: 100%;
+	left: 0px;
+}
+
+.compare-panel .custom-properties-panel {
+	height: 185px;
+	max-height: 185px;
+}
+
+.compare-panel .custom-properties-panel .custom-properties {
+	max-height: 60px;
+}
+
 .build-system-properties {
 	max-height: 150px;
 }
