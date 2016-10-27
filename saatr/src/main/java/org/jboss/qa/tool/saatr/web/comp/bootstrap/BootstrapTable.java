@@ -7,9 +7,9 @@ import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.attributes.AjaxRequestAttributes;
 import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxFallbackHeadersToolbar;
 import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxNavigationToolbar;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.HeadersToolbar;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.ISortableDataProvider;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.NoRecordsToolbar;
@@ -81,7 +81,7 @@ public abstract class BootstrapTable<T, S> extends DataTable<T, S> {
                 return new BootstrapAjaxPagingNavigator(navigatorId, table);
             }
         });
-        addTopToolbar(new HeadersToolbar<S>(this, dataProvider));
+        addTopToolbar(new AjaxFallbackHeadersToolbar<S>(this, dataProvider));
         addBottomToolbar(new NoRecordsToolbar(this));
         addBottomToolbar(new ExportToolbar(this).addDataExporter(new CSVDataExporter()));
     }
