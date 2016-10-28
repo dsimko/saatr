@@ -3,6 +3,7 @@ package org.jboss.qa.tool.saatr.web.page;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -12,7 +13,6 @@ import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.OnLoadHeaderItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -25,6 +25,7 @@ import org.jboss.qa.tool.saatr.web.comp.build.BuildJsonPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildTreePanel;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildsPanel;
+import org.jboss.qa.tool.saatr.web.comp.build.compare.CompareBuildFilterPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.compare.CompareBuildPanel;
 
 import lombok.AllArgsConstructor;
@@ -37,7 +38,8 @@ import lombok.Data;
 public class BuildPage extends BasePage<Build> {
 
     private boolean anchorExists;
-    private Panel buildPanel;
+    private Panel listPanel;
+    private Panel detailPanel;
 
     public BuildPage() {
         super(new DocumentModel<Build>(Build.class, null));
@@ -63,7 +65,7 @@ public class BuildPage extends BasePage<Build> {
         } else {
             anchorExists = parameters.get(BuildTreePanel.ANCHOR_PARAM_NAME).toBoolean(false);
         }
-        add(new BuildsPanel("buildsPanel", getModel()));
+        add(listPanel = new BuildsPanel("buildsPanel", getModel()));
         List<ITab> tabs = new ArrayList<ITab>();
         tabs.add(new AbstractTab(new AbstractReadOnlyModel<String>() {
 
@@ -92,27 +94,44 @@ public class BuildPage extends BasePage<Build> {
                 return new BuildJsonPanel(panelId, getModel());
             }
         });
-        add(buildPanel = new BootstrapTabbedPanel<>("tabs", tabs));
+        add(detailPanel = new BootstrapTabbedPanel<>("tabs", tabs));
     }
  
     @Override
     public void onEvent(IEvent<?> event) {
         Object payload = event.getPayload();
-        if (payload instanceof CompareEvent) {
-            CompareEvent eventPayload = (CompareEvent) payload;
-            replaceBuildPanel(eventPayload.getBuildIds());
+        if (payload instanceof CompareBuildsEvent) {
+            CompareBuildsEvent eventPayload = (CompareBuildsEvent) payload;
+            replaceDetailPanel(eventPayload.getBuildIds());
+        } else if (payload instanceof CompareBuildFiltersEvent) {
+            CompareBuildFiltersEvent eventPayload = (CompareBuildFiltersEvent) payload;
+            replaceListPanel(eventPayload.getBuildFilterIds());
+            replaceDetailPanel(Collections.emptySet());
         }
     }
 
-    private void replaceBuildPanel(Set<ObjectId> buildIds) {
-        Panel comparePanel = new CompareBuildPanel(buildPanel.getId(), buildIds);
-        buildPanel.replaceWith(comparePanel);
-        buildPanel = comparePanel;
+    private void replaceDetailPanel(Set<ObjectId> buildIds) {
+        Panel comparePanel = new CompareBuildPanel(detailPanel.getId(), buildIds);
+        detailPanel.replaceWith(comparePanel);
+        detailPanel = comparePanel;
+    }
+
+    private void replaceListPanel(Set<ObjectId> buildFilterIds) {
+        Panel comparePanel = new CompareBuildFilterPanel(listPanel.getId(), buildFilterIds);
+        listPanel.replaceWith(comparePanel);
+        listPanel = comparePanel;
     }
 
     @Data
     @AllArgsConstructor
-    public static class CompareEvent implements Serializable {
+    public static class CompareBuildsEvent implements Serializable {
         private final Set<ObjectId> buildIds;
     }
+    
+    @Data
+    @AllArgsConstructor
+    public static class CompareBuildFiltersEvent implements Serializable {
+        private final Set<ObjectId> buildFilterIds;
+    }
+
 }

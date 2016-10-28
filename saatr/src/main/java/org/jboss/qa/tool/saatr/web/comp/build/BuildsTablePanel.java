@@ -29,7 +29,7 @@ import org.jboss.qa.tool.saatr.domain.build.Build;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapTable;
-import org.jboss.qa.tool.saatr.web.page.BuildPage.CompareEvent;
+import org.jboss.qa.tool.saatr.web.page.BuildPage.CompareBuildsEvent;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -93,7 +93,7 @@ public class BuildsTablePanel extends GenericPanel<Build> {
 
             @Override
             public void onClick() {
-                getPage().send(getPage(), Broadcast.EXACT, new CompareEvent(getSelectedIds()));
+                getPage().send(getPage(), Broadcast.EXACT, new CompareBuildsEvent(getSelectedIds()));
             }
         });
 

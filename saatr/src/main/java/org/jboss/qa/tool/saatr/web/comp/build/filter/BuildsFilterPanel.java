@@ -13,6 +13,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.attributes.AjaxRequestAttributes;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.event.Broadcast;
 import org.apache.wicket.event.IEvent;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
@@ -40,6 +41,7 @@ import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapDateTimeField;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildExpansion;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildsTablePanel.RefreshSelectedEvent;
 import org.jboss.qa.tool.saatr.web.comp.build.SelectRowColumn;
+import org.jboss.qa.tool.saatr.web.page.BuildPage.CompareBuildFiltersEvent;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -149,6 +151,12 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
                 getSelectedIds().clear();
                 target.add(selectedCount);
                 target.add(table);
+            }
+        });
+        add(new Link<Void>("compare"){
+            @Override
+            public void onClick() {
+                getPage().send(getPage(), Broadcast.EXACT, new CompareBuildFiltersEvent(getSelectedIds()));
             }
         });
     }
