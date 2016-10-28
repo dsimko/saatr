@@ -1,6 +1,8 @@
 
 package org.jboss.qa.tool.saatr.web.comp.build;
 
+import java.util.Set;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.attributes.AjaxRequestAttributes;
 import org.apache.wicket.ajax.attributes.AjaxRequestAttributes.EventPropagation;
@@ -9,27 +11,28 @@ import org.apache.wicket.event.Broadcast;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.jboss.qa.tool.saatr.domain.build.Build;
+import org.bson.types.ObjectId;
+import org.jboss.qa.tool.saatr.domain.DocumentWithID;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildsTablePanel.RefreshSelectedEvent;
 
 @SuppressWarnings("serial")
-public class SelectRowPanel extends GenericPanel<Build> {
+public class SelectRowPanel<T extends DocumentWithID<ObjectId>> extends GenericPanel<T> {
 
-    public SelectRowPanel(String id, IModel<Build> model) {
+    public SelectRowPanel(String id, IModel<T> model, final Set<ObjectId> selected) {
         super(id, model);
         add(new AjaxCheckBox("checkbox", new Model<Boolean>() {
 
             @Override
             public Boolean getObject() {
-                return BuildSelection.get().getIds().contains(model.getObject().getId());
+                return selected.contains(model.getObject().getId());
             }
 
             @Override
             public void setObject(Boolean object) {
                 if (getObject()) {
-                    BuildSelection.get().getIds().remove(model.getObject().getId());
+                    selected.remove(model.getObject().getId());
                 } else {
-                    BuildSelection.get().getIds().add(model.getObject().getId());
+                    selected.add(model.getObject().getId());
                 }
             }
         }) {

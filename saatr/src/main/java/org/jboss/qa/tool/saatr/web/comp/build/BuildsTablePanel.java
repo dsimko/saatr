@@ -49,7 +49,7 @@ public class BuildsTablePanel extends GenericPanel<Build> {
         selectedCount = new Label("selectedCount", new PropertyModel<>(this, "selectedIds.size"));
         add(selectedCount.setOutputMarkupId(true));
         List<IColumn<Build, String>> columns = new ArrayList<IColumn<Build, String>>();
-        columns.add(new SelectRowColumn());
+        columns.add(new SelectRowColumn<>(getSelectedIds()));
         columns.add(new PropertyColumn<Build, String>(new Model<String>("Job Name"), "name", "name"));
         columns.add(new PropertyColumn<Build, String>(new Model<String>("Config"), "configuration", "configuration") {
 
@@ -113,7 +113,7 @@ public class BuildsTablePanel extends GenericPanel<Build> {
 
     @Data
     @AllArgsConstructor
-    static class RefreshSelectedEvent implements Serializable {
+    public static class RefreshSelectedEvent implements Serializable {
 
         private final AjaxRequestTarget target;
     }
