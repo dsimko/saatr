@@ -23,7 +23,6 @@ import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapTabbedPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildExpansion;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildJsonPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildPanel;
-import org.jboss.qa.tool.saatr.web.comp.build.BuildTreePanel;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildsPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.compare.CompareBuildFilterPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.compare.CompareBuildPanel;
@@ -37,8 +36,14 @@ import lombok.Data;
 @SuppressWarnings("serial")
 public class BuildPage extends BasePage<Build> {
 
+    public static final String BUILD_PARAM_NAME = "build";
+
+    private static final String ANCHOR_PARAM_NAME = "anchor";
+
     private boolean anchorExists;
+
     private Panel listPanel;
+
     private Panel detailPanel;
 
     public BuildPage() {
@@ -63,7 +68,7 @@ public class BuildPage extends BasePage<Build> {
         if (parameters == null || parameters.isEmpty()) {
             BuildExpansion.get().collapseAll();
         } else {
-            anchorExists = parameters.get(BuildTreePanel.ANCHOR_PARAM_NAME).toBoolean(false);
+            anchorExists = parameters.get(ANCHOR_PARAM_NAME).toBoolean(false);
         }
         add(listPanel = new BuildsPanel("buildsPanel", getModel()));
         List<ITab> tabs = new ArrayList<ITab>();
@@ -96,7 +101,7 @@ public class BuildPage extends BasePage<Build> {
         });
         add(detailPanel = new BootstrapTabbedPanel<>("tabs", tabs));
     }
- 
+
     @Override
     public void onEvent(IEvent<?> event) {
         Object payload = event.getPayload();
@@ -122,15 +127,24 @@ public class BuildPage extends BasePage<Build> {
         listPanel = comparePanel;
     }
 
+    public static PageParameters createBuildDetailPageParameters(ObjectId buildId, PageParameters pageParameters) {
+        PageParameters parameters = new PageParameters(pageParameters);
+        parameters.set(BuildPage.BUILD_PARAM_NAME, buildId);
+        parameters.set(BuildPage.ANCHOR_PARAM_NAME, true);
+        return parameters;
+    }
+
     @Data
     @AllArgsConstructor
     public static class CompareBuildsEvent implements Serializable {
+
         private final Set<ObjectId> buildIds;
     }
-    
+
     @Data
     @AllArgsConstructor
     public static class CompareBuildFiltersEvent implements Serializable {
+
         private final Set<ObjectId> buildFilterIds;
     }
 

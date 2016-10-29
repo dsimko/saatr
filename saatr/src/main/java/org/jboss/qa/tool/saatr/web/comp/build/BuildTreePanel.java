@@ -32,6 +32,7 @@ import org.jboss.qa.tool.saatr.domain.build.Build;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.domain.build.BuildProperty;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
+import org.jboss.qa.tool.saatr.web.page.BuildPage;
 import org.jboss.qa.tool.saatr.web.page.BuildPage.CompareBuildsEvent;
 
 import lombok.AllArgsConstructor;
@@ -42,11 +43,6 @@ import lombok.Data;
  */
 @SuppressWarnings("serial")
 public class BuildTreePanel extends GenericPanel<Build> {
-
-    // TODO move to some better place
-    public static final String BUILD_PARAM_NAME = "build";
-
-    public static final String ANCHOR_PARAM_NAME = "anchor";
 
     @SpringBean
     private BuildRepository buildRepository;
@@ -102,9 +98,8 @@ public class BuildTreePanel extends GenericPanel<Build> {
                         if (tree.getProvider().hasChildren(build)) {
                             return super.newLinkComponent(id, model);
                         } else {
-                            PageParameters parameters = new PageParameters(BuildTreePanel.this.getPage().getPageParameters());
-                            parameters.set(BUILD_PARAM_NAME, build.getId());
-                            parameters.set(ANCHOR_PARAM_NAME, true);
+                            PageParameters parameters = BuildPage.createBuildDetailPageParameters(build.getId(),
+                                    BuildTreePanel.this.getPage().getPageParameters());
                             return new BookmarkablePageLink<>(id, tree.getPage().getClass(), parameters);
                         }
                     }
@@ -181,7 +176,7 @@ public class BuildTreePanel extends GenericPanel<Build> {
     @Override
     protected void onConfigure() {
         super.onConfigure();
-        String buildId = getPage().getPageParameters().get(BUILD_PARAM_NAME).toString(null);
+        String buildId = getPage().getPageParameters().get(BuildPage.BUILD_PARAM_NAME).toString(null);
         if (buildId != null) {
             Build build = buildRepository.findOne(new ObjectId(buildId));
             if (build != null) {

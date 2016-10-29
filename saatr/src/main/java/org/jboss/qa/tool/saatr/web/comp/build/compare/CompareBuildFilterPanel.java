@@ -30,7 +30,6 @@ import org.jboss.qa.tool.saatr.domain.build.Build.HtmlRenderer;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.repo.build.BuildFilterRepository;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
-import org.jboss.qa.tool.saatr.web.comp.build.BuildTreePanel;
 import org.jboss.qa.tool.saatr.web.comp.build.filter.FilterColumn;
 import org.jboss.qa.tool.saatr.web.page.BuildPage;
 
@@ -108,9 +107,7 @@ public class CompareBuildFilterPanel extends Panel {
 
                                     @Override
                                     protected void onEvent(AjaxRequestTarget target) {
-                                        PageParameters parameters = new PageParameters();
-                                        parameters.set(BuildTreePanel.BUILD_PARAM_NAME, build.getId());
-                                        parameters.set(BuildTreePanel.ANCHOR_PARAM_NAME, true);
+                                        PageParameters parameters = BuildPage.createBuildDetailPageParameters(build.getId(), null);
                                         setResponsePage(BuildPage.class, parameters);
                                     }
 
