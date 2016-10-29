@@ -117,7 +117,7 @@ public class BuildPage extends BasePage<Build> {
     }
 
     private void replaceListPanel(Set<ObjectId> buildFilterIds) {
-        Panel comparePanel = new CompareBuildFilterPanel(listPanel.getId(), buildFilterIds);
+        Panel comparePanel = new CompareBuildFilterPanel(listPanel.getId(), new ArrayList<>(buildFilterIds));
         listPanel.replaceWith(comparePanel);
         listPanel = comparePanel;
     }

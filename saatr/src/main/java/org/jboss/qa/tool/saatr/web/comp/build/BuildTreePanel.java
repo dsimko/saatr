@@ -43,7 +43,9 @@ import lombok.Data;
 @SuppressWarnings("serial")
 public class BuildTreePanel extends GenericPanel<Build> {
 
-    private static final String BUILD_PARAM_NAME = "build";
+    // TODO move to some better place
+    public static final String BUILD_PARAM_NAME = "build";
+
     public static final String ANCHOR_PARAM_NAME = "anchor";
 
     @SpringBean
@@ -86,8 +88,7 @@ public class BuildTreePanel extends GenericPanel<Build> {
 
                     @Override
                     protected boolean isSelected() {
-                        return BuildTreePanel.this.getModelObject() != null
-                                && BuildTreePanel.this.getModelObject().getId().equals(getModelObject().getId());
+                        return BuildTreePanel.this.getModelObject() != null && BuildTreePanel.this.getModelObject().getId().equals(getModelObject().getId());
                     }
 
                     @Override

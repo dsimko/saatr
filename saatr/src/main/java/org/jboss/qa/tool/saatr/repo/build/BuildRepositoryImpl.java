@@ -32,6 +32,7 @@ import org.jboss.qa.tool.saatr.domain.build.ConsoleText;
 import org.jboss.qa.tool.saatr.domain.build.TestCase;
 import org.jboss.qa.tool.saatr.domain.build.TestSuite;
 import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite;
+import org.jboss.qa.tool.saatr.web.comp.build.compare.CompareBuildFilterPanel.BuildNameDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -71,7 +72,7 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
     }
 
     @Override
-    public Iterator<Build> query(long first, long count, BuildFilter filter, SortParam<String> sortParam) {
+    public List<Build> query(long first, long count, BuildFilter filter, SortParam<String> sortParam) {
         final Query query = new Query();
         query.limit((int) count);
         query.skip((int) first);
@@ -80,7 +81,7 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
         for (String field : Build.EAGERLY_LOADED_FIELDS) {
             query.fields().include(field);
         }
-        return template.find(query, Build.class).iterator();
+        return template.find(query, Build.class);
     }
 
     @Override
@@ -282,6 +283,14 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
             }
             return template.find(query, Build.class, Build.COLLECTION_NAME).iterator();
         }
+    }
+
+    @Override
+    public List<BuildNameDto> getDistinctJobNames(final BuildFilter filter) {
+        Aggregation agg = newAggregation(match(createCriteria(filter, true)),
+                group("name", "configuration"), project().and("_id.name").as("name").and("_id.configuration").as("configuration").andExclude("_id"));
+        AggregationResults<BuildNameDto> results = template.aggregate(agg, Build.COLLECTION_NAME, BuildNameDto.class);
+        return results.getMappedResults();
     }
 
     private Criteria createCriteria(BuildFilter filter, boolean convertoToBson, Criteria... additionaleCriterias) {

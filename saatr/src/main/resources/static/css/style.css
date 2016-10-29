@@ -170,3 +170,19 @@ tree-content {
 .build-system-properties {
 	max-height: 150px;
 }
+
+.compare-panel .col-config {
+	width: 100px;
+}
+
+.compare-panel .col-testsuite-stats {
+	width: 105px;
+}
+
+.compare-panel .col-testcase-stats {
+	width: 145px;
+}
+
+.compare-panel .col-status {
+	width: 80px;
+}

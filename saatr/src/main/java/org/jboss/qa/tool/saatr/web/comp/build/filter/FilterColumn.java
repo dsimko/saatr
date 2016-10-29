@@ -21,7 +21,7 @@ public class FilterColumn extends PropertyColumn<BuildFilter, String> {
         return Model.of(geData(rowModel.getObject()));
     }
 
-    private String geData(BuildFilter filter) {
+    public static String geData(BuildFilter filter) {
         StringBuilder builder = new StringBuilder();
         if (filter.getJobName() != null) {
             append(filter.getJobName(), builder);
@@ -50,14 +50,14 @@ public class FilterColumn extends PropertyColumn<BuildFilter, String> {
         return builder.toString();
     }
 
-    private <T> void append(T t, StringBuilder builder) {
+    private static <T> void append(T t, StringBuilder builder) {
         if (builder.length() > 0) {
             builder.append(" ");
         }
         builder.append(t);
     }
 
-    private void appendProperties(List<PropertyDto> list, StringBuilder builder) {
+    private static void appendProperties(List<PropertyDto> list, StringBuilder builder) {
         for (PropertyDto property : list) {
             if (property.getName() != null) {
                 StringBuilder b = new StringBuilder();

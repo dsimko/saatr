@@ -133,7 +133,7 @@ public class BuildsTablePanel extends GenericPanel<Build> {
 
         @Override
         public Iterator<Build> iterator(long first, long count) {
-            return buildRepository.query(first, count, filter.getObject(), getSort());
+            return buildRepository.query(first, count, filter.getObject(), getSort()).iterator();
         }
 
         @Override
