@@ -29,6 +29,7 @@ import org.jboss.qa.tool.saatr.domain.build.Build;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapTable;
+import org.jboss.qa.tool.saatr.web.page.BuildPage;
 import org.jboss.qa.tool.saatr.web.page.BuildPage.CompareBuildsEvent;
 
 import lombok.AllArgsConstructor;
@@ -65,9 +66,10 @@ public class BuildsTablePanel extends GenericPanel<Build> {
         BootstrapTable<Build, String> table = new BootstrapTable<Build, String>("table", columns, new BuildProvider(filterModel), ROWS_PER_PAGE, getModel()) {
 
             @Override
-            protected void selectRow(Build build) {
-                setModelObject(build);
+            protected void onRowClicked(AjaxRequestTarget target, Build build) {
+                setResponsePage(BuildPage.class, BuildPage.createBuildDetailPageParameters(build.getId(), getPage().getPageParameters()));
             }
+
         };
         add(table.setOutputMarkupId(true));
         add(new AjaxLink<Void>("selectAll") {

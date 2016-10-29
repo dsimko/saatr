@@ -174,18 +174,6 @@ public class BuildTreePanel extends GenericPanel<Build> {
     }
 
     @Override
-    protected void onConfigure() {
-        super.onConfigure();
-        String buildId = getPage().getPageParameters().get(BuildPage.BUILD_PARAM_NAME).toString(null);
-        if (buildId != null) {
-            Build build = buildRepository.findOne(new ObjectId(buildId));
-            if (build != null) {
-                setModelObject(build);
-            }
-        }
-    }
-
-    @Override
     public void onEvent(IEvent<?> event) {
         if (event.getPayload() instanceof CopyToAllSelectedEvent) {
             CopyToAllSelectedEvent copyEvent = (CopyToAllSelectedEvent) event.getPayload();

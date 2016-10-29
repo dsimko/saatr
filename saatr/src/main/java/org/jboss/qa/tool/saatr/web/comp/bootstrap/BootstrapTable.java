@@ -68,11 +68,6 @@ public abstract class BootstrapTable<T, S> extends DataTable<T, S> {
         return row;
     }
 
-    protected void onRowClicked(AjaxRequestTarget target, T t) {
-        selectRow(t);
-        setResponsePage(getPage());
-    }
-
     protected void initToolbars() {
         addTopToolbar(new AjaxNavigationToolbar(this) {
 
@@ -86,7 +81,7 @@ public abstract class BootstrapTable<T, S> extends DataTable<T, S> {
         addBottomToolbar(new ExportToolbar(this).addDataExporter(new CSVDataExporter()));
     }
 
-    protected abstract void selectRow(T t);
+    protected abstract void onRowClicked(AjaxRequestTarget target, T t);
 
     @Override
     protected void onDetach() {

@@ -16,8 +16,10 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.domain.build.Build;
+import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 import org.jboss.qa.tool.saatr.web.comp.DocumentModel;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapTabbedPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildExpansion;
@@ -36,7 +38,7 @@ import lombok.Data;
 @SuppressWarnings("serial")
 public class BuildPage extends BasePage<Build> {
 
-    public static final String BUILD_PARAM_NAME = "build";
+    private static final String BUILD_PARAM_NAME = "build";
 
     private static final String ANCHOR_PARAM_NAME = "anchor";
 
@@ -45,6 +47,9 @@ public class BuildPage extends BasePage<Build> {
     private Panel listPanel;
 
     private Panel detailPanel;
+
+    @SpringBean
+    private BuildRepository buildRepository;
 
     public BuildPage() {
         super(new DocumentModel<Build>(Build.class, null));
@@ -100,6 +105,18 @@ public class BuildPage extends BasePage<Build> {
             }
         });
         add(detailPanel = new BootstrapTabbedPanel<>("tabs", tabs));
+    }
+
+    @Override
+    protected void onConfigure() {
+        super.onConfigure();
+        String buildId = getPage().getPageParameters().get(BUILD_PARAM_NAME).toString(null);
+        if (buildId != null) {
+            Build build = buildRepository.findOne(new ObjectId(buildId));
+            if (build != null) {
+                setModelObject(build);
+            }
+        }
     }
 
     @Override
