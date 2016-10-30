@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.markup.html.basic.Label;
@@ -55,9 +56,11 @@ public class ConfigPage extends BasePage<ConfigDocument> {
                 getModel()) {
 
             @Override
-            protected void selectRow(ConfigDocument configData) {
-                setModelObject(configData);
+            protected void onRowClicked(AjaxRequestTarget target, ConfigDocument config) {
+                setModelObject(config);
+                setResponsePage(getPage());
             }
+
         };
         add(dataTable);
         Form<Void> form = new StatelessForm<Void>("form");

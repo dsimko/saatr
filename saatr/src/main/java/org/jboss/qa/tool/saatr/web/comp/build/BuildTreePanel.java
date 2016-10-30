@@ -9,6 +9,7 @@ import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.event.Broadcast;
 import org.apache.wicket.event.IEvent;
 import org.apache.wicket.extensions.markup.html.repeater.tree.ITreeProvider;
 import org.apache.wicket.extensions.markup.html.repeater.tree.NestedTree;
@@ -17,6 +18,7 @@ import org.apache.wicket.extensions.markup.html.repeater.tree.theme.HumanTheme;
 import org.apache.wicket.injection.Injector;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -30,6 +32,8 @@ import org.jboss.qa.tool.saatr.domain.build.Build;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.domain.build.BuildProperty;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
+import org.jboss.qa.tool.saatr.web.page.BuildPage;
+import org.jboss.qa.tool.saatr.web.page.BuildPage.CompareBuildsEvent;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,9 +43,6 @@ import lombok.Data;
  */
 @SuppressWarnings("serial")
 public class BuildTreePanel extends GenericPanel<Build> {
-
-    private static final String BUILD_PARAM_NAME = "build";
-    public static final String ANCHOR_PARAM_NAME = "anchor";
 
     @SpringBean
     private BuildRepository buildRepository;
@@ -83,8 +84,7 @@ public class BuildTreePanel extends GenericPanel<Build> {
 
                     @Override
                     protected boolean isSelected() {
-                        return BuildTreePanel.this.getModelObject() != null
-                                && BuildTreePanel.this.getModelObject().getId().equals(getModelObject().getId());
+                        return BuildTreePanel.this.getModelObject() != null && BuildTreePanel.this.getModelObject().getId().equals(getModelObject().getId());
                     }
 
                     @Override
@@ -98,9 +98,8 @@ public class BuildTreePanel extends GenericPanel<Build> {
                         if (tree.getProvider().hasChildren(build)) {
                             return super.newLinkComponent(id, model);
                         } else {
-                            PageParameters parameters = new PageParameters(BuildTreePanel.this.getPage().getPageParameters());
-                            parameters.set(BUILD_PARAM_NAME, build.getId());
-                            parameters.set(ANCHOR_PARAM_NAME, true);
+                            PageParameters parameters = BuildPage.createBuildDetailPageParameters(build.getId(),
+                                    BuildTreePanel.this.getPage().getPageParameters());
                             return new BookmarkablePageLink<>(id, tree.getPage().getClass(), parameters);
                         }
                     }
@@ -165,18 +164,13 @@ public class BuildTreePanel extends GenericPanel<Build> {
                 target.add(selectedCount);
             }
         });
-    }
+        add(new Link<Void>("compare") {
 
-    @Override
-    protected void onConfigure() {
-        super.onConfigure();
-        String buildId = getPage().getPageParameters().get(BUILD_PARAM_NAME).toString(null);
-        if (buildId != null) {
-            Build build = buildRepository.findOne(new ObjectId(buildId));
-            if (build != null) {
-                setModelObject(build);
+            @Override
+            public void onClick() {
+                getPage().send(getPage(), Broadcast.EXACT, new CompareBuildsEvent(getSelectedIds()));
             }
-        }
+        });
     }
 
     @Override

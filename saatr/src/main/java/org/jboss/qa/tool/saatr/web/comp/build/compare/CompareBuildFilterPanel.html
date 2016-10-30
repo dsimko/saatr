@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<html xmlns:wicket>
+<body>
+	<wicket:panel>
+		<div class="compare-panel container-fluid">
+			<div class="table-responsive">
+				<table class="table smaller table-striped">
+					<tr>
+						<th>Name</th>
+						<th>Configuration</th>
+						<th wicket:id="filters">
+							<wicket:container wicket:id="filter"></wicket:container>
+						</th>
+					</tr>
+					<tr wicket:id="rows">
+						<td><strong wicket:id="name"></strong></td>
+						<td class="col-config" wicket:id="config"></td>
+						<td wicket:id="filters">
+							<table>
+								<wicket:container wicket:id="builds">
+									<tr class="clicable" wicket:id="wmc">
+										<td class="col-testsuite-stats" wicket:id="testsuiteStats"></td>
+										<td class="col-testcase-stats" wicket:id="testcaseStats"></td>
+										<td class="col-status" wicket:id="status"></td>
+									</tr>
+								</wicket:container>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</wicket:panel>
+</body>
+</html>

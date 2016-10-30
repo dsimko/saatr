@@ -51,7 +51,7 @@ public class BuildsPanel extends GenericPanel<Build> {
 
             @Override
             public WebMarkupContainer getPanel(String panelId) {
-                return new BuildsSimpleTablePanel(panelId, model, filter);
+                return new BuildsTablePanel(panelId, model, filter);
             }
         });
         add(new BootstrapTabbedPanel<>("tabs", tabs));

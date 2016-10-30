@@ -14,6 +14,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.jboss.qa.tool.saatr.domain.build.TestSuite;
+import org.jboss.qa.tool.saatr.web.comp.build.compare.CompareBuildPanel;
 
 /**
  * 
@@ -32,18 +33,22 @@ public class TestsuitePanel extends GenericPanel<TestSuite> {
             @Override
             protected void onComponentTag(ComponentTag tag) {
                 super.onComponentTag(tag);
-                switch (getModelObject().getStatus()) {
-                    case Failure:
-                    case Error:
-                        tag.append("class", "panel-danger", " ");
-                        break;
-                    case FlakyFailure:
-                    case FlakyError:
-                        tag.append("class", "panel-warning", " ");
-                        break;
-                    case Success:
-                        tag.append("class", "panel-success", " ");
-                        break;
+                if (getModelObject() != null) {
+                    switch (getModelObject().getStatus()) {
+                        case Failure:
+                        case Error:
+                            tag.append("class", "panel-danger", " ");
+                            break;
+                        case FlakyFailure:
+                        case FlakyError:
+                            tag.append("class", "panel-warning", " ");
+                            break;
+                        case Success:
+                            tag.append("class", "panel-success", " ");
+                            break;
+                    }
+                } else {
+                    tag.append("class", "hidden", " ");
                 }
             }
         };
@@ -64,7 +69,13 @@ public class TestsuitePanel extends GenericPanel<TestSuite> {
             }
 
         });
-        panelHead.add(new Label("name"));
+        panelHead.add(new Label("name") {
+
+            @Override
+            public boolean isVisible() {
+                return findParent(CompareBuildPanel.class) == null;
+            }
+        });
         panelHead.add(new Label("time"));
         panelHead.add(new Label("tests"));
         panelHead.add(new Label("errors"));

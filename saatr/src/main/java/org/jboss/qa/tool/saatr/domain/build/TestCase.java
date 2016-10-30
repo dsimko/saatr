@@ -9,6 +9,7 @@ import java.util.TreeSet;
 import java.util.UUID;
 
 import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
+import org.jboss.qa.tool.saatr.domain.DocumentWithName;
 import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite.Testcase;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -22,7 +23,7 @@ import lombok.Data;
  */
 @Data
 @SuppressWarnings("serial")
-public class TestCase implements DocumentWithProperties<UUID>, Comparable<TestCase> {
+public class TestCase implements DocumentWithProperties<UUID>, DocumentWithName, Comparable<TestCase> {
 
     public static enum Status {
         Success(1), Skipped(0), FlakyFailure(1), FlakyError(1), Error(2), Failure(3);
@@ -85,7 +86,7 @@ public class TestCase implements DocumentWithProperties<UUID>, Comparable<TestCa
         Double time;
 
     }
-
+    
     @Override
     public String toString() {
         return "Testcase [name=" + name + ", classname=" + classname + "]";

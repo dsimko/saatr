@@ -6,17 +6,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.attributes.AjaxRequestAttributes;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.event.Broadcast;
 import org.apache.wicket.event.IEvent;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
-import org.apache.wicket.extensions.yui.calendar.DateTimeField;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -27,12 +30,18 @@ import org.apache.wicket.markup.repeater.OddEvenItem;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.domain.build.Build.Status;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.repo.build.BuildFilterRepository;
+import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapDateTimeField;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildExpansion;
+import org.jboss.qa.tool.saatr.web.comp.build.BuildsTablePanel.RefreshSelectedEvent;
+import org.jboss.qa.tool.saatr.web.comp.build.SelectRowColumn;
+import org.jboss.qa.tool.saatr.web.page.BuildPage.CompareBuildFiltersEvent;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -45,11 +54,15 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
 
     public static final String FILTER_PARAM_NAME = "filter";
 
+    private Label selectedCount;
+
     @SpringBean
     private BuildFilterRepository buildFilterRepository;
 
     public BuildsFilterPanel(String id, IModel<BuildFilter> model) {
         super(id, model);
+        selectedCount = new Label("selectedCount", new PropertyModel<>(this, "selectedIds.size"));
+        add(selectedCount.setOutputMarkupId(true));
         Form<BuildFilter> form = new Form<BuildFilter>("form", new CompoundPropertyModel<BuildFilter>(model)) {
 
             @Override
@@ -73,8 +86,8 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
         form.add(new TextField<>("jobName"));
         form.add(new TextField<>("buildNumber"));
         form.add(new DropDownChoice<>("status", Arrays.asList(Status.values())).setNullValid(true));
-        form.add(new DateTimeField("createdFrom"));
-        form.add(new DateTimeField("createdTo"));
+        form.add(new BootstrapDateTimeField("createdFrom"));
+        form.add(new BootstrapDateTimeField("createdTo"));
         form.add(new JobParamsFilterPanel("jobParams", model));
         form.add(new SystemParamsFilterPanel("systemParams", model));
         form.add(new CustomPropertiesFilterPanel("customProperties", model));
@@ -88,6 +101,7 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
         });
         add(form);
         List<IColumn<BuildFilter, String>> columns = new ArrayList<IColumn<BuildFilter, String>>();
+        columns.add(new SelectRowColumn<>(BuildFilterSelection.get().getIds()));
         columns.add(new FilterColumn());
         columns.add(new AbstractColumn<BuildFilter, String>(Model.of("")) {
 
@@ -96,7 +110,7 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
                 cellItem.add(new DeleteColumnPanel(componentId, rowModel));
             }
         });
-        DataTable<BuildFilter, String> dataTable = new DataTable<BuildFilter, String>("table", columns, new BuildFilterProvider(), 5) {
+        DataTable<BuildFilter, String> table = new DataTable<BuildFilter, String>("table", columns, new BuildFilterProvider(), 5) {
 
             @Override
             protected Item<BuildFilter> newRowItem(String id, int index, final IModel<BuildFilter> model) {
@@ -130,8 +144,21 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
                 }
             }
         };
-        add(dataTable.setOutputMarkupId(true));
-
+        add(table.setOutputMarkupId(true));
+        add(new AjaxLink<Void>("deselect"){
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                getSelectedIds().clear();
+                target.add(selectedCount);
+                target.add(table);
+            }
+        });
+        add(new Link<Void>("compare"){
+            @Override
+            public void onClick() {
+                getPage().send(getPage(), Broadcast.EXACT, new CompareBuildFiltersEvent(getSelectedIds()));
+            }
+        });
     }
 
     @Override
@@ -151,6 +178,18 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
         params.clearNamed();
         params.set(FILTER_PARAM_NAME, buildFilter.getId());
         setResponsePage(getPage().getClass(), params);
+    }
+
+    public Set<ObjectId> getSelectedIds() {
+        return BuildFilterSelection.get().getIds();
+    }
+    
+    @Override
+    public void onEvent(IEvent<?> event) {
+        if (event.getPayload() instanceof RefreshSelectedEvent) {
+            RefreshSelectedEvent refreshEvent = (RefreshSelectedEvent) event.getPayload();
+            refreshEvent.getTarget().add(selectedCount);
+        }
     }
 
     @Data

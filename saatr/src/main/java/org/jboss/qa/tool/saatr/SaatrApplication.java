@@ -64,6 +64,7 @@ public class SaatrApplication extends WebApplication {
 
         getMarkupSettings().setStripWicketTags(true);
         getMarkupSettings().setDefaultMarkupEncoding(CharEncoding.UTF_8);
+        getRequestCycleSettings().setGatherExtendedBrowserInfo(true);
 
         getComponentInstantiationListeners().add(new SpringComponentInjector(this, applicationContext));
     }

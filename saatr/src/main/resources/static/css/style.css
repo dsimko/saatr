@@ -9,6 +9,10 @@ body {
 	}
 }
 
+.builds {
+	margin-top: 40px;
+}
+
 #wicketDebugBar {
 	top: 50px;
 	z-index: 2030;
@@ -148,6 +152,45 @@ tree-content {
 	margin-left: 63px;;
 }
 
+.compare-panel {
+	position: absolute;
+	width: 100%;
+	left: 0px;
+}
+
+.compare-panel .custom-properties-panel {
+	height: 185px;
+	max-height: 185px;
+}
+
+.compare-panel .custom-properties-panel .custom-properties {
+	max-height: 60px;
+}
+
 .build-system-properties {
 	max-height: 150px;
+}
+
+.compare-panel .col-config {
+	width: 100px;
+}
+
+.compare-panel .col-testsuite-stats {
+	width: 105px;
+}
+
+.compare-panel .col-testcase-stats {
+	width: 145px;
+}
+
+.compare-panel .col-status {
+	width: 80px;
+}
+
+.compare-panel .panel {
+	margin-bottom: 0;
+}
+
+.compare-panel td.col-name {
+	padding-top: 10px;
 }

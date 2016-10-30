@@ -15,6 +15,7 @@ import org.jboss.qa.tool.saatr.domain.build.BuildProperty;
 import org.jboss.qa.tool.saatr.domain.build.TestCase;
 import org.jboss.qa.tool.saatr.domain.build.TestSuite;
 import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite;
+import org.jboss.qa.tool.saatr.web.comp.build.compare.CompareBuildFilterPanel.BuildNameDto;
 
 /**
  * The interface for repository functionality that will be implemented manually.
@@ -23,7 +24,7 @@ import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite;
  */
 interface BuildRepositoryCustom {
 
-    Iterator<Build> query(long first, long count, BuildFilter filter, SortParam<String> sortParam);
+    List<Build> query(long first, long count, BuildFilter filter, SortParam<String> sortParam);
 
     long count(BuildFilter filter);
 
@@ -60,4 +61,6 @@ interface BuildRepositoryCustom {
     Iterator<? extends Build> getChildren(Build parent, BuildFilter filter);
 
     ObjectId findSimilar(String errorMessage);
+    
+    List<BuildNameDto> getDistinctJobNames(final BuildFilter filter);
 }
