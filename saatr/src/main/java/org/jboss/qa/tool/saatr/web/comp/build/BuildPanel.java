@@ -21,9 +21,7 @@ import org.jboss.qa.tool.saatr.domain.build.Build;
 import org.jboss.qa.tool.saatr.domain.build.Build.HtmlRenderer;
 import org.jboss.qa.tool.saatr.domain.build.BuildProperty;
 import org.jboss.qa.tool.saatr.domain.build.TestSuite;
-import org.jboss.qa.tool.saatr.util.NameComparator;
 import org.jboss.qa.tool.saatr.web.comp.SmartLinkParser;
-import org.jboss.qa.tool.saatr.web.comp.build.compare.CompareBuildPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.properties.PropertiesPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.testsuite.TestsuiteModel;
 import org.jboss.qa.tool.saatr.web.comp.build.testsuite.TestsuitePanel;
@@ -108,11 +106,7 @@ public class BuildPanel extends GenericPanel<Build> {
             protected Iterator<IModel<TestSuite>> getItemModels() {
                 List<IModel<TestSuite>> models = new ArrayList<>();
                 List<TestSuite> testsuites = getModelObject().getTestsuites();
-                if (findParent(CompareBuildPanel.class) != null) {
-                    Collections.sort(testsuites, new NameComparator<>());
-                } else {
-                    Collections.sort(testsuites);
-                }
+                Collections.sort(testsuites);
                 for (TestSuite testsuiteData : testsuites) {
                     models.add(new TestsuiteModel(testsuiteData));
                 }

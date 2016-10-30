@@ -186,3 +186,11 @@ tree-content {
 .compare-panel .col-status {
 	width: 80px;
 }
+
+.compare-panel .panel {
+	margin-bottom: 0;
+}
+
+.compare-panel td.col-name {
+	padding-top: 10px;
+}

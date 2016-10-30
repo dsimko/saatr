@@ -3,10 +3,15 @@
 <body>
 	<wicket:panel>
 		<div class="compare-panel container-fluid">
-			<div class="row">
-				<div class="col-md-6" wicket:id="builds">
-					<div wicket:id="build"></div>
-				</div>
+			<div class="table-responsive">
+				<table class="table smaller table-striped">
+					<tr wicket:id="rows">
+						<td class="col-name"><strong wicket:id="name"></strong></td>
+						<td wicket:id="filters">
+							<div wicket:id="testsuite"></div>	
+						</td>
+					</tr>
+				</table>
 			</div>
 		</div>
 	</wicket:panel>
