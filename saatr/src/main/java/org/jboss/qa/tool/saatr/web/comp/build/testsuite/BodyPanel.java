@@ -37,7 +37,9 @@ class BodyPanel extends GenericPanel<TestSuite> {
                 List<IModel<TestCase>> models = new ArrayList<>();
                 int index = 0;
                 for (TestCase tc : getModelObject().getTestcases()) {
-                    tc.setIndex(index++);
+                    if (tc.getIndex() == null) {
+                        tc.setIndex(index++);
+                    }
                 }
                 if (findParent(CompareBuildPanel.class) != null) {
                     Collections.sort(getModelObject().getTestcases(), new NameComparator<>());
