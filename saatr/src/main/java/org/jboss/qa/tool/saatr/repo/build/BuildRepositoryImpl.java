@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.bson.BsonDocument;
 import org.bson.BsonString;
-import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
 import org.jboss.qa.tool.saatr.domain.build.Build;
 import org.jboss.qa.tool.saatr.domain.build.Build.Status;
@@ -287,8 +286,8 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
 
     @Override
     public List<BuildNameDto> getDistinctJobNames(final BuildFilter filter) {
-        Aggregation agg = newAggregation(match(createCriteria(filter, true)),
-                group("name", "configuration"), project().and("_id.name").as("name").and("_id.configuration").as("configuration").andExclude("_id"));
+        Aggregation agg = newAggregation(match(createCriteria(filter, true)), group("name", "configuration"),
+                project().and("_id.name").as("name").and("_id.configuration").as("configuration").andExclude("_id"));
         AggregationResults<BuildNameDto> results = template.aggregate(agg, Build.COLLECTION_NAME, BuildNameDto.class);
         return results.getMappedResults();
     }
@@ -326,7 +325,10 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
             addPropertiesCriteria(filter.getProperties(), convertoToBson, criterias, "properties");
         }
         if (filter.getErrorMessage() != null) {
-            criterias.add(where("testsuites.testcases.error.message").is(filter.getErrorMessage()));
+            criterias.add(where("testsuites.testcases.error.message").regex(filter.getErrorMessage() + ".*"));
+        }
+        if (filter.getFailureMessage() != null) {
+            criterias.add(where("testsuites.testcases.failure.message").regex(filter.getFailureMessage() + ".*"));
         }
         Criteria criteria = new Criteria();
         if (!criterias.isEmpty()) {
@@ -354,12 +356,5 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
                 }
             }
         }
-    }
-
-    public ObjectId findSimilar(String errorMessage) {
-        BuildFilter buildFilter = new BuildFilter();
-        buildFilter.setErrorMessage(errorMessage);
-        template.save(buildFilter);
-        return buildFilter.getId();
     }
 }

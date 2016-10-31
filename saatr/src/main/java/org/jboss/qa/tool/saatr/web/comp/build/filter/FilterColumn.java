@@ -47,6 +47,12 @@ public class FilterColumn extends PropertyColumn<BuildFilter, String> {
         if (!filter.getProperties().isEmpty()) {
             appendProperties(filter.getProperties(), builder);
         }
+        if (filter.getErrorMessage() != null) {
+            append(filter.getErrorMessage(), builder);
+        }
+        if (filter.getFailureMessage() != null) {
+            append(filter.getFailureMessage(), builder);
+        }
         return builder.toString();
     }
 
