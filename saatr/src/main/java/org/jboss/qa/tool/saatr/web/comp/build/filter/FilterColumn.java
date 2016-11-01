@@ -21,6 +21,7 @@ public class FilterColumn extends PropertyColumn<BuildFilter, String> {
         return Model.of(geData(rowModel.getObject()));
     }
 
+    //TODO escapeMarkup
     public static String geData(BuildFilter filter) {
         StringBuilder builder = new StringBuilder();
         if (filter.getJobName() != null) {

@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.util.string.Strings;
 import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.domain.DocumentWithID;
 import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
@@ -233,11 +234,12 @@ public class Build implements DocumentWithProperties<ObjectId>, DocumentWithID<O
             }
             if (jobRun.getId() != null) {
                 width -= SUB_TREE_MARGIN;
-                label = "Build #" + jobRun.buildNumber + ", " + PROPERTY_NAME + " = " + getPropertyValue(jobRun.getBuildProperties(), PROPERTY_NAME);
+                label = "Build #" + jobRun.buildNumber + ", " + PROPERTY_NAME + " = " + Strings.escapeMarkup(getPropertyValue(jobRun.getBuildProperties(), PROPERTY_NAME));
             }
             StringBuilder builder = new StringBuilder();
             builder.append("<span style=\"width:" + width + "px;\" class=\"tree-column\">");
-            builder.append(label);
+            builder.append(Strings.escapeMarkup(label));
+            builder.append(getCopyToClipboardButtonHtml(label));
             builder.append("</span>");
             builder.append("<span style=\"width:" + CHILD_COUNT_WIDTH + "px;\" class=\"tree-column\">");
             builder.append(jobRun.getChildCount() == null ? HTML_SPACE : jobRun.getChildCount());
@@ -261,6 +263,11 @@ public class Build implements DocumentWithProperties<ObjectId>, DocumentWithID<O
                 }
             }
             return "";
+        }
+
+        public static String getCopyToClipboardButtonHtml(String textToBeCopied) {
+            return " <span onclick=\"return Saatr.copyToClipboard(event, '" + Strings.escapeMarkup(textToBeCopied)
+                    + "');\" class=\"glyphicon glyphicon-copy clicable text-muted\" aria-hidden=\"true\"></span>";
         }
 
         public static String getStatusHtml(Build build) {
