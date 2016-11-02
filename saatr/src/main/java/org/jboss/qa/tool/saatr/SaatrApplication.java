@@ -9,9 +9,11 @@ import org.apache.wicket.Page;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.crypt.CharEncoding;
-import org.jboss.qa.tool.saatr.domain.config.QueryDocument;
+import org.jboss.qa.tool.saatr.domain.User;
+import org.jboss.qa.tool.saatr.domain.User.Role;
+import org.jboss.qa.tool.saatr.repo.UserRepository;
 import org.jboss.qa.tool.saatr.repo.build.ConsoleTextRepository;
-import org.jboss.qa.tool.saatr.repo.config.QueryRepository;
+import org.jboss.qa.tool.saatr.security.BasicAuthInterceptor;
 import org.jboss.qa.tool.saatr.web.comp.URLConverter;
 import org.jboss.qa.tool.saatr.web.comp.build.ConsoleTextResource;
 import org.jboss.qa.tool.saatr.web.page.AdminPage;
@@ -22,9 +24,11 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.mongodb.MongoClient;
 
@@ -43,6 +47,9 @@ public class SaatrApplication extends WebApplication {
 
     @Autowired
     private ConsoleTextRepository consoleTextrepository;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public static void main(String[] args) {
         SpringApplication.run(SaatrApplication.class, args);
@@ -81,11 +88,23 @@ public class SaatrApplication extends WebApplication {
     }
 
     @Bean
-    InitializingBean populateTestData(QueryRepository repository) {
+    @ConfigurationProperties(prefix = "security")
+    public BasicAuthInterceptor interceptor() {
+        return new BasicAuthInterceptor();
+    }
+
+    @Bean
+    InitializingBean populateTestUsers(UserRepository repository) {
         return () -> {
+            repository.deleteAll();
             if (repository.count() == 0L) {
-                repository.save(QueryDocument.DataInitializer.createInitalData());
-                repository.findAll().forEach(System.out::println);
+                interceptor().getUsers().entrySet().stream().forEach(e -> {
+                    User user = new User();
+                    user.setUsername(e.getKey());
+                    user.setPassword(bCryptPasswordEncoder.encode(e.getValue()));
+                    user.getRoles().add(Role.User);
+                    repository.save(user);
+                });
             }
         };
     }

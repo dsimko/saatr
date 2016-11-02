@@ -13,5 +13,35 @@
     "name": "download.consoleText.jenkins.password",
     "type": "java.lang.String",
     "description": "BASIC authorization password for calling jenkins REST API'"
+  },
+  {
+    "name": "security.users.saatr",
+    "type": "java.lang.String",
+    "description": "A description for 'security.users.saatr'"
+  },
+  {
+    "name": "security.users.dan",
+    "type": "java.lang.String",
+    "description": "A description for 'security.users.dan'"
+  },
+  {
+    "name": "security.users.ondra",
+    "type": "java.lang.String",
+    "description": "A description for 'security.users.ondra'"
+  },
+  {
+    "name": "download.consoleText.enable",
+    "type": "java.lang.String",
+    "description": "A description for 'download.consoleText.enable'"
+  },
+  {
+    "name": "download.consoleText.jenkins.user",
+    "type": "java.lang.String",
+    "description": "A description for 'download.consoleText.jenkins.user'"
+  },
+  {
+    "name": "download.consoleText.jenkins.password",
+    "type": "java.lang.String",
+    "description": "A description for 'download.consoleText.jenkins.password'"
   }
 ]}

@@ -15,6 +15,7 @@ import org.apache.wicket.markup.repeater.RefreshingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.jboss.qa.tool.saatr.domain.User;
 import org.jboss.qa.tool.saatr.domain.build.Build;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.domain.build.ConsoleText;
@@ -40,7 +41,7 @@ public class AdminPage extends BasePage<Void> {
             @Override
             protected Iterator<IModel<String>> getItemModels() {
                 List<IModel<String>> models = Arrays.asList(Model.of(Build.COLLECTION_NAME), Model.of(ConfigDocument.COLLECTION_NAME),
-                        Model.of(QueryDocument.COLLECTION_NAME), Model.of(ConsoleText.COLLECTION_NAME), Model.of(BuildFilter.COLLECTION_NAME));
+                        Model.of(QueryDocument.COLLECTION_NAME), Model.of(ConsoleText.COLLECTION_NAME), Model.of(BuildFilter.COLLECTION_NAME), Model.of(User.COLLECTION_NAME));
                 return models.iterator();
             }
 
