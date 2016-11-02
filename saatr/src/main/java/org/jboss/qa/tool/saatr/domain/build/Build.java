@@ -234,7 +234,8 @@ public class Build implements DocumentWithProperties<ObjectId>, DocumentWithID<O
             }
             if (jobRun.getId() != null) {
                 width -= SUB_TREE_MARGIN;
-                label = "Build #" + jobRun.buildNumber + ", " + PROPERTY_NAME + " = " + Strings.escapeMarkup(getPropertyValue(jobRun.getBuildProperties(), PROPERTY_NAME));
+                label = "Build #" + jobRun.buildNumber + ", " + PROPERTY_NAME + " = "
+                        + Strings.escapeMarkup(getPropertyValue(jobRun.getBuildProperties(), PROPERTY_NAME));
             }
             StringBuilder builder = new StringBuilder();
             builder.append("<span style=\"width:" + width + "px;\" class=\"tree-column\">");
@@ -267,7 +268,7 @@ public class Build implements DocumentWithProperties<ObjectId>, DocumentWithID<O
 
         public static String getCopyToClipboardButtonHtml(String textToBeCopied) {
             return " <span onclick=\"return Saatr.copyToClipboard(event, '" + Strings.escapeMarkup(textToBeCopied)
-                    + "');\" class=\"glyphicon glyphicon-copy clicable text-muted\" aria-hidden=\"true\"></span>";
+                    + "');\" title=\"Copy to clipboard\" class=\"glyphicon glyphicon-copy clicable text-muted\" aria-hidden=\"true\"></span>";
         }
 
         public static String getStatusHtml(Build build) {

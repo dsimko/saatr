@@ -11,25 +11,29 @@ import org.apache.wicket.model.IModel;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.repo.build.BuildFilterRepository;
 import org.jboss.qa.tool.saatr.web.comp.DocumentModel;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @SuppressWarnings("serial")
 public class BuildFilterProvider extends SortableDataProvider<BuildFilter, String> {
 
+    private final String creatorUsername;
+    
     @Inject
     private BuildFilterRepository buildFilterRepository;
 
     public BuildFilterProvider() {
         Injector.get().inject(this);
+        this.creatorUsername = SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
     @Override
     public Iterator<BuildFilter> iterator(long first, long count) {
-        return buildFilterRepository.query(first, count);
+        return buildFilterRepository.query(first, count, creatorUsername);
     }
 
     @Override
     public long size() {
-        return buildFilterRepository.count();
+        return buildFilterRepository.count(creatorUsername);
     }
 
     @Override

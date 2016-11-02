@@ -10,6 +10,7 @@ import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.domain.DocumentWithID;
 import org.jboss.qa.tool.saatr.domain.build.Build.Status;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
@@ -27,6 +28,9 @@ public class BuildFilter implements DocumentWithID<ObjectId>, Cloneable {
 
     @Id
     private ObjectId id;
+
+    @Indexed
+    private String creatorUsername;
 
     private Date created = new Date();
 

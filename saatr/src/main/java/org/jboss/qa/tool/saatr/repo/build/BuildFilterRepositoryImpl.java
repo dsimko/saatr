@@ -43,11 +43,34 @@ class BuildFilterRepositoryImpl implements BuildFilterRepositoryCustom {
     }
 
     @Override
-    public Iterator<BuildFilter> query(long first, long count) {
+    public Iterator<BuildFilter> query(long first, long count, String creatorUsername) {
         final Query query = new Query();
+        query.addCriteria(where("creatorUsername").is(creatorUsername));
         query.limit((int) count);
         query.skip((int) first);
         query.with(new Sort(Sort.Direction.DESC, "lastUsed"));
         return template.find(query, BuildFilter.class).iterator();
+    }
+
+    @Override
+    public long count(String creatorUsername) {
+        final Query query = new Query();
+        query.addCriteria(where("creatorUsername").is(creatorUsername));
+        return template.count(query, BuildFilter.class);
+    }
+
+    @Override
+    public void saveIfNewOrChanged(BuildFilter filter) {
+        if (filter.getId() == null) {
+            template.save(filter);
+        } else {
+            BuildFilter original = template.findById(filter.getId(), BuildFilter.class);
+            if (!filter.equals(original)) {
+                filter.setId(null);
+                filter.setCreated(new Date());
+                filter.setLastUsed(new Date());
+                template.save(filter);
+            }
+        }
     }
 }

@@ -14,6 +14,9 @@ interface BuildFilterRepositoryCustom {
 
     BuildFilter findAndUpdateLastUsed(String id);
 
-    Iterator<BuildFilter> query(long first, long count);
+    Iterator<BuildFilter> query(long first, long count, String creatorUsername);
+    
+    long count(String creatorUsername);
 
+    void saveIfNewOrChanged(BuildFilter filter);
 }

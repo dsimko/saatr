@@ -4,7 +4,6 @@ package org.jboss.qa.tool.saatr.web.comp.build.filter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -42,6 +41,7 @@ import org.jboss.qa.tool.saatr.web.comp.build.BuildExpansion;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildsTablePanel.RefreshSelectedEvent;
 import org.jboss.qa.tool.saatr.web.comp.build.SelectRowColumn;
 import org.jboss.qa.tool.saatr.web.page.BuildPage.CompareBuildFiltersEvent;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -68,17 +68,8 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
             @Override
             protected void onSubmit() {
                 BuildFilter buildFilter = getModelObject();
-                if (buildFilter.getId() == null) {
-                    buildFilter = buildFilterRepository.save(buildFilter);
-                } else {
-                    BuildFilter original = buildFilterRepository.findOne(buildFilter.getId());
-                    if (!buildFilter.equals(original)) {
-                        buildFilter.setId(null);
-                        buildFilter.setCreated(new Date());
-                        buildFilter.setLastUsed(new Date());
-                        buildFilter = buildFilterRepository.save(buildFilter);
-                    }
-                }
+                buildFilter.setCreatorUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+                buildFilterRepository.saveIfNewOrChanged(buildFilter);
                 changeFilter(buildFilter);
             }
 
@@ -147,7 +138,8 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
             }
         };
         add(table.setOutputMarkupId(true));
-        add(new AjaxLink<Void>("deselect"){
+        add(new AjaxLink<Void>("deselect") {
+
             @Override
             public void onClick(AjaxRequestTarget target) {
                 getSelectedIds().clear();
@@ -155,7 +147,8 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
                 target.add(table);
             }
         });
-        add(new Link<Void>("compare"){
+        add(new Link<Void>("compare") {
+
             @Override
             public void onClick() {
                 getPage().send(getPage(), Broadcast.EXACT, new CompareBuildFiltersEvent(getSelectedIds()));
@@ -185,7 +178,7 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
     public Set<ObjectId> getSelectedIds() {
         return BuildFilterSelection.get().getIds();
     }
-    
+
     @Override
     public void onEvent(IEvent<?> event) {
         if (event.getPayload() instanceof RefreshSelectedEvent) {
