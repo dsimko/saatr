@@ -266,6 +266,7 @@ public class Build implements DocumentWithProperties<ObjectId>, DocumentWithID<O
             return "";
         }
 
+        // TODO replace by wicketstuff-clipboardjs when will be released
         public static String getCopyToClipboardButtonHtml(String textToBeCopied) {
             return " <span onclick=\"return Saatr.copyToClipboard(event, '" + Strings.escapeMarkup(textToBeCopied)
                     + "');\" title=\"Copy to clipboard\" class=\"glyphicon glyphicon-copy clicable text-muted\" aria-hidden=\"true\"></span>";

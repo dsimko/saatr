@@ -7,6 +7,7 @@
   				<div class="row">
 	  				<div class="col-md-8">
 						<form wicket:id="form" class="form-inline" role="form">
+							<div wicket:id="feedback"></div>
 							<div class="col-md-12">
 								<div class="form-group form-group-sm">
 									<label>Job Name</label> 
@@ -57,7 +58,9 @@
 							<a class="btn btn-default btn-xs" wicket:id="compare">Compare</a> <a class="btn btn-default btn-xs" wicket:id="deselect">Deselec</a> Selected <strong wicket:id="selectedCount"></strong>
 						</div>	
 						<div class="clearfix"></div>
-						<table wicket:id="table" class="table table-hover small margin-top-10"></table>
+						<div class="filter-table-bar">
+							<table wicket:id="table" class="table table-hover small margin-top-10"></table>
+						</div>
 					</div>
 				</div>
 			</div>

@@ -194,3 +194,8 @@ tree-content {
 .compare-panel td.col-name {
 	padding-top: 10px;
 }
+
+.filter-table-bar {
+	overflow: auto;
+	max-height: 255px;
+}

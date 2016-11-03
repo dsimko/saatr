@@ -18,6 +18,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulato
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
+import org.apache.wicket.feedback.ContainerFeedbackMessageFilter;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -37,6 +38,7 @@ import org.jboss.qa.tool.saatr.domain.build.Build.Status;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.repo.build.BuildFilterRepository;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapDateTimeField;
+import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapFeedbackPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildExpansion;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildsTablePanel.RefreshSelectedEvent;
 import org.jboss.qa.tool.saatr.web.comp.build.SelectRowColumn;
@@ -53,6 +55,7 @@ import lombok.Data;
 public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
 
     public static final String FILTER_PARAM_NAME = "filter";
+    private static final int ROWS_PER_PAGE = 10;
 
     private Label selectedCount;
 
@@ -74,6 +77,7 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
             }
 
         };
+        form.add(new BootstrapFeedbackPanel("feedback", new ContainerFeedbackMessageFilter(this)));
         form.add(new TextField<>("jobName"));
         form.add(new TextField<>("buildNumber"));
         form.add(new DropDownChoice<>("status", Arrays.asList(Status.values())).setNullValid(true));
@@ -103,7 +107,7 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
                 cellItem.add(new DeleteColumnPanel(componentId, rowModel));
             }
         });
-        DataTable<BuildFilter, String> table = new DataTable<BuildFilter, String>("table", columns, new BuildFilterProvider(), 5) {
+        DataTable<BuildFilter, String> table = new DataTable<BuildFilter, String>("table", columns, new BuildFilterProvider(), ROWS_PER_PAGE) {
 
             @Override
             protected Item<BuildFilter> newRowItem(String id, int index, final IModel<BuildFilter> model) {
