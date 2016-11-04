@@ -5,6 +5,12 @@
 		<div class="compare-panel container-fluid">
 			<div class="table-responsive">
 				<table class="table smaller table-striped">
+					<tr>
+						<th>Name</th>
+						<th wicket:id="filters">
+							<wicket:container wicket:id="filter"></wicket:container>
+						</th>
+					</tr>
 					<tr wicket:id="rows">
 						<td class="col-name"><strong wicket:id="name"></strong></td>
 						<td wicket:id="filters">

@@ -132,12 +132,14 @@ public class BuildPage extends BasePage<Build> {
         }
     }
 
+    // TODO should be list
     private void replaceDetailPanel(Set<ObjectId> buildIds) {
-        Panel comparePanel = new CompareBuildPanel(detailPanel.getId(), buildIds);
+        Panel comparePanel = new CompareBuildPanel(detailPanel.getId(), new ArrayList<>(buildIds));
         detailPanel.replaceWith(comparePanel);
         detailPanel = comparePanel;
     }
 
+    // TODO should be list
     private void replaceListPanel(Set<ObjectId> buildFilterIds) {
         Panel comparePanel = new CompareBuildFilterPanel(listPanel.getId(), new ArrayList<>(buildFilterIds));
         listPanel.replaceWith(comparePanel);

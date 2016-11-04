@@ -6,12 +6,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RefreshingView;
@@ -34,7 +35,7 @@ public class CompareBuildPanel extends Panel {
     @SpringBean
     private BuildRepository buildRepository;
 
-    public CompareBuildPanel(String id, final Set<ObjectId> buildIds) {
+    public CompareBuildPanel(String id, final List<ObjectId> buildIds) {
         super(id);
         SortedSet<String> allTestsuitesNames = new TreeSet<>();
         Map<ObjectId, List<TestSuite>> allTestsuites = new HashMap<>();
@@ -46,6 +47,13 @@ public class CompareBuildPanel extends Panel {
                 allTestsuites.get(buildId).add(testSuite);
             }
         }
+        add(new ListView<ObjectId>("filters", buildIds) {
+
+            @Override
+            protected void populateItem(ListItem<ObjectId> item) {
+                item.add(new Label("filter", Build.HtmlRenderer.getBuildLabel((buildRepository.findOne(item.getModelObject())))));
+            }
+        });
         add(new RefreshingView<String>("rows") {
 
             @Override
