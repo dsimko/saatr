@@ -92,6 +92,9 @@ public class Build implements DocumentWithProperties<ObjectId>, DocumentWithID<O
 
     private ObjectId consoleTextId;
 
+    @Indexed
+    private ObjectId groupId;
+
     private final Set<BuildProperty> systemProperties = new TreeSet<>();
 
     private final Set<BuildProperty> buildProperties = new TreeSet<>();

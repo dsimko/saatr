@@ -96,7 +96,6 @@ public class SaatrApplication extends WebApplication {
     @Bean
     InitializingBean populateTestUsers(UserRepository repository) {
         return () -> {
-            repository.deleteAll();
             if (repository.count() == 0L) {
                 interceptor().getUsers().entrySet().stream().forEach(e -> {
                     User user = new User();

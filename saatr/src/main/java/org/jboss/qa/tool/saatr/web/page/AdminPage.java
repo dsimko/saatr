@@ -19,8 +19,11 @@ import org.jboss.qa.tool.saatr.domain.User;
 import org.jboss.qa.tool.saatr.domain.build.Build;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.domain.build.ConsoleText;
+import org.jboss.qa.tool.saatr.domain.build.Group;
 import org.jboss.qa.tool.saatr.domain.config.ConfigDocument;
 import org.jboss.qa.tool.saatr.domain.config.QueryDocument;
+import org.jboss.qa.tool.saatr.web.comp.group.GroupsPanel;
+import org.jboss.qa.tool.saatr.web.comp.user.UsersPanel;
 import org.springframework.data.mongodb.core.MongoOperations;
 
 /**
@@ -41,7 +44,8 @@ public class AdminPage extends BasePage<Void> {
             @Override
             protected Iterator<IModel<String>> getItemModels() {
                 List<IModel<String>> models = Arrays.asList(Model.of(Build.COLLECTION_NAME), Model.of(ConfigDocument.COLLECTION_NAME),
-                        Model.of(QueryDocument.COLLECTION_NAME), Model.of(ConsoleText.COLLECTION_NAME), Model.of(BuildFilter.COLLECTION_NAME), Model.of(User.COLLECTION_NAME));
+                        Model.of(QueryDocument.COLLECTION_NAME), Model.of(ConsoleText.COLLECTION_NAME), Model.of(BuildFilter.COLLECTION_NAME),
+                        Model.of(User.COLLECTION_NAME), Model.of(Group.COLLECTION_NAME));
                 return models.iterator();
             }
 
@@ -80,13 +84,8 @@ public class AdminPage extends BasePage<Void> {
             }
         });
         add(new Label("results", new PropertyModel<>(this, "results")));
-        add(new Link<Void>("invalidateSession") {
-
-            @Override
-            public void onClick() {
-                getSession().invalidateNow();
-            }
-        });
+        add(new UsersPanel("users"));
+        add(new GroupsPanel("groups"));
     }
 
     private void showAllIndexes(String collectionName) {

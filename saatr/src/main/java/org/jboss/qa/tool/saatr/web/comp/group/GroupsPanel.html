@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<html xmlns:wicket>
+<body>
+	<wicket:panel>
+		<div class="row">
+			<div class="col-md-6">
+				<div class="panel panel-info">
+					<div class="panel-body">
+						<table wicket:id="table" class="table table-hover"></table>
+						<form class="form-inline" wicket:id="form">
+							<div wicket:id="feedback"></div>
+							<div class="form-group form-group-sm">
+								<input class="form-control input-sm" type="text" wicket:id="name"></input> <a wicket:id="submit" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add</a>
+							</div>							
+						</form>
+					</div>
+				</div>
+			</div>		
+			<div class="col-md-6">
+				<div class="panel panel-info">
+					<div class="panel-body">
+						<div wicket:id="group"></div>
+					</div>
+				</div>
+			</div>		
+		</div>
+	</wicket:panel>
+</body>
+</html>
