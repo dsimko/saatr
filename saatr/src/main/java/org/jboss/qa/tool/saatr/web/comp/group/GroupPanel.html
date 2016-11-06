@@ -2,7 +2,14 @@
 <html xmlns:wicket>
 <body>
 	<wicket:panel>
-		<div>Name: <span wicket:id="name"></span></div>
+		<div class="form-horizontal">
+			<div class="form-group">
+				<label class="col-sm-4 control-label">Name</label>
+				<div class="col-sm-8">
+					<p class="form-control-static"><span wicket:id="name"></span></p>
+				</div>
+			</div>
+		</div>
 		<p class="text-right"><a class="btn btn-danger btn-xs" wicket:id="delete">Delete</a></p>
 	</wicket:panel>
 </body>

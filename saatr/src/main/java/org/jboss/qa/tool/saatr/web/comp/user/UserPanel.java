@@ -1,12 +1,15 @@
 
 package org.jboss.qa.tool.saatr.web.comp.user;
 
+import java.util.Iterator;
+import java.util.stream.Collectors;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.GenericPanel;
+import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.RefreshingView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -33,10 +36,15 @@ public class UserPanel extends GenericPanel<User> {
         super(id, new CompoundPropertyModel<>(model));
         add(new Label("username"));
         add(new Label("roles"));
-        add(new ListView<Group>("groups", groupRepository.findAll()) {
+        add(new RefreshingView<Group>("groups") {
 
             @Override
-            protected void populateItem(ListItem<Group> item) {
+            protected Iterator<IModel<Group>> getItemModels() {
+                return groupRepository.findAll().stream().map(g -> (IModel<Group>) new Model<>(g)).collect(Collectors.toList()).iterator();
+            }
+
+            @Override
+            protected void populateItem(Item<Group> item) {
                 item.add(new Label("name", item.getModelObject().getName()));
                 item.add(new AjaxCheckBox("checkbox", new Model<Boolean>() {
 
@@ -61,12 +69,10 @@ public class UserPanel extends GenericPanel<User> {
 
                     @Override
                     protected void onUpdate(AjaxRequestTarget target) {
-
+                        // nothing to refresh
                     }
                 });
-
             }
-
         });
     }
 

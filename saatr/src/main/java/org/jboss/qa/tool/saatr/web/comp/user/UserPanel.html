@@ -2,13 +2,28 @@
 <html xmlns:wicket>
 <body>
 	<wicket:panel>
-		<div class="col-md-12">Username: <span wicket:id="username"></span></div>
-		<div class="col-md-12">Role: <span wicket:id="roles"></span></div>
-		<div class="col-md-6">Groups: </div>
-		<div class="col-md-6">
-			<div wicket:id="groups">
-				<label wicket:id="name"></label><input type="checkbox" wicket:id="checkbox"></input>
-			</div>	
+		<div class="form-horizontal">
+			<div class="form-group">
+				<label class="col-sm-4 control-label">Username</label>
+				<div class="col-sm-8">
+					<p class="form-control-static"><span wicket:id="username"></span></p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-4 control-label">Role</label>
+				<div class="col-sm-8">
+					<p class="form-control-static"><span wicket:id="roles"></span></p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-4 control-label">Groups</label>
+				<div class="col-sm-8">
+					<p wicket:id="groups" class="form-control-static">
+						<label wicket:id="name"></label>
+						<input type="checkbox" wicket:id="checkbox"></input>
+					</p>
+				</div>
+			</div>
 		</div>
 	</wicket:panel>
 </body>

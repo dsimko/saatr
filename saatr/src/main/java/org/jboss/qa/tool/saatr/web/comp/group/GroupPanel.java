@@ -28,6 +28,7 @@ public class GroupPanel extends GenericPanel<Group> {
             @Override
             public void onClick() {
                 groupRepository.delete(getModelObject());
+                setModelObject(null);
             }
         });
     }
