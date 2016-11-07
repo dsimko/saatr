@@ -10,8 +10,8 @@ import org.apache.wicket.injection.Injector;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
+import org.jboss.qa.tool.saatr.repo.UserRepository;
 import org.jboss.qa.tool.saatr.repo.build.BuildFilterRepository;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 @SuppressWarnings("serial")
 public class BuildFilterProvider extends SortableDataProvider<BuildFilter, String> {
@@ -21,9 +21,12 @@ public class BuildFilterProvider extends SortableDataProvider<BuildFilter, Strin
     @Inject
     private BuildFilterRepository buildFilterRepository;
 
+    @Inject
+    private UserRepository userRepository;
+
     public BuildFilterProvider() {
         Injector.get().inject(this);
-        this.creatorUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        this.creatorUsername = userRepository.getCurrentUserName();
     }
 
     @Override

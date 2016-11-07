@@ -25,6 +25,7 @@ command="curl \
   -u saatr:S44TR! \
   -F \"jobName=${JOB_NAME-testing_job}\" \
   -F \"buildNumber=${BUILD_NUMBER-0}\" \
+  -F \"group=transaction\" \
   $(addAllVariables)
   $(addReportsIfExists)
   http://46.183.65.66:14414/UploadServlet"

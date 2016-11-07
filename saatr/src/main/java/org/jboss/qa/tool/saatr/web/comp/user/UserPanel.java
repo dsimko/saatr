@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RefreshingView;
@@ -74,6 +75,15 @@ public class UserPanel extends GenericPanel<User> {
                 });
             }
         });
+        add(new Link<User>("delete", model) {
+
+            @Override
+            public void onClick() {
+                userRepository.delete(getModelObject());
+                setModelObject(null);
+            }
+        });
+
     }
 
     @Override

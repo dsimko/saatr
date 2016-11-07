@@ -3,7 +3,6 @@ package org.jboss.qa.tool.saatr.web.page;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -13,6 +12,7 @@ import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.OnLoadHeaderItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -128,7 +128,9 @@ public class BuildPage extends BasePage<Build> {
         } else if (payload instanceof CompareBuildFiltersEvent) {
             CompareBuildFiltersEvent eventPayload = (CompareBuildFiltersEvent) payload;
             replaceListPanel(eventPayload.getBuildFilterIds());
-            replaceDetailPanel(Collections.emptySet());
+            Panel emptyPanel = new EmptyPanel(detailPanel.getId());
+            detailPanel.replaceWith(emptyPanel);
+            detailPanel = emptyPanel;
         }
     }
 

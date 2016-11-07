@@ -28,9 +28,11 @@ import org.jboss.qa.tool.saatr.domain.build.BuildFilter.PropertyDto;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter.PropertyDto.Operation;
 import org.jboss.qa.tool.saatr.domain.build.BuildProperty;
 import org.jboss.qa.tool.saatr.domain.build.ConsoleText;
+import org.jboss.qa.tool.saatr.domain.build.Group;
 import org.jboss.qa.tool.saatr.domain.build.TestCase;
 import org.jboss.qa.tool.saatr.domain.build.TestSuite;
 import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite;
+import org.jboss.qa.tool.saatr.repo.UserRepository;
 import org.jboss.qa.tool.saatr.web.comp.build.compare.CompareBuildFilterPanel.BuildNameDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -65,9 +67,12 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
 
     private final MongoTemplate template;
 
+    private final UserRepository userRepository; 
+
     @Autowired
-    public BuildRepositoryImpl(MongoTemplate template) {
+    public BuildRepositoryImpl(MongoTemplate template, UserRepository userRepository) {
         this.template = template;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -214,15 +219,15 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
 
     @SuppressWarnings("unchecked")
     private Iterable<String> findDistinctPropertyNames(String fieldName) {
-        return template.getCollection(Build.COLLECTION_NAME).distinct(fieldName + ".name");
+        return template.getCollection(Build.COLLECTION_NAME).distinct(fieldName + ".name", getGroupsQueryForCurrentUser());
     }
 
     @SuppressWarnings("unchecked")
     private Iterable<String> findDistinctPropertyValues(String fieldName, String propertyName) {
         if (propertyName == null) {
-            return template.getCollection(Build.COLLECTION_NAME).distinct(fieldName + ".value");
+            return template.getCollection(Build.COLLECTION_NAME).distinct(fieldName + ".value", getGroupsQueryForCurrentUser());
         }
-        return (Iterable<String>) template.getCollection(Build.COLLECTION_NAME).distinct(fieldName).stream().filter(
+        return (Iterable<String>) template.getCollection(Build.COLLECTION_NAME).distinct(fieldName, getGroupsQueryForCurrentUser()).stream().filter(
                 p -> p != null && propertyName.equals(((BasicDBObject) p).get("name"))).map(p -> ((BasicDBObject) p).get("value")).collect(Collectors.toList());
     }
 
@@ -294,6 +299,7 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
 
     private Criteria createCriteria(BuildFilter filter, boolean convertoToBson, Criteria... additionaleCriterias) {
         List<Criteria> criterias = new ArrayList<>();
+        criterias.add(getGroupsCriteriaForCurrentUser());
         for (Criteria criteria : additionaleCriterias) {
             criterias.add(criteria);
         }
@@ -335,6 +341,30 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
             criteria.andOperator(criterias.toArray(new Criteria[0]));
         }
         return criteria;
+    }
+
+    private Criteria getGroupsCriteriaForCurrentUser() {
+        List<Criteria> criterias = new ArrayList<>();
+        for (Group group : userRepository.getCurrentUserGroups()) {
+            if (group != null) {
+                criterias.add(where("groupId").is(group.getId()));
+            }
+        }
+        Criteria criteria = new Criteria();
+        criteria.orOperator(criterias.toArray(new Criteria[0]));
+        return criteria;
+    }
+
+    private BasicDBObject getGroupsQueryForCurrentUser() {
+        BasicDBObject query = new BasicDBObject();
+        List<BasicDBObject> groups = new ArrayList<BasicDBObject>();
+        for (Group group : userRepository.getCurrentUserGroups()) {
+            if (group != null) {
+                groups.add(new BasicDBObject("groupId", group.getId()));
+            }
+        }
+        query.put("$or", groups);
+        return query;
     }
 
     private void addPropertiesCriteria(List<PropertyDto> properties, boolean convertoToBson, List<Criteria> criterias, String fieldName) {

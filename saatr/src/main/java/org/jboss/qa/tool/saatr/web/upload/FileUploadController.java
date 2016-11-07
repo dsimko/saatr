@@ -1,10 +1,14 @@
 
 package org.jboss.qa.tool.saatr.web.upload;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.jboss.qa.tool.saatr.domain.build.Build;
 import org.jboss.qa.tool.saatr.domain.build.BuildProperty;
+import org.jboss.qa.tool.saatr.domain.build.Group;
+import org.jboss.qa.tool.saatr.repo.UserRepository;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 import org.jboss.qa.tool.saatr.util.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +31,16 @@ public class FileUploadController {
 
     private static final String DURATION_NAME_PARAM_NAME = "duration";
 
+    private static final String GROUP_NAME_PARAM_NAME = "group";
+
     private final BuildRepository buildRepository;
 
+    private final UserRepository userRepository;
+
     @Autowired
-    public FileUploadController(BuildRepository buildRepository) {
+    public FileUploadController(BuildRepository buildRepository, UserRepository userRepository) {
         this.buildRepository = buildRepository;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/UploadServlet")
@@ -66,6 +75,15 @@ public class FileUploadController {
                 }
                 case DURATION_NAME_PARAM_NAME: {
                     build.setDuration(toLong(value));
+                    break;
+                }
+                case GROUP_NAME_PARAM_NAME: {
+                    List<Group> groups = userRepository.getCurrentUser().getGroups().stream().filter(g -> value.equals(g.getName())).collect(
+                            Collectors.toList());
+                    if (groups.isEmpty()) {
+                        throw new IllegalStateException("Uploader " + userRepository.getCurrentUserName() + " has no group " + value);
+                    }
+                    build.setGroupId(groups.get(0).getId());
                     break;
                 }
                 default:

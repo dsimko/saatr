@@ -36,6 +36,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.domain.build.Build.Status;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
+import org.jboss.qa.tool.saatr.repo.UserRepository;
 import org.jboss.qa.tool.saatr.repo.build.BuildFilterRepository;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapDateTimeField;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapFeedbackPanel;
@@ -43,7 +44,6 @@ import org.jboss.qa.tool.saatr.web.comp.build.BuildExpansion;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildsTablePanel.RefreshSelectedEvent;
 import org.jboss.qa.tool.saatr.web.comp.build.SelectRowColumn;
 import org.jboss.qa.tool.saatr.web.page.BuildPage.CompareBuildFiltersEvent;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -62,6 +62,9 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
     @SpringBean
     private BuildFilterRepository buildFilterRepository;
 
+    @SpringBean
+    private UserRepository userRepository;
+
     public BuildsFilterPanel(String id, IModel<BuildFilter> model) {
         super(id, model);
         selectedCount = new Label("selectedCount", new PropertyModel<>(this, "selectedIds.size"));
@@ -71,7 +74,7 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
             @Override
             protected void onSubmit() {
                 BuildFilter buildFilter = getModelObject();
-                buildFilter.setCreatorUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+                buildFilter.setCreatorUsername(userRepository.getCurrentUserName());
                 buildFilterRepository.saveIfNewOrChanged(buildFilter);
                 changeFilter(buildFilter);
             }
