@@ -57,7 +57,9 @@ public class BuildFilter implements DocumentWithID<ObjectId>, Cloneable {
     private String errorMessage;
     
     private String failureMessage;
-    
+
+    private String testsuiteName;
+
     @Data
     @NoArgsConstructor
     @AllArgsConstructor

@@ -89,6 +89,7 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
         form.add(new JobParamsFilterPanel("jobParams", model));
         form.add(new SystemParamsFilterPanel("systemParams", model));
         form.add(new CustomPropertiesFilterPanel("customProperties", model));
+        form.add(new TextField<>("testsuiteName"));
         form.add(new TextField<>("errorMessage"));
         form.add(new TextField<>("failureMessage"));
         form.add(new Link<Void>("clear") {

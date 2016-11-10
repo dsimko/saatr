@@ -54,6 +54,9 @@ public class FilterColumn extends PropertyColumn<BuildFilter, String> {
         if (filter.getFailureMessage() != null) {
             append(filter.getFailureMessage(), builder);
         }
+        if (filter.getTestsuiteName() != null) {
+            append(filter.getTestsuiteName(), builder);
+        }
         return builder.toString();
     }
 

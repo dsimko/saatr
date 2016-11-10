@@ -67,7 +67,7 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
 
     private final MongoTemplate template;
 
-    private final UserRepository userRepository; 
+    private final UserRepository userRepository;
 
     @Autowired
     public BuildRepositoryImpl(MongoTemplate template, UserRepository userRepository) {
@@ -335,6 +335,9 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
         }
         if (filter.getFailureMessage() != null) {
             criterias.add(where("testsuites.testcases.failure.message").regex(filter.getFailureMessage() + ".*"));
+        }
+        if (filter.getTestsuiteName() != null) {
+            criterias.add(where("testsuites.name").regex(".*" + filter.getTestsuiteName() + ".*"));
         }
         Criteria criteria = new Criteria();
         if (!criterias.isEmpty()) {
