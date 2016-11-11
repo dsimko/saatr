@@ -115,6 +115,7 @@ public class BuildPage extends BasePage<Build> {
             Build build = buildRepository.findOne(new ObjectId(buildId));
             if (build != null) {
                 setModelObject(build);
+                pageTitle = build.getFullName();
             }
         }
     }
