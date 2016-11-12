@@ -5,32 +5,24 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.inject.Inject;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.event.Broadcast;
 import org.apache.wicket.event.IEvent;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.injection.Injector;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
-import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.domain.build.Build;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapTable;
 import org.jboss.qa.tool.saatr.web.page.BuildPage;
-import org.jboss.qa.tool.saatr.web.page.BuildPage.CompareBuildsEvent;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,16 +31,12 @@ import lombok.Data;
  * @author dsimko@redhat.com
  */
 @SuppressWarnings("serial")
-public class BuildsTablePanel extends GenericPanel<Build> {
+public class BuildsTablePanel extends AbstractBuildsPanel {
 
     private static final int ROWS_PER_PAGE = 100;
 
-    private Label selectedCount;
-
     public BuildsTablePanel(String id, IModel<Build> model, IModel<BuildFilter> filterModel) {
-        super(id, model);
-        selectedCount = new Label("selectedCount", new PropertyModel<>(this, "selectedIds.size"));
-        add(selectedCount.setOutputMarkupId(true));
+        super(id, model, filterModel);
         List<IColumn<Build, String>> columns = new ArrayList<IColumn<Build, String>>();
         columns.add(new SelectRowColumn<>(getSelectedIds()));
         columns.add(new PropertyColumn<Build, String>(new Model<String>("Job Name"), "name", "name"));
@@ -91,22 +79,11 @@ public class BuildsTablePanel extends GenericPanel<Build> {
                 target.add(table);
             }
         });
-        add(new Link<Void>("compare") {
-
-            @Override
-            public void onClick() {
-                getPage().send(getPage(), Broadcast.EXACT, new CompareBuildsEvent(getSelectedIds()));
-            }
-        });
-
-    }
-
-    public Set<ObjectId> getSelectedIds() {
-        return BuildSelection.get().getIds();
     }
 
     @Override
     public void onEvent(IEvent<?> event) {
+        super.onEvent(event);
         if (event.getPayload() instanceof RefreshSelectedEvent) {
             RefreshSelectedEvent refreshEvent = (RefreshSelectedEvent) event.getPayload();
             refreshEvent.getTarget().add(selectedCount);

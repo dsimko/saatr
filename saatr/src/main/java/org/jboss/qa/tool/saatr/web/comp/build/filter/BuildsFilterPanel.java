@@ -55,6 +55,7 @@ import lombok.Data;
 public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
 
     public static final String FILTER_PARAM_NAME = "filter";
+
     private static final int ROWS_PER_PAGE = 10;
 
     private Label selectedCount;
@@ -73,10 +74,7 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
 
             @Override
             protected void onSubmit() {
-                BuildFilter buildFilter = getModelObject();
-                buildFilter.setCreatorUsername(userRepository.getCurrentUserName());
-                buildFilterRepository.saveIfNewOrChanged(buildFilter);
-                changeFilter(buildFilter);
+                onFilterSubmit(getModelObject());
             }
 
         };
@@ -187,12 +185,28 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
         return BuildFilterSelection.get().getIds();
     }
 
+    private void onFilterSubmit(BuildFilter buildFilter) {
+        buildFilter.setCreatorUsername(userRepository.getCurrentUserName());
+        buildFilterRepository.saveIfNewOrChanged(buildFilter);
+        changeFilter(buildFilter);
+    }
+
     @Override
     public void onEvent(IEvent<?> event) {
         if (event.getPayload() instanceof RefreshSelectedEvent) {
             RefreshSelectedEvent refreshEvent = (RefreshSelectedEvent) event.getPayload();
             refreshEvent.getTarget().add(selectedCount);
+        } else if (event.getPayload() instanceof SubmitFilterEvent) {
+            SubmitFilterEvent submitEvent = (SubmitFilterEvent) event.getPayload();
+            onFilterSubmit(submitEvent.getFilter());
         }
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class SubmitFilterEvent implements Serializable {
+
+        BuildFilter filter;
     }
 
     @Data

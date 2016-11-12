@@ -339,6 +339,9 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
         if (filter.getTestsuiteName() != null) {
             criterias.add(where("testsuites.name").regex(".*" + filter.getTestsuiteName() + ".*"));
         }
+        if (!filter.getSelected().isEmpty()) {
+            criterias.add(where("_id").in(filter.getSelected()));
+        }
         Criteria criteria = new Criteria();
         if (!criterias.isEmpty()) {
             criteria.andOperator(criterias.toArray(new Criteria[0]));

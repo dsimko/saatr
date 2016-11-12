@@ -1,7 +1,6 @@
 
 package org.jboss.qa.tool.saatr.web.comp.build;
 
-import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -9,17 +8,12 @@ import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.event.Broadcast;
-import org.apache.wicket.event.IEvent;
 import org.apache.wicket.extensions.markup.html.repeater.tree.ITreeProvider;
 import org.apache.wicket.extensions.markup.html.repeater.tree.NestedTree;
 import org.apache.wicket.extensions.markup.html.repeater.tree.content.CheckedFolder;
 import org.apache.wicket.extensions.markup.html.repeater.tree.theme.HumanTheme;
 import org.apache.wicket.injection.Injector;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -30,29 +24,21 @@ import org.apache.wicket.util.visit.IVisitor;
 import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.domain.build.Build;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
-import org.jboss.qa.tool.saatr.domain.build.BuildProperty;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 import org.jboss.qa.tool.saatr.web.page.BuildPage;
-import org.jboss.qa.tool.saatr.web.page.BuildPage.CompareBuildsEvent;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 
 /**
  * @author dsimko@redhat.com
  */
 @SuppressWarnings("serial")
-public class BuildTreePanel extends GenericPanel<Build> {
-
-    @SpringBean
-    private BuildRepository buildRepository;
+public class BuildTreePanel extends AbstractBuildsPanel {
 
     private NestedTree<Build> tree;
 
     public BuildTreePanel(String id, IModel<Build> model, IModel<BuildFilter> filterModel) {
-        super(id, model);
-        final Label selectedCount = new Label("selectedCount", new PropertyModel<>(this, "selectedIds.size"));
-        add(selectedCount.setOutputMarkupId(true));
+        super(id, model, filterModel);
         tree = new NestedTree<Build>("tree", new BuildsProvider(filterModel), new BuildsExpansionModel()) {
 
             @Override
@@ -164,36 +150,10 @@ public class BuildTreePanel extends GenericPanel<Build> {
                 target.add(selectedCount);
             }
         });
-        add(new Link<Void>("compare") {
-
-            @Override
-            public void onClick() {
-                getPage().send(getPage(), Broadcast.EXACT, new CompareBuildsEvent(getSelectedIds()));
-            }
-        });
-    }
-
-    @Override
-    public void onEvent(IEvent<?> event) {
-        if (event.getPayload() instanceof CopyToAllSelectedEvent) {
-            CopyToAllSelectedEvent copyEvent = (CopyToAllSelectedEvent) event.getPayload();
-            for (ObjectId objectId : getSelectedIds()) {
-                buildRepository.addOrUpdateProperties(buildRepository.findOne(objectId), copyEvent.getProperties());
-            }
-            if (getSelectedIds().size() > 0) {
-                copyEvent.getFeedbackComponent().info("Successfully copied to " + getSelectedIds().size() + " documents.");
-            } else {
-                copyEvent.getFeedbackComponent().warn("0 documents selected.");
-            }
-        }
     }
 
     private Set<String> getSelectedParents() {
         return BuildSelection.get().getParents();
-    }
-
-    public Set<ObjectId> getSelectedIds() {
-        return BuildSelection.get().getIds();
     }
 
     private class BuildsExpansionModel implements IModel<Set<Build>> {
@@ -339,15 +299,6 @@ public class BuildTreePanel extends GenericPanel<Build> {
         public IModel<Build> model(Build object) {
             return new Model<Build>(object);
         }
-    }
-
-    @Data
-    @AllArgsConstructor
-    public static class CopyToAllSelectedEvent implements Serializable {
-
-        private Set<BuildProperty> properties;
-
-        private Component feedbackComponent;
     }
 
 }
