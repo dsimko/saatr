@@ -13,6 +13,7 @@ import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.string.Strings;
 import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.domain.build.Build;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
@@ -20,6 +21,7 @@ import org.jboss.qa.tool.saatr.domain.build.BuildProperty;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildsFilterPanel.SubmitFilterEvent;
 import org.jboss.qa.tool.saatr.web.page.BuildPage.CompareBuildsEvent;
+import org.jboss.qa.tool.saatr.web.page.BuildPage.CompareTestsuitesEvent;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -55,7 +57,18 @@ public abstract class AbstractBuildsPanel extends GenericPanel<Build> {
                 }
             }
         });
+        add(new Link<Void>("compareTestsuites") {
 
+            @Override
+            public void onClick() {
+                getPage().send(getPage(), Broadcast.EXACT, new CompareTestsuitesEvent(filterModel.getObject().getTestsuiteName(), getSelectedIds()));
+            }
+
+            @Override
+            public boolean isVisible() {
+                return !Strings.isEmpty(filterModel.getObject().getTestsuiteName());
+            }
+        });
     }
 
     @Override
