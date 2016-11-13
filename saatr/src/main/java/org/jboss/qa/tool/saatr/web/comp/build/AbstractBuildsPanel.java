@@ -19,7 +19,7 @@ import org.jboss.qa.tool.saatr.domain.build.Build;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.domain.build.BuildProperty;
 import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
-import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildsFilterPanel.SubmitFilterEvent;
+import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildFilterPanel.SubmitFilterEvent;
 import org.jboss.qa.tool.saatr.web.page.BuildPage.CompareBuildsEvent;
 import org.jboss.qa.tool.saatr.web.page.BuildPage.CompareTestsuitesEvent;
 

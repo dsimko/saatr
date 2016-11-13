@@ -11,7 +11,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.repo.build.BuildFilterRepository;
-import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildsFilterPanel.RefreshTableEvent;
+import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildFilterPanel.RefreshTableEvent;
 
 @SuppressWarnings("serial")
 public class DeleteColumnPanel extends GenericPanel<BuildFilter> {

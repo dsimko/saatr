@@ -33,11 +33,11 @@ import lombok.AllArgsConstructor;
  * @author dsimko@redhat.com
  */
 @SuppressWarnings("serial")
-public class BuildTreePanel extends AbstractBuildsPanel {
+public class BuildsTreePanel extends AbstractBuildsPanel {
 
     private NestedTree<Build> tree;
 
-    public BuildTreePanel(String id, IModel<Build> model, IModel<BuildFilter> filterModel) {
+    public BuildsTreePanel(String id, IModel<Build> model, IModel<BuildFilter> filterModel) {
         super(id, model, filterModel);
         tree = new NestedTree<Build>("tree", new BuildsProvider(filterModel), new BuildsExpansionModel()) {
 
@@ -70,7 +70,7 @@ public class BuildTreePanel extends AbstractBuildsPanel {
 
                     @Override
                     protected boolean isSelected() {
-                        return BuildTreePanel.this.getModelObject() != null && BuildTreePanel.this.getModelObject().getId().equals(getModelObject().getId());
+                        return BuildsTreePanel.this.getModelObject() != null && BuildsTreePanel.this.getModelObject().getId().equals(getModelObject().getId());
                     }
 
                     @Override
@@ -85,7 +85,7 @@ public class BuildTreePanel extends AbstractBuildsPanel {
                             return super.newLinkComponent(id, model);
                         } else {
                             PageParameters parameters = BuildPage.createBuildDetailPageParameters(build.getId(),
-                                    BuildTreePanel.this.getPage().getPageParameters());
+                                    BuildsTreePanel.this.getPage().getPageParameters());
                             return new BookmarkablePageLink<>(id, tree.getPage().getClass(), parameters);
                         }
                     }

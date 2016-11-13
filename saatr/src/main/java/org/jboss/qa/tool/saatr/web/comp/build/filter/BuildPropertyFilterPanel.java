@@ -27,9 +27,9 @@ import org.jboss.qa.tool.saatr.web.comp.build.filter.AbsractPropertiesFilterPane
  * @author dsimko@redhat.com
  */
 @SuppressWarnings("serial")
-abstract class BuildsPropertyFilterPanel extends GenericPanel<PropertyDto> {
+abstract class BuildPropertyFilterPanel extends GenericPanel<PropertyDto> {
 
-    public BuildsPropertyFilterPanel(String id, String title, IModel<PropertyDto> model, List<String> variableNames, List<String> variableValues,
+    public BuildPropertyFilterPanel(String id, String title, IModel<PropertyDto> model, List<String> variableNames, List<String> variableValues,
             boolean buttonsVisible) {
         super(id, new CompoundPropertyModel<>(model));
         add(new Label("title", title));
@@ -49,7 +49,7 @@ abstract class BuildsPropertyFilterPanel extends GenericPanel<PropertyDto> {
             @Override
             protected Iterator<String> getChoices(String input) {
                 List<String> choices = new ArrayList<>(10);
-                if (variableValues.isEmpty() && BuildsPropertyFilterPanel.this.getModelObject().getName() != null) {
+                if (variableValues.isEmpty() && BuildPropertyFilterPanel.this.getModelObject().getName() != null) {
                     initVariableValues(variableValues);
                 }
                 for (final String option : variableValues) {

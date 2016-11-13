@@ -52,7 +52,7 @@ import lombok.Data;
  * @author dsimko@redhat.com
  */
 @SuppressWarnings("serial")
-public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
+public class BuildFilterPanel extends GenericPanel<BuildFilter> {
 
     public static final String FILTER_PARAM_NAME = "filter";
 
@@ -66,7 +66,7 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
     @SpringBean
     private UserRepository userRepository;
 
-    public BuildsFilterPanel(String id, IModel<BuildFilter> model) {
+    public BuildFilterPanel(String id, IModel<BuildFilter> model) {
         super(id, model);
         selectedCount = new Label("selectedCount", new PropertyModel<>(this, "selectedIds.size"));
         add(selectedCount.setOutputMarkupId(true));
@@ -114,7 +114,7 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
             @Override
             protected Item<BuildFilter> newRowItem(String id, int index, final IModel<BuildFilter> model) {
                 Item<BuildFilter> row = new OddEvenItem<BuildFilter>(id, index, model);
-                if (model.getObject().equals(BuildsFilterPanel.this.getModelObject())) {
+                if (model.getObject().equals(BuildFilterPanel.this.getModelObject())) {
                     row.add(new AttributeAppender("class", Model.of("active"), " "));
                 }
                 row.add(new AttributeAppender("class", Model.of("clicableTableRow"), " "));

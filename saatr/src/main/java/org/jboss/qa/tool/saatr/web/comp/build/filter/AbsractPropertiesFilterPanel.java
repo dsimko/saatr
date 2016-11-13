@@ -56,7 +56,7 @@ public abstract class AbsractPropertiesFilterPanel extends GenericPanel<BuildFil
                     values = new ArrayList<>();
                     variableValues.put(item.getIndex(), values);
                 }
-                item.add(new BuildsPropertyFilterPanel("property", getTitle(), item.getModel(), variableNames, values,
+                item.add(new BuildPropertyFilterPanel("property", getTitle(), item.getModel(), variableNames, values,
                         item.getIndex() == getProperties().size() - 1) {
 
                     @Override
