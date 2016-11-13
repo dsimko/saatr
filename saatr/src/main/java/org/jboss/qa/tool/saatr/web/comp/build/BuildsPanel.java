@@ -14,7 +14,7 @@ import org.apache.wicket.model.Model;
 import org.jboss.qa.tool.saatr.domain.build.Build;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.web.comp.bootstrap.BootstrapTabbedPanel;
-import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildsFilterPanel;
+import org.jboss.qa.tool.saatr.web.comp.build.filter.BuildFilterPanel;
 
 /**
  * @author dsimko@redhat.com
@@ -26,7 +26,7 @@ public class BuildsPanel extends GenericPanel<Build> {
 
     public BuildsPanel(String id, IModel<Build> model) {
         super(id, model);
-        add(new BuildsFilterPanel("filter", filter));
+        add(new BuildFilterPanel("filter", filter));
         List<ITab> tabs = new ArrayList<ITab>();
         tabs.add(new AbstractTab(new AbstractReadOnlyModel<String>() {
 
@@ -38,7 +38,7 @@ public class BuildsPanel extends GenericPanel<Build> {
 
             @Override
             public WebMarkupContainer getPanel(String panelId) {
-                return new BuildTreePanel(panelId, model, filter);
+                return new BuildsTreePanel(panelId, model, filter);
             }
         });
         tabs.add(new AbstractTab(new AbstractReadOnlyModel<String>() {

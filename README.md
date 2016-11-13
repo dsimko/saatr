@@ -9,7 +9,7 @@ SAATR consists of two parts:
 
 2. __Web application__ stores all data in [mongoDB](https://www.mongodb.com) and provides powerful access to the history of your tests results. Main features are:
   - grouping of data for better overview about instabilities between runs
-  - searching and filtering according to many parameters 
+  - searching, filtering and comparing according to many parameters 
   - knowledge base about test failures - you can enrich data during investigation
 
 ##Usage
@@ -27,4 +27,4 @@ docker inspect saatr-mongo | grep IPAddress
 
 Any feedback or contribution is very welcome.  
 
-Web application is build with Apache Maven 3.3 and Java 1.8. For reducing boilerplate code is used [Project Lombok](https://projectlombok.org) which needs to be installed to your IDE.  
+Web application is build with Apache Maven 3.3 and Java 1.8. For reducing boilerplate code is used [Project Lombok](https://projectlombok.org) which needs to be installed to your IDE.

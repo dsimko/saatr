@@ -28,6 +28,7 @@ import org.jboss.qa.tool.saatr.web.comp.build.BuildPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.BuildsPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.compare.CompareBuildFilterPanel;
 import org.jboss.qa.tool.saatr.web.comp.build.compare.CompareBuildPanel;
+import org.jboss.qa.tool.saatr.web.comp.build.compare.CompareTestsuitePanel;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -115,6 +116,7 @@ public class BuildPage extends BasePage<Build> {
             Build build = buildRepository.findOne(new ObjectId(buildId));
             if (build != null) {
                 setModelObject(build);
+                pageTitle = build.getFullName();
             }
         }
     }
@@ -131,6 +133,11 @@ public class BuildPage extends BasePage<Build> {
             Panel emptyPanel = new EmptyPanel(detailPanel.getId());
             detailPanel.replaceWith(emptyPanel);
             detailPanel = emptyPanel;
+        } else if (payload instanceof CompareTestsuitesEvent) {
+            CompareTestsuitesEvent eventPayload = (CompareTestsuitesEvent) payload;
+            Panel comparePanel = new CompareTestsuitePanel(detailPanel.getId(), new ArrayList<>(eventPayload.getBuildIds()), eventPayload.getTestsuite());
+            detailPanel.replaceWith(comparePanel);
+            detailPanel = comparePanel;
         }
     }
 
@@ -153,6 +160,15 @@ public class BuildPage extends BasePage<Build> {
         parameters.set(BuildPage.BUILD_PARAM_NAME, buildId);
         parameters.set(BuildPage.ANCHOR_PARAM_NAME, true);
         return parameters;
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class CompareTestsuitesEvent implements Serializable {
+
+        private final String testsuite;
+
+        private final Set<ObjectId> buildIds;
     }
 
     @Data

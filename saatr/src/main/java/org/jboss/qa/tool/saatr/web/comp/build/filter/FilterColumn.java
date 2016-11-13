@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.util.string.Strings;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter;
 import org.jboss.qa.tool.saatr.domain.build.BuildFilter.PropertyDto;
 
@@ -21,7 +22,6 @@ public class FilterColumn extends PropertyColumn<BuildFilter, String> {
         return Model.of(geData(rowModel.getObject()));
     }
 
-    //TODO escapeMarkup
     public static String geData(BuildFilter filter) {
         StringBuilder builder = new StringBuilder();
         if (filter.getJobName() != null) {
@@ -54,7 +54,13 @@ public class FilterColumn extends PropertyColumn<BuildFilter, String> {
         if (filter.getFailureMessage() != null) {
             append(filter.getFailureMessage(), builder);
         }
-        return builder.toString();
+        if (filter.getTestsuiteName() != null) {
+            append(filter.getTestsuiteName(), builder);
+        }
+        if (!filter.getSelected().isEmpty()) {
+            append(filter.getSelected(), builder);
+        }
+        return Strings.escapeMarkup(builder.toString()).toString();
     }
 
     private static <T> void append(T t, StringBuilder builder) {

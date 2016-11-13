@@ -37,6 +37,12 @@
 							<div wicket:id="customProperties"></div>
 							<div class="col-md-12 margin-top-10">
 								<div class="form-group form-group-sm">
+									<label>Testsuite</label> 
+									<input type="text" class="form-control input-sm" wicket:id="testsuiteName" placeholder="Part of Testsuite name">
+								</div>
+							</div>
+							<div class="col-md-12 margin-top-10">
+								<div class="form-group form-group-sm">
 									<label>Error message</label> 
 									<input type="text" class="form-control input-sm" wicket:id="errorMessage" placeholder="Beginning of the Error message">
 								</div>
@@ -46,7 +52,7 @@
 								</div>
 							</div>
 							<div class="col-md-12 margin-top-10 text-right">
-								<a wicket:id="clear" class="btn btn-default btn-sm">Clear</a> <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+								<a wicket:id="clear" class="btn btn-danger btn-sm">Clear</a> <button type="submit" class="btn btn-primary btn-sm">Filter</button>
 							</div>
 						</form>
 					</div>

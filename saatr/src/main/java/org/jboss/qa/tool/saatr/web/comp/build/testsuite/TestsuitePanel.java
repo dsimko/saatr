@@ -34,18 +34,23 @@ public class TestsuitePanel extends GenericPanel<TestSuite> {
             protected void onComponentTag(ComponentTag tag) {
                 super.onComponentTag(tag);
                 if (getModelObject() != null) {
-                    switch (getModelObject().getStatus()) {
-                        case Failure:
-                        case Error:
-                            tag.append("class", "panel-danger", " ");
-                            break;
-                        case FlakyFailure:
-                        case FlakyError:
-                            tag.append("class", "panel-warning", " ");
-                            break;
-                        case Success:
-                            tag.append("class", "panel-success", " ");
-                            break;
+                    Integer skipped = getModelObject().getSkipped();
+                    if (skipped != null && skipped.equals(getModelObject().getTests())) {
+                        tag.append("class", "panel-info", " ");
+                    } else {
+                        switch (getModelObject().getStatus()) {
+                            case Failure:
+                            case Error:
+                                tag.append("class", "panel-danger", " ");
+                                break;
+                            case FlakyFailure:
+                            case FlakyError:
+                                tag.append("class", "panel-warning", " ");
+                                break;
+                            case Success:
+                                tag.append("class", "panel-success", " ");
+                                break;
+                        }
                     }
                 } else {
                     tag.append("class", "hidden", " ");

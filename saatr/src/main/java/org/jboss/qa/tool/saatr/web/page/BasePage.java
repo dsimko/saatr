@@ -12,6 +12,7 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.flow.RedirectToUrlException;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.time.Duration;
@@ -34,6 +35,8 @@ public abstract class BasePage<T> extends GenericWebPage<T> {
 
     private static final Duration SESSION_REFRESH_INTERVAL = Duration.minutes(5);
 
+    protected String pageTitle = "SAATR - Simple tool for storing and analyzing tests results";
+    
     @SpringBean
     private UserRepository userRepository;
     
@@ -53,6 +56,7 @@ public abstract class BasePage<T> extends GenericWebPage<T> {
     private void initBasePage() {
         // for reason of this please see RequestCycleSettings#setGatherExtendedBrowserInfo
         getSession().getClientInfo();
+        add(new Label("pageTitle", new PropertyModel<>(this, "pageTitle")));
         add(new Link<Void>("logout") {
             @Override
             public void onClick() {

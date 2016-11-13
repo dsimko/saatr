@@ -52,9 +52,10 @@ import lombok.Data;
  * @author dsimko@redhat.com
  */
 @SuppressWarnings("serial")
-public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
+public class BuildFilterPanel extends GenericPanel<BuildFilter> {
 
     public static final String FILTER_PARAM_NAME = "filter";
+
     private static final int ROWS_PER_PAGE = 10;
 
     private Label selectedCount;
@@ -65,7 +66,7 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
     @SpringBean
     private UserRepository userRepository;
 
-    public BuildsFilterPanel(String id, IModel<BuildFilter> model) {
+    public BuildFilterPanel(String id, IModel<BuildFilter> model) {
         super(id, model);
         selectedCount = new Label("selectedCount", new PropertyModel<>(this, "selectedIds.size"));
         add(selectedCount.setOutputMarkupId(true));
@@ -73,10 +74,7 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
 
             @Override
             protected void onSubmit() {
-                BuildFilter buildFilter = getModelObject();
-                buildFilter.setCreatorUsername(userRepository.getCurrentUserName());
-                buildFilterRepository.saveIfNewOrChanged(buildFilter);
-                changeFilter(buildFilter);
+                onFilterSubmit(getModelObject());
             }
 
         };
@@ -89,6 +87,7 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
         form.add(new JobParamsFilterPanel("jobParams", model));
         form.add(new SystemParamsFilterPanel("systemParams", model));
         form.add(new CustomPropertiesFilterPanel("customProperties", model));
+        form.add(new TextField<>("testsuiteName"));
         form.add(new TextField<>("errorMessage"));
         form.add(new TextField<>("failureMessage"));
         form.add(new Link<Void>("clear") {
@@ -115,7 +114,7 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
             @Override
             protected Item<BuildFilter> newRowItem(String id, int index, final IModel<BuildFilter> model) {
                 Item<BuildFilter> row = new OddEvenItem<BuildFilter>(id, index, model);
-                if (model.getObject().equals(BuildsFilterPanel.this.getModelObject())) {
+                if (model.getObject().equals(BuildFilterPanel.this.getModelObject())) {
                     row.add(new AttributeAppender("class", Model.of("active"), " "));
                 }
                 row.add(new AttributeAppender("class", Model.of("clicableTableRow"), " "));
@@ -186,12 +185,28 @@ public class BuildsFilterPanel extends GenericPanel<BuildFilter> {
         return BuildFilterSelection.get().getIds();
     }
 
+    private void onFilterSubmit(BuildFilter buildFilter) {
+        buildFilter.setCreatorUsername(userRepository.getCurrentUserName());
+        buildFilterRepository.saveIfNewOrChanged(buildFilter);
+        changeFilter(buildFilter);
+    }
+
     @Override
     public void onEvent(IEvent<?> event) {
         if (event.getPayload() instanceof RefreshSelectedEvent) {
             RefreshSelectedEvent refreshEvent = (RefreshSelectedEvent) event.getPayload();
             refreshEvent.getTarget().add(selectedCount);
+        } else if (event.getPayload() instanceof SubmitFilterEvent) {
+            SubmitFilterEvent submitEvent = (SubmitFilterEvent) event.getPayload();
+            onFilterSubmit(submitEvent.getFilter());
         }
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class SubmitFilterEvent implements Serializable {
+
+        BuildFilter filter;
     }
 
     @Data

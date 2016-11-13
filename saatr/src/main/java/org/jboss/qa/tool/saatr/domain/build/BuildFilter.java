@@ -4,7 +4,9 @@ package org.jboss.qa.tool.saatr.domain.build;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.domain.DocumentWithID;
@@ -21,7 +23,8 @@ import lombok.NoArgsConstructor;
 @Data
 @SuppressWarnings("serial")
 @Document(collection = BuildFilter.COLLECTION_NAME)
-@EqualsAndHashCode(exclude="lastUsed")
+@EqualsAndHashCode(exclude = "lastUsed")
+@NoArgsConstructor
 public class BuildFilter implements DocumentWithID<ObjectId>, Cloneable {
 
     public static final String COLLECTION_NAME = "buildFilters";
@@ -55,9 +58,17 @@ public class BuildFilter implements DocumentWithID<ObjectId>, Cloneable {
     private final List<PropertyDto> properties = new ArrayList<>();
 
     private String errorMessage;
-    
+
     private String failureMessage;
-    
+
+    private String testsuiteName;
+
+    private Set<ObjectId> selected = new HashSet<>();
+
+    public BuildFilter(Set<ObjectId> selected) {
+        this.selected = selected;
+    }
+
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
