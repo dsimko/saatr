@@ -15,6 +15,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.jboss.qa.tool.saatr.domain.build.TestSuite;
 import org.jboss.qa.tool.saatr.web.comp.build.compare.CompareBuildPanel;
+import org.jboss.qa.tool.saatr.web.comp.build.compare.CompareTestsuitePanel;
 
 /**
  * 
@@ -78,7 +79,7 @@ public class TestsuitePanel extends GenericPanel<TestSuite> {
 
             @Override
             public boolean isVisible() {
-                return findParent(CompareBuildPanel.class) == null;
+                return findParent(CompareBuildPanel.class) == null && findParent(CompareTestsuitePanel.class) == null;
             }
         });
         panelHead.add(new Label("time"));

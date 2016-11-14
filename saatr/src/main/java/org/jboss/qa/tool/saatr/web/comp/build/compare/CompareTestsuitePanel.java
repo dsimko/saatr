@@ -30,28 +30,33 @@ import org.jboss.qa.tool.saatr.web.comp.build.testsuite.TestsuitePanel;
 @SuppressWarnings("serial")
 public class CompareTestsuitePanel extends Panel {
 
+    private String previousName = "";
+
+    private String previousConfig = "";
+
     @SpringBean
     private BuildRepository buildRepository;
 
     public CompareTestsuitePanel(String id, final List<ObjectId> buildIds, String testsuiteName) {
         super(id);
-        SortedSet<String> allTestsuitesNames = new TreeSet<>();
-        Map<ObjectId, List<TestSuite>> allTestsuites = new HashMap<>();
-        for (ObjectId buildId : buildIds) {
-            Build build = buildRepository.findOne(buildId);
-            allTestsuites.put(buildId, new ArrayList<>());
+        SortedSet<String> testsuitesNames = new TreeSet<>();
+        Map<ObjectId, List<TestSuite>> testsuites = new HashMap<>();
+        final List<Build> builds = buildRepository.find(buildIds, testsuiteName);
+        for (Build build : builds) {
+            testsuites.put(build.getId(), new ArrayList<>());
             for (TestSuite testSuite : build.getTestsuites()) {
                 if (testSuite.getName().contains(testsuiteName)) {
-                    allTestsuitesNames.add(testSuite.getName());
-                    allTestsuites.get(buildId).add(testSuite);
+                    testsuitesNames.add(testSuite.getName());
+                    testsuites.get(build.getId()).add(testSuite);
                 }
             }
         }
+        List<IModel<String>> testsuitesNamesModel = testsuitesNames.stream().map(name -> (IModel<String>) new Model<>(name)).collect(Collectors.toList());
         add(new RefreshingView<String>("testsuites") {
 
             @Override
             protected Iterator<IModel<String>> getItemModels() {
-                return allTestsuitesNames.stream().map(name -> (IModel<String>) new Model<>(name)).collect(Collectors.toList()).iterator();
+                return testsuitesNamesModel.iterator();
             }
 
             @Override
@@ -59,29 +64,41 @@ public class CompareTestsuitePanel extends Panel {
                 item.add(new Label("testsuite", item.getModel()));
             }
         });
-        add(new RefreshingView<ObjectId>("rows") {
+        add(new RefreshingView<Build>("rows") {
 
             @Override
-            protected Iterator<IModel<ObjectId>> getItemModels() {
-                return buildIds.stream().map(id -> (IModel<ObjectId>) new Model<>(id)).collect(Collectors.toList()).iterator();
+            protected Iterator<IModel<Build>> getItemModels() {
+                return builds.stream().map(build -> (IModel<Build>) new Model<>(build)).collect(Collectors.toList()).iterator();
 
             }
 
             @Override
-            protected void populateItem(Item<ObjectId> item) {
-                Build build = buildRepository.findOne(item.getModelObject());
-                item.add(new Label("name", build.getName()));
-                item.add(new Label("config", build.getConfiguration()));
+            protected void populateItem(Item<Build> item) {
+                Build build = item.getModelObject();
+                if (!previousName.equals(build.getName())) {
+                    previousName = build.getName();
+                    previousConfig = "";
+                    item.add(new Label("name", build.getName()));
+                } else {
+                    item.add(new Label("name", ""));
+                }
+                if (!previousConfig.equals(build.getConfiguration())) {
+                    previousConfig = build.getConfiguration();
+                    item.add(new Label("config", build.getConfiguration()));
+                } else {
+                    item.add(new Label("config", ""));
+                }
+                item.add(new Label("build", Build.HtmlRenderer.getBuildLabel(build)));
                 item.add(new RefreshingView<String>("filters") {
 
                     @Override
                     protected Iterator<IModel<String>> getItemModels() {
-                        return allTestsuitesNames.stream().map(name -> (IModel<String>) new Model<>(name)).collect(Collectors.toList()).iterator();
+                        return testsuitesNamesModel.iterator();
                     }
 
                     @Override
                     protected void populateItem(Item<String> item2) {
-                        TestSuite testSuite = findTestsuiteByName(allTestsuites.get(item.getModelObject()), item2.getModelObject());
+                        TestSuite testSuite = findTestsuiteByName(testsuites.get(item.getModelObject().getId()), item2.getModelObject());
                         item2.add(new TestsuitePanel("testsuite", new Model<>(testSuite)));
                     }
                 });
@@ -98,5 +115,4 @@ public class CompareTestsuitePanel extends Panel {
         }
         return null;
     }
-
 }

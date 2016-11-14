@@ -8,13 +8,15 @@
 					<tr>
 						<th>Job name</th>
 						<th>Job config</th>
+						<th>Build</th>
 						<th wicket:id="testsuites">
 							<wicket:container wicket:id="testsuite"></wicket:container>
 						</th>
 					</tr>
 					<tr wicket:id="rows">
-						<td><strong wicket:id="name"></strong></td>
-						<td><strong wicket:id="config"></strong></td>
+						<td class="col-name"><strong wicket:id="name"></strong></td>
+						<td class="col-name"><strong wicket:id="config"></strong></td>
+						<td class="col-name"><strong wicket:id="build"></strong></td>
 						<td wicket:id="filters">
 							<div wicket:id="testsuite"></div>	
 						</td>
