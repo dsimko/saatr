@@ -52,16 +52,19 @@
 								</div>
 							</div>
 							<div class="col-md-12 margin-top-10 text-right">
-								<a wicket:id="clear" class="btn btn-danger btn-sm">Clear</a> <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+								<a wicket:id="clear" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Clear</a> 
+								<button type="submit" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filter</button>
 							</div>
 						</form>
 					</div>
 					<div class="col-md-4">
 						<div class="pull-left">
-							<strong>Last used filters</strong>
+							<strong>Filters</strong>
 						</div>
 						<div class="pull-right">
-							<a class="btn btn-default btn-xs" wicket:id="compare">Compare</a> <a class="btn btn-default btn-xs" wicket:id="deselect">Deselec</a> Selected <strong wicket:id="selectedCount"></strong>
+							<a class="btn btn-warning btn-xs" wicket:id="compare"><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span> Compare Filters</a>
+							<a class="btn btn-info btn-xs" wicket:id="deselect"><span class="glyphicon glyphicon-unchecked" aria-hidden="true"></span> Deselect All</a> 
+							Selected <strong wicket:id="selectedCount"></strong>
 						</div>	
 						<div class="clearfix"></div>
 						<div class="filter-table-bar">
