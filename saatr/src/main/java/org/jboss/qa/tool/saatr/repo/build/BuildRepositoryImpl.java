@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.bson.BsonDocument;
 import org.bson.BsonString;
+import org.bson.types.ObjectId;
 import org.jboss.qa.tool.saatr.domain.DocumentWithProperties;
 import org.jboss.qa.tool.saatr.domain.build.Build;
 import org.jboss.qa.tool.saatr.domain.build.Build.Status;
@@ -295,6 +296,20 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
                 project().and("_id.name").as("name").and("_id.configuration").as("configuration").andExclude("_id"));
         AggregationResults<BuildNameDto> results = template.aggregate(agg, Build.COLLECTION_NAME, BuildNameDto.class);
         return results.getMappedResults();
+    }
+
+    @Override
+    public List<Build> find(List<ObjectId> buildIds, String testsuiteName) {
+        Criteria criteria = new Criteria();
+        Query query = Query.query(criteria.andOperator(where("_id").in(buildIds), where("testsuites.name").regex(".*" + testsuiteName + ".*")));
+        query.fields().include("id");
+        query.fields().include("name");
+        query.fields().include("configuration");
+        query.fields().include("testsuites");
+        query.fields().include("buildNumber");
+        query.fields().include("buildProperties");
+        query.with(new Sort(Sort.Direction.ASC, "name"));
+        return template.find(query, Build.class);
     }
 
     private Criteria createCriteria(BuildFilter filter, boolean convertoToBson, Criteria... additionaleCriterias) {
