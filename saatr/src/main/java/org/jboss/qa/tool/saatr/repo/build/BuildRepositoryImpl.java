@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
@@ -301,7 +302,7 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
     @Override
     public List<Build> find(List<ObjectId> buildIds, String testsuiteName) {
         Criteria criteria = new Criteria();
-        Query query = Query.query(criteria.andOperator(where("_id").in(buildIds), where("testsuites.name").regex(".*" + testsuiteName + ".*")));
+        Query query = Query.query(criteria.andOperator(where("_id").in(buildIds), where("testsuites.name").regex(".*" + Pattern.quote(testsuiteName) + ".*")));
         query.fields().include("id");
         query.fields().include("name");
         query.fields().include("configuration");
@@ -322,7 +323,7 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
             criterias.add(where("buildNumber").is(filter.getBuildNumber()));
         }
         if (filter.getJobName() != null) {
-            criterias.add(where("fullName").regex(filter.getJobName() + ".*"));
+            criterias.add(where("fullName").regex(Pattern.quote(filter.getJobName()) + ".*"));
         }
         if (filter.getJobConfiguration() != null) {
             criterias.add(where("configuration").is(filter.getJobConfiguration()));
@@ -346,13 +347,13 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
             addPropertiesCriteria(filter.getProperties(), convertoToBson, criterias, "properties");
         }
         if (filter.getErrorMessage() != null) {
-            criterias.add(where("testsuites.testcases.error.message").regex(filter.getErrorMessage() + ".*"));
+            criterias.add(where("testsuites.testcases.error.message").regex(Pattern.quote(filter.getErrorMessage()) + ".*"));
         }
         if (filter.getFailureMessage() != null) {
-            criterias.add(where("testsuites.testcases.failure.message").regex(filter.getFailureMessage() + ".*"));
+            criterias.add(where("testsuites.testcases.failure.message").regex(Pattern.quote(filter.getFailureMessage()) + ".*"));
         }
         if (filter.getTestsuiteName() != null) {
-            criterias.add(where("testsuites.name").regex(".*" + filter.getTestsuiteName() + ".*"));
+            criterias.add(where("testsuites.name").regex(".*" + Pattern.quote(filter.getTestsuiteName()) + ".*"));
         }
         if (!filter.getSelected().isEmpty()) {
             criterias.add(where("_id").in(filter.getSelected()));
