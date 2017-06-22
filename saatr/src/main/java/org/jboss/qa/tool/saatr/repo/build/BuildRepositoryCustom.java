@@ -56,11 +56,11 @@ interface BuildRepositoryCustom {
 
     void addConsoleText(Build buildDocument, String response);
 
-    Iterator<Build> getRoots(BuildFilter filter);
+    List<Build> getRoots(BuildFilter filter);
 
     Iterator<? extends Build> getChildren(Build parent, BuildFilter filter);
 
     List<BuildNameDto> getDistinctJobNames(final BuildFilter filter);
-    
+
     List<Build> find(List<ObjectId> buildIds, String testsuiteName);
 }

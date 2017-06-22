@@ -22,8 +22,10 @@ import org.jboss.qa.tool.saatr.domain.build.ConsoleText;
 import org.jboss.qa.tool.saatr.domain.build.Group;
 import org.jboss.qa.tool.saatr.domain.config.ConfigDocument;
 import org.jboss.qa.tool.saatr.domain.config.QueryDocument;
+import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 import org.jboss.qa.tool.saatr.web.comp.group.GroupsPanel;
 import org.jboss.qa.tool.saatr.web.comp.user.UsersPanel;
+import org.springframework.cache.CacheManager;
 import org.springframework.data.mongodb.core.MongoOperations;
 
 /**
@@ -34,6 +36,12 @@ public class AdminPage extends BasePage<Void> {
 
     @Inject
     private MongoOperations mongoOperations;
+
+    @Inject
+    private CacheManager cacheManager;
+
+    @Inject
+    private BuildRepository buildRepository;
 
     @SuppressWarnings("unused")
     private String results;
@@ -86,6 +94,29 @@ public class AdminPage extends BasePage<Void> {
         add(new Label("results", new PropertyModel<>(this, "results")));
         add(new UsersPanel("users"));
         add(new GroupsPanel("groups"));
+        add(new Link<Void>("clearCache") {
+
+            @Override
+            public void onClick() {
+                for (String name : cacheManager.getCacheNames()) {
+                    cacheManager.getCache(name).clear();
+                }
+            }
+        });
+        add(new Link<Void>("warmUpCache") {
+
+            @Override
+            public void onClick() {
+                buildRepository.getRoots(new BuildFilter());
+                buildRepository.findDistinctSystemPropertiesNames();
+                for (String name : buildRepository.findDistinctPropertiesNames()) {
+                    buildRepository.findDistinctPropertiesValues(name);
+                }
+                for (String name : buildRepository.findDistinctVariableNames()) {
+                    buildRepository.findDistinctVariableValues(name);
+                }
+            }
+        });
     }
 
     private void showAllIndexes(String collectionName) {

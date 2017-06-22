@@ -2,6 +2,7 @@
 package org.jboss.qa.tool.saatr.web.comp.build;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.wicket.Component;
@@ -28,6 +29,7 @@ import org.jboss.qa.tool.saatr.repo.build.BuildRepository;
 import org.jboss.qa.tool.saatr.web.page.BuildPage;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author dsimko@redhat.com
@@ -258,6 +260,7 @@ public class BuildsTreePanel extends AbstractBuildsPanel {
         }
     }
 
+    @Slf4j
     private static class BuildsProvider implements ITreeProvider<Build> {
 
         final IModel<BuildFilter> filter;
@@ -277,7 +280,10 @@ public class BuildsTreePanel extends AbstractBuildsPanel {
 
         @Override
         public Iterator<? extends Build> getRoots() {
-            return buildRepository.getRoots(filter.getObject());
+            long start = System.currentTimeMillis();
+            List<? extends Build> roots = buildRepository.getRoots(filter.getObject());
+            log.debug("Loading roots took {} ms.", System.currentTimeMillis() - start);
+            return roots.iterator();
         }
 
         @Override

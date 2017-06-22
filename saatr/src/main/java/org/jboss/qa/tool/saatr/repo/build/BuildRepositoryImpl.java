@@ -37,6 +37,7 @@ import org.jboss.qa.tool.saatr.jaxb.surefire.Testsuite;
 import org.jboss.qa.tool.saatr.repo.UserRepository;
 import org.jboss.qa.tool.saatr.web.comp.build.compare.CompareBuildFilterPanel.BuildNameDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -190,41 +191,49 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
     }
 
     @Override
+    @Cacheable(value = "filters", key = "'buildPropertiesCacheKey'")
     public Iterable<String> findDistinctVariableNames() {
         return findDistinctPropertyNames("buildProperties");
     }
 
     @Override
+    @Cacheable(value = "filters", key = "#name")
     public Iterable<String> findDistinctVariableValues(String name) {
         return findDistinctPropertyValues("buildProperties", name);
     }
 
     @Override
+    @Cacheable(value = "filters", key = "'systemPropertiesCacheKey'")
     public Iterable<String> findDistinctSystemPropertiesNames() {
         return findDistinctPropertyNames("systemProperties");
     }
 
     @Override
+    @Cacheable(value = "filters", key = "#name")
     public Iterable<String> findDistinctSystemPropertiesValues(String name) {
         return findDistinctPropertyValues("systemProperties", name);
     }
 
     @Override
+    @Cacheable(value = "filters", key = "'propertiesCacheKey'")
     public Iterable<String> findDistinctPropertiesNames() {
         return findDistinctPropertyNames("properties");
     }
 
     @Override
+    @Cacheable(value = "filters", key = "#name")
     public Iterable<String> findDistinctPropertiesValues(String name) {
         return findDistinctPropertyValues("properties", name);
     }
 
     @SuppressWarnings("unchecked")
+    @Cacheable(value = "filters")
     private Iterable<String> findDistinctPropertyNames(String fieldName) {
         return template.getCollection(Build.COLLECTION_NAME).distinct(fieldName + ".name", getGroupsQueryForCurrentUser());
     }
 
     @SuppressWarnings("unchecked")
+    @Cacheable(value = "filters")
     private Iterable<String> findDistinctPropertyValues(String fieldName, String propertyName) {
         if (propertyName == null) {
             return template.getCollection(Build.COLLECTION_NAME).distinct(fieldName + ".value", getGroupsQueryForCurrentUser());
@@ -263,12 +272,13 @@ class BuildRepositoryImpl implements BuildRepositoryCustom {
     }
 
     @Override
-    public Iterator<Build> getRoots(BuildFilter filter) {
+    @Cacheable(value = "builds", key = "#filter.id + ''")
+    public List<Build> getRoots(BuildFilter filter) {
         Aggregation agg = newAggregation(match(createCriteria(filter, true)), group("name").count().as("childCount").sum("statusWeight").as("statusWeight"),
                 sort(Direction.ASC, "_id"), project("statusWeight", "childCount").and("_id").as("name").andExclude("_id"));
         AggregationResults<Build> results = template.aggregate(agg, Build.COLLECTION_NAME, Build.class);
         List<Build> mappedResult = results.getMappedResults();
-        return mappedResult.iterator();
+        return mappedResult;
     }
 
     @Override
